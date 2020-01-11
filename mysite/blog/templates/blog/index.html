@@ -1,0 +1,46 @@
+{% extends 'blog/base_blog.html' %}
+{% load static %}
+
+{% block title %}
+	Home - {{ block.super }}
+{% endblock %}
+
+
+{% block content %}
+	{% for i in post_count %}
+		{% include 'blog/includes/post_card_template.html' %}
+	{% endfor %}
+
+	<div class="pagination mt-5 mb-5 justify-content-center">
+		<span class="step-links">
+			{% if post_count.has_previous %}
+				<a href="?page=1" class="btn btn-dark" style="margin: 0 5px 0 5px; float: left">First</a>
+				<a href="?page={{ post_count.previous_page_number }}" class="btn btn-dark" style="margin: 0 5px 0 5px; float: left;">Previous</a>
+			{% endif %}
+			
+			<!-- <span class="current" style="float: left; padding: 6px;">
+				Page {{ post_count.number }} of {{ post_count.paginator.num_pages }}
+			</span> -->
+			{% if pag_range > 1 %}
+				{% for n_page in pag_range %}
+					<span style="float: left; padding: 6px;">{{ n_page }} </span>
+				{% endfor %}
+			{% endif %}
+			{% if post_count.has_next %}
+				<a href="?page={{ post_count.paginator.num_pages }}" class="btn btn-dark" style="margin: 0 5px 0 5px; float: right">End</a>
+				<a href="?page={{ post_count.next_page_number }}" class="btn btn-dark" style="margin: 0 5px 0 5px; float: right">Next</a>
+			{% endif %}
+
+		</span>
+	</div>
+
+{% endblock %}
+
+{% block sidebal %}
+	<div class="sidebar-title mt-5">
+		<p>Most popular:</p>
+	</div>
+	{% for i in post_count %}
+		{% include 'blog/includes/sidebar_card.html' %}
+	{% endfor %}
+{% endblock %}

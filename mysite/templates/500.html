@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block handler %}
+
+    <div class="container-fluid">
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <div class="handler mt-4">
+                    <h1>500</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <div class="handler mt-4">
+                    <p>Кажется, что-то сломалось :(</p>
+                    <p>Администраторы уже работают над устранением этой проблемы.</p>
+                    <br>
+                    <h4>Что можно сделать?</h4>
+                    <ul>
+                        <li>Попробуйте обновить страницу;</li>
+                        <li>Попробуйте <a href="{% url 'home_blog_page' %}">вернуться на главную</a>.</li>
+                    </ul>
+                    <p>Если это не помогло, значит сайт временно недоступен. Будем рады, если Вы вернетесь чуть позже.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

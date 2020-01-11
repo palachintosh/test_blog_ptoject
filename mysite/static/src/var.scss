@@ -1,0 +1,36 @@
+$white: #ffffff;
+$blue: #1e82df;
+$my-gray: #979696;
+$gray: #707070;
+$light-green: #beda7b;
+$card-text-col: #4c4f53;
+$light-blue: #0097bd;
+// $primary-my: $gray;
+
+// $theme-colors: ();
+// $theme-colors: map-merge(
+//   (
+//     "primary-my":    $primary-my,
+//   ),
+//   $theme-colors
+// );
+
+
+// $component-active-bg: theme-color("primary-my");
+
+// $component-active-bg: lighten($white, 100%);
+// $input-btn-focus-color: $white;
+// $input-btn-focus-box-shadow: none;
+
+$sizes: ( 95: 95% );
+
+$navbar-dark: $white !important;
+
+
+$color: (
+    "white": $white,
+    "blue": $blue,
+    "gray": $my-gray,
+);
+
+$padding-text: 5px 0 5px 15px;

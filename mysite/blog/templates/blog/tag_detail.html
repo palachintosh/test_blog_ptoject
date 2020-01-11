@@ -1,0 +1,18 @@
+{% extends 'blog/base_blog.html' %}
+
+{% block title %}
+    {{ tag.tag_title }} - {{ block.super }}
+{% endblock %}
+
+
+
+{% block content %}
+
+    <h3 class=" mt-4 mb-5">Результаты сортировки по тегу <span style="text-decoration: underline; font-style: oblique;">{{ tag.tag_title|lower }}</span>: </h1>
+    
+    {% for i in tag.posts.all %}
+        {% include 'blog/includes/post_card_template.html' %}
+    {% endfor %}
+
+
+{% endblock %}

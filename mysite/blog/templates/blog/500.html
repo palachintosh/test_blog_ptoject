@@ -1,0 +1,14 @@
+<h1>Test 404 forbidden </h1>
+
+<h3>chuj </h3>
+
+
+        {% for get_comments in comment %}
+            <div class="media ml-4 mt-3">
+                <img src="..." class="align-self-start mr-3" alt="">
+                <div class="media-body">
+                <small class="mt-0">{{ get_comments.comment_key.name }}</small>
+                <p>{{ get_comments.comment_key.comment_body }}</p>
+            </div>
+            </div>
+        {% endfor %}    

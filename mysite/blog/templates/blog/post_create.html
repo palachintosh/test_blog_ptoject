@@ -1,0 +1,35 @@
+{% extends 'blog/base_blog.html' %}
+
+{% block title %}
+    Post Create - {{ block.super }}
+{% endblock %}
+
+{% block head %}
+    <script src="https://cdn.tiny.cloud/1/ur832549tqwfu8iqhctvincsbypdvnxspzhx6vfgfntmqc5b/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>tinymce.init({selector:'textarea'});</script>
+{% endblock %}
+
+{% block content %}
+    <form action="{% url 'post_create_url' %}" method="post">
+        {% csrf_token %}
+
+        {% for field in post_form %}
+            <div class="form-group">
+                {% if field.errors %}
+                    <div class="alert alert-danger">
+                        {{ field.errors }}
+
+                    </div>
+                {% endif %}
+
+                {{ field.label }}
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-dark float-right">Create post!</button>
+
+    </form>
+
+
+{% endblock %}

@@ -1,0 +1,48 @@
+{% load static %}
+<div class="card mt-4" style="border: none">
+    <div class="card-header">
+            <h5 class="card-title" style="float: left">{{ i.title }}</h5>
+            <p class="card-date">{{ i.date_pub }}</p>
+    </div>
+    <div class="card-body">
+        <div class="my-class-div">{{ i.body|truncatewords:45|safe }}</div>
+
+        <img src="{% static 'www/images/unix.jpg' %}" width="100%" style="padding: 20px" />
+        <a href="{{ i.get_absolute_url }}" class="btn" style="box-shadow: none">Читать ></a>
+    </div>
+
+    <div class="card-footer text-muted">
+        <div class="row">
+          <div class="col d-none d-lg-block">
+            <small class="card-footer-txt">Tags:
+              {% for tag in i.tags.all %}
+                <a href="{{ tag.get_absolute_url }}" target="_self" class="card-footer-txt">{{ tag.tag_title}}</a>
+              {% endfor %}
+            </small>
+          </div>
+          <div class="col text-right mr-2">
+              <small class="text-muted text-right">By <a href="#" class="author">Palachintosh</a></small>
+          </div>
+        </div>
+    </div>
+          
+        <div class="adv_posts">
+            {% if first_post == i.title %}
+                <div class="recomended"><p>Это может быть интересно:</p></div>
+                <div class="card w-95 align-card">
+                    <div class="card-body">
+                      <h5 class="card-title">Заголовок</h5>
+                      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                      <a href="#" class="btn">Читать ></a>
+                    </div>
+                </div>
+                <div class="card w-95 align-card">
+                  <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                      <a href="#" class="btn">Читать ></a>
+                  </div>
+                </div>
+            {% endif %}
+        </div>
+</div>

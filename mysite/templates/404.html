@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block handler %}
+
+    <div class="container-fluid">
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <div class="handler mt-4">
+                    <h1>404</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-md-center">
+            <div class="col-md-auto">
+                <div class="handler mt-4">
+                    <p>Похоже, мы не смогли обработать Ваш запрос :(</p>
+                    <p>Возможно, страница была удалена автором или администратором сайта.</p>
+                    <br>
+                    <p>Вы можете попробовать снова, исправив адресс в адресной строке или <a href="{% url 'home_blog_page' %}">вернуться на главную</a>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

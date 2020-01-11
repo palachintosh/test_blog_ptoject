@@ -1,0 +1,13 @@
+
+<form action="{% url 'filter_form_url' %}" method="post">
+    {% csrf_token %}
+    {% for field_list in test %}
+        <p>feflw[efl</p>
+        <div class="form-group">
+            {{ field_list.label }}
+            {{ field_list }}
+        </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-dark">Use filter!</button>
+</form>
