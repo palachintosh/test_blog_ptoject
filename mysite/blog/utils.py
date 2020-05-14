@@ -145,9 +145,6 @@ class PaginatorObjectsMixine:
         
         first_post = str(Post.objects.order_by('id').last())
 
-        print(first_post)
-        print(type(pag_range))
-        print(type(count_posts))
         return render(request,
                       'blog/index.html',
                       context={

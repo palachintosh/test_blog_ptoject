@@ -2,12 +2,12 @@
 <div class="card mt-4" style="border: none">
     <div class="card-header">
             <h5 class="card-title" style="float: left">{{ i.title }}</h5>
-            <p class="card-date">{{ i.date_pub }}</p>
+            <p class="card-date">{{ i.date_pub|date }}</p>
     </div>
     <div class="card-body">
         <div class="my-class-div">{{ i.body|truncatewords:45|safe }}</div>
 
-        <img src="{% static 'www/images/unix.jpg' %}" width="100%" style="padding: 20px" />
+        <img src="{{ i.post_picture.url }}" width="100%" style="padding: 20px" />
         <a href="{{ i.get_absolute_url }}" class="btn" style="box-shadow: none">Читать ></a>
     </div>
 
@@ -25,7 +25,7 @@
           </div>
         </div>
     </div>
-          
+<!--           
         <div class="adv_posts">
             {% if first_post == i.title %}
                 <div class="recomended"><p>Это может быть интересно:</p></div>
@@ -44,5 +44,5 @@
                   </div>
                 </div>
             {% endif %}
-        </div>
+        </div> -->
 </div>

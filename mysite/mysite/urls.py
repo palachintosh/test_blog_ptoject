@@ -26,9 +26,9 @@ from django.conf.urls import handler404, handler500
 urlpatterns = [
     path('', based_blog),
     path('admin/', admin.site.urls),
-    path('webexample/', include('webexample.urls')),
     path('blog/', include('blog.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 handler404 = e_handler404

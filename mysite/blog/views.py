@@ -152,9 +152,7 @@ class PostDelete(LoginRequiredMixin, ObjectDeleteMixin, View):
 
 
 def e_handler404(request, exception):
-	print("we're here")
 	context = RequestContext(request)
-	print(context)
 	response = render_to_response('404.html', context={"context": context})
 	response.status_code = 404
 	return response
