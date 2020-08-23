@@ -132,6 +132,12 @@ MEDIA_URL = "/media/"
 
 CKEDITOR_BASEPATH = "/static/www/ckeditor/ckeditor/"
 CKEDITOR_UPLOAD_PATH = "images/"
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full'
+    },
+}
+
 
 try:
     from .local_settings import *
