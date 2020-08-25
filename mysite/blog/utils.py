@@ -40,7 +40,7 @@ class ObjectDetailMixine:
 
             if bound_form.is_valid():
                 add_comment = bound_form.save(commit=False)
-                add_comment.comments = self.model.objects.get(slug__iexact=slug)
+                add_comment.comments = self.model.objects.get(slug__iexact=slug) #add foreignkey field to DB
                 
                 bound_form.save()
                 #add_comment = self.comment_model.objects.all()

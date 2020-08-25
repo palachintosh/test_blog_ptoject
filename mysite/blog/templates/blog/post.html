@@ -14,6 +14,8 @@
 
         <p class="mb-5">{{ post.body|safe }} </p>
     </div>
+    
+    
     <div class="card-footer-txt">
         <p>Tags:
             {% for tag in post.tags.all %}
@@ -54,5 +56,6 @@
         {% endfor %}
     </div>
 
+    <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
 
 {% endblock %}
