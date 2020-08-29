@@ -136,7 +136,7 @@ CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
         'extraPlugins': 'codesnippet',
-        'codeSnippet_theme': 'obsidian',
+        'codeSnippet_theme': 'palachintosh-theme',
     },
 }
 
