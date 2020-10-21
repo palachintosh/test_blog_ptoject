@@ -5,6 +5,6 @@
 __pycache__/
 local_settings.py
 db.sqlite3
-/mysite/palblogdb.sqlite3
+palblogdb.sqlite3
 /media
 /static
