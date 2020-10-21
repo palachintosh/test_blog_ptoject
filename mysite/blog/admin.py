@@ -9,6 +9,7 @@ from ckeditor.widgets import CKEditorWidget
 
 class PostAdminForm(forms.ModelForm):
     body = forms.CharField(widget=CKEditorUploadingWidget())
+    description = forms.CharField(widget=CKEditorUploadingWidget())
 
     class Meta:
         model = Post

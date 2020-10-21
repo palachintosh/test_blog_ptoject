@@ -1,4 +1,5 @@
 {% extends 'blog/base_blog.html' %}
+{% load static %}
 
 {% block title %}
     {{ post.title }} - {{ block.super }}
@@ -6,6 +7,8 @@
 
 
 {% block content %}
+    <script type="text/javascript" src="{% static 'js/likes/like_counter.js' %}"></script>
+
     <div class="mt-4 mb-5">
         <h2>{{ post.title }}</h2>
         {% for i in tag.posts.all %}
@@ -22,6 +25,16 @@
                 <a href="{{ tag.get_absolute_url }}">{{  tag.tag_title }}</a>
             {% endfor %}
         </p>
+        <div class="like-block" style="float: right; display: inline-block;" id="{{ post.slug }}">
+            <span class="like-counter" onclick="LikeCounter('{{ post.slug }}')"></span>
+            {% csrf_token %}
+            <p>{{ post.like }}</p>
+          </div>
+  
+          <script type="text/javascript" src="{% static 'js/likes/like_check.js' %}"></script>
+          <script type="text/javascript">
+            LikeCheck("{{ post.slug }}")
+          </script>
     </div>
     
     
@@ -57,5 +70,6 @@
     </div>
 
     <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    <!-- <script type="text/javascript" src="{% static 'js/likes/like_counter.js' %}"></script> -->
 
 {% endblock %}

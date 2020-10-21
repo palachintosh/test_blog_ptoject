@@ -1,0 +1,27 @@
+{% extends 'blog_pl/base_blog_pl.html' %}
+
+{% block title %}
+    About - {{ block.super }}
+{% endblock %}
+
+
+
+{% block content %}
+    <h3 class="mt-4">O nas</h3>
+    <br>
+    <p lang="ru-RU">Witam na &mdash; <a href="{% url 'home_blog_page' %}">palachintosh.com</a>.</p>
+    <p lang="ru-RU">Блог был создан с целью изучения фреймворка <em><span style="text-decoration: underline;">Django</span></em>, а вместе с тем и языка <em><span style="text-decoration: underline;">Python</span></em>, путем практического применения теоретического материала.</p>
+    <p lang="ru-RU">Здесь я попытаюсь подробно описать концепции создания приложений с использованием <em><span style="text-decoration: underline;">Django</span></em>, расширить имеющийся функционал, а, возможно, и ответить на какие-то вопросы, посетивших мой скромный сайт пользователей.</p>
+    <p lang="ru-RU">По мере расширения блога, в статьях будет затронуто и множество других технологий, таких как: базы данных, <span style="text-decoration: underline;"><em>AJAX</em></span>, <span style="text-decoration: underline;"><em>Unix</em></span>, <span style="text-decoration: underline;"><em>Flask</em></span>, серверы и др.. Данный сайт может также быть полезен начинающему осваивать данные технологии.</p>
+    <p><span lang="ru-RU">Если вы не против что-то прочитать и оставить свое мнение - можно начать с <a href="{% url 'home_blog_page'%}">главной страницы</a>.</span></p>
+    <p style="text-align: center;"><span style="text-align: center; color: #ff0000;"><span lang="ru-RU">!Важно!</span></span></p>
+    <p lang="ru-RU">Я <span style="text-decoration: underline;">НЕ</span> являюсь экспертом в области программирования, но вы всегда можете помочь вырасти мне и проекту просто оставив комментарий или написав на почту <a href="mailto:parser9000@gmail.com">parser9000@gmail.com</a>.</p>
+    <br>
+    <div style="line-height: 1.25rem;">
+        <p><span lang="ru-RU">Я </span><span lang="ru-RU">использую </span><span lang="ru-RU">Visual Studio Code и SublimeText3.</span></p>
+        <p><span lang="ru-RU">Моя операционная система: LinuxMint </span><span lang="ru-RU">Sylvia 18.3 с ядром 4.13.0-41.</span></p> 
+    </div>
+    <br>
+    <br><br>
+    <br>
+{% endblock %}

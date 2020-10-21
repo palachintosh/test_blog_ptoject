@@ -7676,6 +7676,9 @@ h5 {
 .card-footer-txt > small {
   float: right; }
 
+.card-footer-txt p {
+  display: inline-block; }
+
 .card-body > p {
   padding-left: 20px; }
 
@@ -7734,5 +7737,109 @@ h5 {
 
 .form-size {
   min-height: 5em; }
+
+.checkbox-img-pl {
+  width: 32px;
+  height: 20px;
+  float: right;
+  background-color: red;
+  background-image: url("../images/flags/pl_flag.png"); }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 22px; }
+
+.switch input {
+  display: none; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 12px; }
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 14px;
+  left: 3px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%; }
+
+input:focus + .slider {
+  box-shadow: none; }
+
+input:checked + .slider {
+  background-color: #aceeac; }
+
+input:checked + .slider::before {
+  -webkit-transform: translateX(14px);
+  -ms-transform: translateX(14px);
+  transform: translateX(14px); }
+
+.slider .round {
+  border-radius: 50%; }
+
+.slider .round::before {
+  border-radius: 50%; }
+
+.cb_alignment {
+  float: right; }
+
+.cb_alignment > ul {
+  list-style: none;
+  margin-right: .5rem; }
+
+.cb_alignment > ul > li {
+  float: left;
+  margin-left: .1rem;
+  margin-right: .1rem;
+  padding: .1rem;
+  height: 22px;
+  color: whitesmoke; }
+
+.cb_alignment > ul > li > label {
+  margin: unset; }
+
+.ru_icon {
+  background-color: #759cff;
+  border-radius: 3px;
+  padding: .2rem; }
+
+.pl_icon {
+  background-color: #2d2e31;
+  border-radius: 3px;
+  padding: .2rem; }
+
+.like-counter {
+  width: 32px;
+  height: 26px;
+  background-color: white;
+  background-image: url("../images/rating/like_heart.png");
+  float: left;
+  padding: .3rem; }
+
+.like-block {
+  cursor: pointer;
+  display: inline;
+  float: left;
+  line-height: 36px; }
+
+.like-block > p {
+  margin-left: .7rem;
+  float: left;
+  height: 32px; }
 
 /*# sourceMappingURL=styles.css.map */

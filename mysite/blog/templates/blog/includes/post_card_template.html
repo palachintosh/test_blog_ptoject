@@ -1,13 +1,25 @@
 {% load static %}
+
 <div class="card mt-4" style="border: none">
     <div class="card-header">
             <h5 class="card-title" style="float: left">{{ i.title }}</h5>
             <p class="card-date">{{ i.date_pub|date }}</p>
     </div>
     <div class="card-body">
-        <div class="my-class-div">{{ i.body|truncatewords:45|safe }}</div>
+        <div class="my-class-div">{{ i.description|safe }}</div>
 
         <img src="{{ i.post_picture.url }}" width="100%" style="padding: 20px" />
+        <div class="like-block" id="{{ i.slug }}">
+          <span class="like-counter" onclick="LikeCounter('{{ i.slug }}')"></span>
+          {% csrf_token %}
+          <p>{{ i.like }}</p>
+        </div>
+
+        <script type="text/javascript" src="{% static 'js/likes/like_check.js' %}"></script>
+        <script type="text/javascript">
+          LikeCheck("{{ i.slug }}")
+        </script>
+        
         <a href="{{ i.get_absolute_url }}" class="btn" style="box-shadow: none">Читать ></a>
     </div>
 
@@ -25,24 +37,4 @@
           </div>
         </div>
     </div>
-<!--           
-        <div class="adv_posts">
-            {% if first_post == i.title %}
-                <div class="recomended"><p>Это может быть интересно:</p></div>
-                <div class="card w-95 align-card">
-                    <div class="card-body">
-                      <h5 class="card-title">Заголовок</h5>
-                      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                      <a href="#" class="btn">Читать ></a>
-                    </div>
-                </div>
-                <div class="card w-95 align-card">
-                  <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                      <a href="#" class="btn">Читать ></a>
-                  </div>
-                </div>
-            {% endif %}
-        </div> -->
 </div>

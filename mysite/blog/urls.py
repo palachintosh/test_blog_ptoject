@@ -5,13 +5,12 @@ from .views import *
 
 urlpatterns = [
 	path('', PostList.as_view(), name="home_blog_page"),
+	path('change_language/', ChangeLG.as_view(), name="change_lang_ajax_url"),
 	path('search/', CustomSearch.as_view(), name='search_func_url'),
 	path('about/', AboutBlog.as_view(), name="about_blog_url"),
-	#path('filter/', FilterFormView.as_view(), name="filter_form_url"),
 	path('post/create/', PostCreate.as_view(), name="post_create_url"),
 
 	path('post/<str:slug>/', PostPage.as_view(), name="post_page_url"), #Post page url
-	
 	
 	path('post/<str:slug>/update/', PostUpdate.as_view(), name="post_update_url"),
 	path('post/<str:slug>/delete/', PostDelete.as_view(), name="post_delete_url"),

@@ -38,7 +38,7 @@ def gen_slug(s):
 # class CommonTag(models.Model):
 #     class Meta:
 #         abstract = True
-    
+
 #     tag_title = models.CharField(max_length=200, default="tag_manage")
 
 
@@ -48,12 +48,21 @@ def gen_slug(s):
 
 
 class Post(models.Model):
+
+    lang_choice = [
+        ('PL', 'Polski'),
+        ('RU', 'Russian'),
+    ]
+
     title = models.CharField(max_length=150, db_index=True)
     slug = models.SlugField(max_length=200, blank=True, unique=True)
+    description = models.TextField(blank=True, db_index=True, max_length=800, verbose_name="Preview")
     body = models.TextField(blank=True, db_index=True)
     date_pub = models.DateTimeField(auto_now_add=True)
     post_picture = models.ImageField(upload_to="images/post_images/", db_index=True, default="")
-    
+    lang_filter = models.CharField(verbose_name="Site side: ", max_length=2, choices=lang_choice, blank=True, default='RU')
+    like = models.SmallIntegerField(verbose_name="Likes", default=0, blank=True)
+
     # ManyToMany class instanse
     tags = models.ManyToManyField('Tag', blank=True, related_name='posts')
     
