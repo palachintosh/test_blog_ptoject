@@ -3,6 +3,7 @@
 *.pot
 *.pyc
 __pycache__/
+mysite/blog/__pycache__/*.pyc
 local_settings.py
 db.sqlite3
 palblogdb.sqlite3
