@@ -35,3 +35,5 @@ urlpatterns = [
 
 handler404 = e_handler404
 handler500 = e_handler500
+
+#grunwald

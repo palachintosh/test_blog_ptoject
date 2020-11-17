@@ -33,20 +33,6 @@ def gen_slug(s):
     return new_slug + '-' + str(int(time()))
 
 
-# Create your models here.
-
-# class CommonTag(models.Model):
-#     class Meta:
-#         abstract = True
-
-#     tag_title = models.CharField(max_length=200, default="tag_manage")
-
-
-#     def __str__(self):
-#         return self.tag_title
-
-
-
 class Post(models.Model):
 
     lang_choice = [
@@ -62,6 +48,8 @@ class Post(models.Model):
     post_picture = models.ImageField(upload_to="images/post_images/", db_index=True, default="")
     lang_filter = models.CharField(verbose_name="Site side: ", max_length=2, choices=lang_choice, blank=True, default='RU')
     like = models.SmallIntegerField(verbose_name="Likes", default=0, blank=True)
+
+    related_post = models.ManyToManyField('self', blank=True, related_name='related_posts')
 
     # ManyToMany class instanse
     tags = models.ManyToManyField('Tag', blank=True, related_name='posts')

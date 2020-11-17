@@ -331,3 +331,77 @@ input:checked + .slider::before {
     height: 32px;
     
 }
+
+.settings-menu {
+    position: relative;
+    width: 100%;
+    padding: .5rem;
+    
+    .settings-icon {
+        width: 32px;
+        height: 32px;
+        background-image: url("../icons/settings.png");
+        float: left;
+        cursor: pointer;
+    }
+}
+
+.container-menu {
+    display: none;
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    top: -200px;
+    left: -200px;
+
+}
+
+.menu-top {
+    position: absolute;
+    width: 400px;
+    height: 200px;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background-color: rgb(46, 133, 240);
+
+}
+
+.menu-bottom {
+    position: relative;
+    width: 400px;
+    height: 200px;
+    top: 100px;
+    left: -100px;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    background-color: rgb(46, 133, 240);
+    transform: rotate(-90deg);
+}
+
+.inner-menu-list {
+    position: absolute;
+    top: 10px;
+    left: 250px;
+    transform: rotate(-90deg);
+    z-index: 9999;
+
+    li {
+        list-style: none;
+        cursor: pointer;
+    }
+}
+
+
+
+.inner-menu-list > .first {
+    margin: 5px 0 0 45px;
+    width: 32px;
+    height: 32px;
+    background-image: url("../icons/close.png");
+}
+
+.inner-menu-list > .second {
+    margin: 50px 0 0 15px;
+}
+
+.inner-menu-list > .third {
+    margin: 30px 0 0 -55px;
+}
