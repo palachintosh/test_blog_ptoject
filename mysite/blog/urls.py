@@ -1,11 +1,15 @@
 from django.urls import path
 from .views import *
+
+from .change_theme import ChangeTheme
+
 #from django.conf.urls import handler404, handler500
 
 
 urlpatterns = [
 	path('', PostList.as_view(), name="home_blog_page"),
 	path('change_language/', ChangeLG.as_view(), name="change_lang_ajax_url"),
+	path('change_theme/', ChangeTheme.as_view(), name="change_theme_url"), #change theme url
 	path('search/', CustomSearch.as_view(), name='search_func_url'),
 	path('about/', AboutBlog.as_view(), name="about_blog_url"),
 	path('post/create/', PostCreate.as_view(), name="post_create_url"),

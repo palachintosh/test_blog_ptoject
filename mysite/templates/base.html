@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script>
 
@@ -16,6 +15,8 @@
     <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.easing.compatibility.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery.easing.1.3.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/menu/r_menu.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/templates/theme_changer.js' %}"></script>
 
 
     <!-- <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script> -->
@@ -33,216 +34,186 @@
             BasePage
         {% endblock %}
     </title>
-    <!-- block for tiny CDN -->
+
     {% block head %}{% endblock %}
-    <!-- endblock tuny CDN -->
 
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    {% if language_var %}
-        <a class="navbar-brand" href="{% url 'pl_home_blog_page' %}">Palachinto<span style="color: #1e82df">sh</span></a>
-    {% else %}
-        <a class="navbar-brand" href="{% url 'home_blog_page' %}">Palachinto<span style="color: #1e82df">sh</span></a>
-    {% endif %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="z-index: 9999;">
+        {% if language_var %}
+            <a class="navbar-brand" href="{% url 'pl_home_blog_page' %}">Palachinto<span style="color: #1e82df">sh</span></a>
+        {% else %}
+            <a class="navbar-brand" href="{% url 'home_blog_page' %}">Palachinto<span style="color: #1e82df">sh</span></a>
+        {% endif %}
 
-    <script type="text/javascript">
-        function validateCheck(e) {
-            var checkbox_id = document.getElementById('LangCheckboxSwitcher');
-            var checkbox_status = $('#LangCheckboxSwitcher').val();
-            
-            if (checkbox_id.checked) {
-                var checkbox_country_code = 'PL';
+        <script type="text/javascript">
+            function validateCheck(e) {
+                var checkbox_id = document.getElementById('LangCheckboxSwitcher');
+                var checkbox_status = $('#LangCheckboxSwitcher').val();
                 
-                $.ajax({
-                    type: "GET",
-                    url: "{% url 'change_lang_ajax_url_pl' %}",
-                    contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                if (checkbox_id.checked) {
+                    var checkbox_country_code = 'PL';
                     
-                    data: {
-                        // all_data: name,
-                        checkbox_status: checkbox_status,
-                        checkbox_country_code: checkbox_country_code,
-                    },
-                    success: function (data) {
-                        if (data.redirect != 'None') {
-                            console.log(data.redirect);
-                            window.location.href = data.redirect;
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'change_lang_ajax_url_pl' %}",
+                        contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                        
+                        data: {
+                            // all_data: name,
+                            checkbox_status: checkbox_status,
+                            checkbox_country_code: checkbox_country_code,
+                        },
+                        success: function (data) {
+                            if (data.redirect != 'None') {
+                                console.log(data.redirect);
+                                window.location.href = data.redirect;
+                                
+                            }
                             
+
                         }
                         
-
-                    }
+                    })
                     
-                })
-                
-            }
-            else {
-                checkbox_country_code = 'RU';
-                $.ajax({
-                    type: "GET",
-                    url: "{% url 'change_lang_ajax_url' %}",
-                    contentType: "application/x-www-form-urlencoded;charset=UTF-8",
-                    
-                    data: {
-                        checkbox_status: checkbox_status,
-                        checkbox_country_code: checkbox_country_code,
-                    },
-                    success: function (data) {
-                        if (data.redirect != 'None') {
-                            console.log(data.redirect);
-                            window.location.href = data.redirect;
-                        }
+                }
+                else {
+                    checkbox_country_code = 'RU';
+                    $.ajax({
+                        type: "GET",
+                        url: "{% url 'change_lang_ajax_url' %}",
+                        contentType: "application/x-www-form-urlencoded;charset=UTF-8",
                         
+                        data: {
+                            checkbox_status: checkbox_status,
+                            checkbox_country_code: checkbox_country_code,
+                        },
+                        success: function (data) {
+                            if (data.redirect != 'None') {
+                                console.log(data.redirect);
+                                window.location.href = data.redirect;
+                            }
+                            
 
-                    }
-                })
+                        }
+                    })
+                }
             }
-        }
-    </script>
+        </script>
 
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            {% if language_var %}
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'pl_home_blog_page' %}">Strona glowna<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'tags_list_url'%}">Tagi</a>
-                </li>
-                <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about_blog_url_pl' %}">O nas</a>
-                </li>
-
-            {% else %}
-            <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'home_blog_page' %}">Главная<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'tags_list_url'%}">Теги</a>
-                </li>
-                <li class="nav-item">
-                        <a class="nav-link" href="{% url 'about_blog_url' %}">О сайте</a>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                {% if language_var %}
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'pl_home_blog_page' %}">Strona glowna<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tags_list_url'%}">Tagi</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'about_blog_url_pl' %}">O nas</a>
                     </li>
 
-            {% endif %}
+                {% else %}
+                <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'home_blog_page' %}">Главная<span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tags_list_url'%}">Теги</a>
+                    </li>
+                    <li class="nav-item">
+                            <a class="nav-link" href="{% url 'about_blog_url' %}">О сайте</a>
+                        </li>
 
-            {% if request.user.is_authenticated and request.user.is_staff %}
-                <li class="nav-item active">
-                    <a class="nav-link btn btn-success" href="/admin">Admin</a>
-                </li>
-                <li class="nav-item active">
-                    <!-- <a class="nav-link" href="{% url 'post_create_url' %}">Create post</a> -->
-                    {% if admin_tag_obj %}
-                        <a class="nav-link" href="{% url 'tag_create_url' %}">Tag create</a>
-                        {% else %}
-                            <a class="nav-link" href="{% url 'post_create_url' %}">Create post</a>
-                    {% endif %}
-                </li>
-                <li class="nav-item active show_object" {% if admin_obj %}style="display: block"{% endif %}>
-                    <a class="nav-link" href="{{ admin_obj.get_update_url }}">Edit</a>
-                </li>
-                <li class="nav-item active show_object" {% if admin_obj %}style="display: block"{% endif %}>
-                    <a class="nav-link" href="{{ admin_obj.get_delete_url }}">Delete</a>
-                </li>
-            {% endif %}
-        </ul>
-        
-        <div class="flex cb_alignment">
-            <ul>
-                <li>
-                    <span class="ru_icon">RU</span>
-                </li>
-                <li>
-                    <label class="switch" id="LangCheckboxID">
-                    <input type="checkbox" id="LangCheckboxSwitcher" onchange="validateCheck()">
-                    <span class="slider round"></span>
-                    <!-- <a href="#"><span class="checkbox-img-ru"></span></a>
-                        <a href="#"><span class="checkbox-img-pl"></span></a> -->
-                    </label>
-                </li>
-                <li>
-                    <span class="pl_icon">PL</span>
-                </li>
+                {% endif %}
+
+                {% if request.user.is_authenticated and request.user.is_staff %}
+                    <li class="nav-item active">
+                        <a class="nav-link btn btn-success" href="/admin">Admin</a>
+                    </li>
+                    <li class="nav-item active">
+                        <!-- <a class="nav-link" href="{% url 'post_create_url' %}">Create post</a> -->
+                        {% if admin_tag_obj %}
+                            <a class="nav-link" href="{% url 'tag_create_url' %}">Tag create</a>
+                            {% else %}
+                                <a class="nav-link" href="{% url 'post_create_url' %}">Create post</a>
+                        {% endif %}
+                    </li>
+                    <li class="nav-item active show_object" {% if admin_obj %}style="display: block"{% endif %}>
+                        <a class="nav-link" href="{{ admin_obj.get_update_url }}">Edit</a>
+                    </li>
+                    <li class="nav-item active show_object" {% if admin_obj %}style="display: block"{% endif %}>
+                        <a class="nav-link" href="{{ admin_obj.get_delete_url }}">Delete</a>
+                    </li>
+                {% endif %}
             </ul>
             
+            <div class="flex cb_alignment">
+                <ul>
+                    <li>
+                        <span class="ru_icon">RU</span>
+                    </li>
+                    <li>
+                        <label class="switch" id="LangCheckboxID">
+                        <input type="checkbox" id="LangCheckboxSwitcher" onchange="validateCheck()">
+                        <span class="slider round"></span>
+                        <!-- <a href="#"><span class="checkbox-img-ru"></span></a>
+                            <a href="#"><span class="checkbox-img-pl"></span></a> -->
+                        </label>
+                    </li>
+                    <li>
+                        <span class="pl_icon">PL</span>
+                    </li>
+                </ul>
+                
+            </div>
+
+            <form class="form-inline my-2 my-lg-0" action="{% url 'search_func_url' %}">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+                <button class="btn btn-outline-success my-2 my-sm-0 btn-go" type="submit">GO</button>
+            </form>
         </div>
 
-        <form class="form-inline my-2 my-lg-0" action="{% url 'search_func_url' %}">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
-            <button class="btn btn-outline-success my-2 my-sm-0 btn-go" type="submit">GO</button>
-        </form>
-    </div>
-
-</nav>
+    </nav>
 
     <div class="settings-menu">
-        <!-- <span class="settings-icon" onclick="RoundMenu()"></span> -->
-        <h3 class="mt-2" style="text-align: center;"><span style="color: red">С</span> <span style="color: blue">днем</span> <span style="color:coral;">рождения,</span> <span style="color:forestgreen">Саша!</span></h3>
+        <span class="settings-icon" onclick="OpenMenu()"></span>
+        <a href="#" onclick="OpenMenu()">
+            <span class="settings-block">
+                <span style="font-size: 15pt;">&lt </span>
+                <span style="font-size: 15pt;">Settings</span>
+            </span>
+        </a>
     </div>
 
-    <!-- <div class="container-menu">
+    <!-- Round menu notes -->
+
+    <div class="container-menu" id="ContainerMenu" onmouseleave="CloseMenu()">
         <span id="MenuDeg" hidden>90</span>
         <div class="menu-top">
-            <div class="menu-bottom"></div>
             <ul class="inner-menu-list">
-                <li class="first" onclick="RoundMenu()"></li>
+                <li class="first original-theme" id="openDarkTheme" onclick="middleTheme()"></li>
+                <label for="openDarkTheme" hidden></label>
                 <li class="second"><a href="#"></a>2</li>
                 <li class="third"><a href="#"></a>3</li>
             </ul>
-        </div> 
-    </div> -->
-
+        </div>
+    </div>
 
     <script type="text/javascript">
-        function RoundMenu(e) {
-            var rt = document.getElementsByClassName("container-menu");
-            let rotation_var = Number(rt[0].firstElementChild.textContent);
 
-            function spanChenger (rt, rotation_var, unset_content) {
-                if(unset_content == 1) {
-                    // alert("Menu was closed!")
-                    $('.container-menu').css('display', 'none');
-                }
-                rt[0].firstElementChild.textContent = rotation_var;
-            }
-
-            //Open menu
-            if(rotation_var == 90) {
-                $('.container-menu').animate({  borderSpacing: rotation_var },
-                {
-                    step: function(now,fx) { 
-                        $(this).css('-moz-transform', 'rotate('+now+'deg)');
-                        $(this).css('transform', 'rotate('+now+'deg)');
-                        $(this).css('-webkit-transform', 'rotate('+now+'deg)');
-                        $(this).css('display', 'block');
-                    },
-                easing: 'easeOutBounce', 
-                },1000,).promise(spanChenger(rt, rotation_var=0, unset_content=0));
-            }
-            
-            //Close menu
-            else {
-                $('.container-menu').animate({  borderSpacing: rotation_var },
-                {
-                    step: function(now,fx) { 
-                        $(this).css('-moz-transform', 'rotate('+now+'deg)');
-                        $(this).css('transform', 'rotate('+now+'deg)');
-                        $(this).css('-webkit-transform', 'rotate('+now+'deg)');
-                    },
-                easing: 'linear', 
-                },1000,).promise(spanChenger(rt, rotation_var=90, unset_content=1));
-            }
-
+        var style_path = "{% static 'css/dark_theme.css' %}";
+        function middleTheme() {
+            darkThemeEnable(style_path);
         }
-
     </script>
 
+<!-- End round menu notes -->
 
     <div class="container-fluid mt-2">
         {% block handler %}{% endblock %}
@@ -268,6 +239,8 @@
 </body>
 </html>
 
+
+
 <script type="text/javascript">
     $(document).ready( function() {
         var doc_location =  document.location.href.search('/blog_pl');
@@ -286,5 +259,8 @@
             }
         }
 
+        var style_path = "{% static 'css/dark_theme.css' %}";
+        darkThemeEnable(style_path);
     });
+
 </script>

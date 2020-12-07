@@ -9,6 +9,12 @@
     font-size: 0.95rem;
 }
 
+:root {
+    background-color: $white;
+    color: #212529;
+}
+
+
 html {
     position: relative;
     min-height: 100%;
@@ -16,6 +22,8 @@ html {
 
 body {
     margin-bottom: 3rem;
+    // background-color: #ffffff;
+    // color: #212529;
 }
 
 h5 {
@@ -83,7 +91,7 @@ h5 {
 }
 
 .card-header {
-    background-color: $white;
+    background-color: rgba(68, 68, 68, 0.03);
     border: none;
 }
 .card-date {
@@ -337,12 +345,32 @@ input:checked + .slider::before {
     width: 100%;
     padding: .5rem;
     
+    a {
+        text-decoration: none;
+        outline: none;
+    }
+
+    a > span:hover {
+        background-color: rgba(72, 72, 72, 0.501);
+        border-radius: .2rem;
+        padding: .3rem;
+        transition: background 150ms ease-in-out 200ms, opacity 150ms ease-in-out 100ms, transform 100ms ease-in-out;
+    }
+
     .settings-icon {
         width: 32px;
         height: 32px;
         background-image: url("../icons/settings.png");
+        background-repeat: no-repeat;
         float: left;
         cursor: pointer;
+    }
+
+    .settings-block {
+        position: relative;
+        left: 1rem;
+        color: rgb(220, 78, 78);
+        padding-left: .3rem;
     }
 }
 
@@ -351,8 +379,9 @@ input:checked + .slider::before {
     position: absolute;
     width: 400px;
     height: 400px;
-    top: -200px;
+    top: -142px;
     left: -200px;
+    z-index: 9998;
 
 }
 
@@ -361,19 +390,10 @@ input:checked + .slider::before {
     width: 400px;
     height: 200px;
     border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-    background-color: rgb(46, 133, 240);
-
-}
-
-.menu-bottom {
-    position: relative;
-    width: 400px;
-    height: 200px;
-    top: 100px;
-    left: -100px;
-    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
-    background-color: rgb(46, 133, 240);
-    transform: rotate(-90deg);
+    // background-color: rgb(40, 190, 245);
+    background-color: rgb(45, 206, 171);
+    z-index: 10000;
+    //#B084CC
 }
 
 .inner-menu-list {
@@ -381,7 +401,7 @@ input:checked + .slider::before {
     top: 10px;
     left: 250px;
     transform: rotate(-90deg);
-    z-index: 9999;
+    z-index: inherit;
 
     li {
         list-style: none;
@@ -389,13 +409,20 @@ input:checked + .slider::before {
     }
 }
 
-
-
 .inner-menu-list > .first {
     margin: 5px 0 0 45px;
     width: 32px;
     height: 32px;
     background-image: url("../icons/close.png");
+    
+    &::before {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: var(--background);
+        transform: translate3d(-47%, 0, 0) scale(0.1);
+        transition: background 300ms ease-in-out 200ms, opacity 350ms ease-in-out 200ms, transform 400ms ease-in-out;
+    }
 }
 
 .inner-menu-list > .second {

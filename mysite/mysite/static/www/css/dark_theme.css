@@ -1,0 +1,14 @@
+:root { background-color: #313131; color: #ffffff; }
+
+body { background-color: #313131; color: #ffffff; }
+
+.card { background-color: #2f2f2f; color: #ffffff; }
+.card h1, .card h2, .card h3, .card h3, .card h5, .card h6 { color: #ffffff; }
+.card .card-header { background-color: #5f5f5f; color: #ffffff; }
+.card .card-body { background-color: #2f2f2f; }
+.card .card-footer { background-color: #2f2f2f; }
+.card .card-footer-txt { color: unset; }
+
+.like-block, .like-counter { background-color: #2f2f2f; }
+
+/*# sourceMappingURL=dark_theme.css.map */
