@@ -1,0 +1,35 @@
+{% extends 'notes/base_notes.html' %}
+{% load static %}
+
+{% block title %}
+	My notes - {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    {% for note in pag_notes %}
+        {% include 'notes/includes/note_card.html' %}
+    {% endfor %}
+
+    <div class="pagination mt-5 mb-5 justify-content-center">
+		<span class="step-links">
+			{% if pag_notes.has_previous %}
+				<a href="?page=1" class="btn btn-dark" style="margin: 0 5px 0 5px; float: left">First</a>
+				<a href="?page={{ pag_notes.previous_page_number }}" class="btn btn-dark" style="margin: 0 5px 0 5px; float: left;">Previous</a>
+			{% endif %}
+			
+			<!-- <span class="current" style="float: left; padding: 6px;">
+				Page {{ post_count.number }} of {{ post_count.paginator.num_pages }}
+			</span> -->
+			{% if pag_range > 1 %}
+				{% for n_page in pag_range %}
+					<span style="float: left; padding: 6px;">{{ n_page }} </span>
+				{% endfor %}
+			{% endif %}
+			{% if pag_notes.has_next %}
+				<a href="?page={{ pag_notes.paginator.num_pages }}" class="btn btn-dark" style="margin: 0 5px 0 5px; float: right">End</a>
+				<a href="?page={{ pag_notes.next_page_number }}" class="btn btn-dark" style="margin: 0 5px 0 5px; float: right">Next</a>
+			{% endif %}
+
+		</span>
+	</div>
+{% endblock %}

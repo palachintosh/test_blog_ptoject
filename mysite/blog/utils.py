@@ -124,7 +124,6 @@ class PaginatorObjectsMixine:
 
     def pag_page_mixine(self, request, posts):
 
-        #posts = self.model.objects.all()
         paginator = Paginator(posts, 5)
         pages = request.GET.get('page')
         pag_range = paginator.page_range
@@ -134,10 +133,6 @@ class PaginatorObjectsMixine:
         for i in pag_range:
             pag_range_count_str += 1
 
-        #print(str(pag_range_count_str))
-
-        #first = True
-        #print(pag_range)
         try:
             count_posts = paginator.page(pages)
         except PageNotAnInteger:

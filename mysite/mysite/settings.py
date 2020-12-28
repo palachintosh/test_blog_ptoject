@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
 INSTALLED_APPS = [
     'blog',
     'blog_pl',
+    'notes',
+    'bikes_monitoring',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

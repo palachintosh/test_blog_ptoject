@@ -1,0 +1,25 @@
+{% load static %}
+
+<div class="card">
+    <div class="card-header">
+        <h5 style="display: inline;">{{ note.title }}</h5>
+        <span style="display: inline;">
+            <a title="Share in Facebook" target="«_blank" href="http://www.facebook.com/share.php?u=http://natlet.space{{ post.get_absolute_url }}&title={{ post.title }}" class="float-right"
+                style="padding-inline: .3rem;">
+                <img src="{% static 'icons/fb.png' %}">
+            </a>
+            <a title="Share in Twitter" target="«_blank" href="http://twitter.com/intent/tweet?status={{ post.title }}+http://natlet.space{{ post.get_absolute_url }}" class="float-right"
+                style="padding-inline: .3rem;">
+                <img src="{% static 'icons/twitter.png' %}">
+            </a>
+            <a title="Share in VK" target="«_blank" href="http://vk.com/share.php?url=http://natlet.space{{ post.get_absolute_url }}" class="float-right"
+                style="padding-inline: .3rem;">
+                <img src="{% static 'icons/vk.png' %}" width="32" height="32">
+            </a>
+        </span>
+    </div>
+    <div class="card-body">
+      <p class="card-text">{{ note.body }}</p>
+      <p class="card-date" style="float: right;">{{ note.date_pub|date }}</p>
+    </div>
+  </div>
