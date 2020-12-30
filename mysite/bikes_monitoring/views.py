@@ -9,10 +9,10 @@ from .utils import *
 
 # Create your views here.
 
-class BikeCheck(LoginRequiredMixin, View):
+class BikeCheck(View):
     def get(self, request):
         return HttpResponse("None")
     
     def post(self, request):
         if request.POST:
-            pass
+            return HttpResponse("Frame number is required!")

@@ -3,7 +3,7 @@
 <div class="card">
     <div class="card-header">
         <h5 style="display: inline;">{{ note.title }}</h5>
-        <span style="display: inline;">
+        <span style="display: inline;" class="d-none d-md-inline">
             <a title="Share in Facebook" target="«_blank" href="http://www.facebook.com/share.php?u=http://palachintosh.com{% url 'notes_page_url'%}&title={{ note.title }}" class="float-right"
                 style="padding-inline: .3rem;">
                 <img src="{% static 'icons/fb.png' %}">
