@@ -26,4 +26,3 @@ class PaginatorObjectsMixine:
 
         print(data)
         return data
-                          

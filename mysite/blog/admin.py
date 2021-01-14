@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django import forms
-from .models import Post 
+from .models import Post
 from .models import Comment
 from .models import Tag
 

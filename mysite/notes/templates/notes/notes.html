@@ -6,6 +6,70 @@
 {% endblock %}
 
 {% block content %}
+
+    <div>
+        <button id="send" style="width: 300px; height: 70px; background-color: rgba(55, 186, 55, 0.768);">Send</button>
+    </div>
+    <!-- Access-Control-Allow-Credentials -->
+    <script>
+        console.log("script initialization..")
+        var button_s = document.getElementById("send");
+
+        $(button_s).on('click', function(e) {
+            $(button_s).css("backgroundColor", "red");
+
+            $.get({
+
+            })
+
+            $.ajax({
+                type: "GET",
+                // url: "http://palachintosh.com/bikes_monitoring",
+                url: "{% url 'bike_check_url' %}",
+                contentType: 'application/x-www-form-urlencoded;charset=UTF-8',
+                // crossDomain: true,
+                // dataType: 'jsonp',
+                // xhrFields: {
+                //     withCredentials: true
+                // },
+                // headers: {"username": "palachintosh", "password": "amazinG117@"},
+                data: {
+                    code: "KRTRZ29X19W002529",
+                },
+                beforeSend: function(xhr) {
+                    const xhttp = new XMLHttpRequest();
+                    xhttp.open( "GET", "http://palachintosh.com", true);
+                    xhttp.setRequestHeader("request_origin", "kross");
+                    xhttp.setRequestHeader('Access-Control-Allow-Origin', "*");
+                    xhttp.send();
+                    var resp_txt = xhttp.getResponseHeader;
+                    console.log("=================HERE================")
+                    console.log(resp_txt);
+
+                },
+                error: function(data) {
+                    if (data.response == null) {
+                        console.log(data)
+                        alert("ERROR SUCCESS!")
+                    }
+                    
+                }, 
+
+                success: function(data) {
+                    alert("SUCCESS!");
+                    console.log(data);
+                }
+                
+            })
+        });
+
+    </script>
+
+
+
+
+
+
     {% for note in pag_notes %}
         {% include 'notes/includes/note_card.html' %}
     {% endfor %}

@@ -19,7 +19,7 @@
         </span>
     </div>
     <div class="card-body">
-      <p class="card-text">{{ note.body }}</p>
+      <p class="card-text">{{ note.body|safe }}</p>
       <p class="card-date" style="float: right;">{{ note.date_pub|date }}</p>
     </div>
   </div>

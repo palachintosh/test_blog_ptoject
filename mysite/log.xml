@@ -1,0 +1,12 @@
+<prestashop xmlns:ns0="http://www.w3.org/1999/xlink">
+<stock_available>
+	<id>8858</id>
+	<id_product ns0:href="https://3gravity.pl/api/products/2068">2068</id_product>
+	<id_product_attribute ns0:href="https://3gravity.pl/api/combinations/6627">6627</id_product_attribute>
+	<id_shop ns0:href="https://3gravity.pl/api/shops/1">1</id_shop>
+	<id_shop_group>0</id_shop_group>
+	<quantity update="yes">44442</quantity>
+	<depends_on_stock>0</depends_on_stock>
+	<out_of_stock>2</out_of_stock>
+</stock_available>
+</prestashop>
