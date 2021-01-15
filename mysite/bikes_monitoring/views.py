@@ -7,7 +7,10 @@ from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
 
 from .utils import CodeValidators
 
-
+try:
+    from .PrestaRequest.mainp.api_secret_key import api_secret_key
+except:
+    ImportError("Cannot import API key!")
 
 # Create your views here.
 
@@ -18,7 +21,7 @@ class BikeCheck(View):
 
         if filter_code.get('rex_code') != None:
             request_url = "https://3gravity.pl/api/combinations/&filter[reference]={}".format(filter_code.get('rex_code'))
-            presta_get = PrestaRequest(api_secret_key='NYDWHE7A8C5FYJTFVA1MGA36E1GC3ZZL', request_url=request_url)
+            presta_get = PrestaRequest(api_secret_key=api_secret_key, request_url=request_url)
             
             # Get total quantity from stock_availables
             try:
