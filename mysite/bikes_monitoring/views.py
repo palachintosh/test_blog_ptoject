@@ -2,9 +2,7 @@ from django.views.generic import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
-
 from .utils import CodeValidators
 
 try:
@@ -12,10 +10,25 @@ try:
 except:
     ImportError("Cannot import API key!")
 
+
 # Create your views here.
+
 
 class BikeCheck(View):
     def get(self, request):
+
+        def cors_headers_add(to_json=[]):
+            data = JsonResponse(
+                {to_json[0]: to_json[1]}
+            )
+
+            data["Access-Control-Allow-Origin"] = "my.kross.pl/"
+            data["Access-Control-Allow-Methods"] = "GET, OPTIONS"
+            # response["Access-Control-Max-Age"] = "1000"
+            data["Access-Control-Allow-Headers"] = "X-Requested-With, Content-Type"
+
+            return data
+
         number_validator = CodeValidators()
         filter_code = number_validator.is_code_valid(request)
 
@@ -40,20 +53,15 @@ class BikeCheck(View):
 
                         if del_from_warehouse != None:
                             presta_get.presta_put(request_url=del_from_warehouse)
-                            data = {
-                                'success': 'All data has been updated',
-                            }
-                            return JsonResponse(data)
+                           
+                            
+                            return cors_headers_add(to_json=['success', 'all data updated!'])
 
 
             except Exception as e:
-                return JsonResponse({'Error': e})
+                return cors_headers_add(to_json=['error', str(e)])
             
-        data = {
-            'TypeError': 'Invalid code!',
-        }
-
-        return JsonResponse(data)
+        return cors_headers_add(to_json=['TypeError', 'Invalid code!'])
 
 
 
