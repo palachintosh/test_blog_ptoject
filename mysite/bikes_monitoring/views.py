@@ -16,18 +16,22 @@ except:
 
 # Create your views here.
 
-def logging(**kwargs):
+def logging(log_name=None, **kwargs):
+
+    if not log_name:
+        log_name = "PRLog.txt"
+
     param_dict = kwargs.get('kwargs')
     
     try:
-        with open('PRLog.txt', 'a') as f:
+        with open(log_name, 'a') as f:
             for i in param_dict.items():
                 print(i[0] + ': ' + i[1], file=f)
     
     except:
-        with open('PRLog.txt') as f:
+        with open(log_name) as f:
             for i in param_dict.items():
-                print(i.keys() + ': ' + i.values(), file=f)
+                print(i[0] + ': ' + i[1], file=f)
 
 
 
@@ -56,7 +60,7 @@ class BikeCheck(View):
                 {to_json[0]: to_json[1]}
             )
 
-            data["Access-Control-Allow-Origin"] = "http://my.kross.pl"
+            data["Access-Control-Allow-Origin"] = "https://24.kross.pl"
             data["Vary"] = "Origin"
             data["Access-Control-Allow-Credentials"] = "true"
             data["Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
@@ -64,7 +68,7 @@ class BikeCheck(View):
             return data
 
         with open('log_method.txt', 'w') as f:
-            print(request.method, file=f)
+            print(request.method + datetime.datetime.now(), file=f)
 
         if request.method == 'OPTIONS':
             return cors_headers_add(to_json=['TEST', 'TEST'])
@@ -121,4 +125,4 @@ class BikeCheck(View):
 
     def post(self, request):
         if request.POST:
-            return HttpResponse("POST not allow!")
+            return JsonResponse({'response': 'Post is not allow!'})
