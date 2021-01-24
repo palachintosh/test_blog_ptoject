@@ -68,10 +68,7 @@ class BikeCheck(View):
             return data
 
         with open('log_method.txt', 'w') as f:
-            print(request.method + datetime.datetime.now(), file=f)
-
-        if request.method == 'OPTIONS':
-            return cors_headers_add(to_json=['TEST', 'TEST'])
+            print(request.method + str(datetime.datetime.now()), file=f)
 
         number_validator = CodeValidators()
         filter_code = number_validator.is_code_valid(request)
@@ -119,7 +116,7 @@ class BikeCheck(View):
 
                 return cors_headers_add(to_json=['error', str(e)])
 
-        return cors_headers_add(to_json=['TypeError', 'Invalid code!'])
+        return cors_headers_add(to_json=['error', 'Invalid code!'])
 
 
 
