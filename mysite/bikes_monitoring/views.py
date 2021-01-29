@@ -37,6 +37,10 @@ def logging(log_name=None, **kwargs):
 
 
 class BikeCheck(View):
+# ==========================================
+# |         Works only on kross.pl         |
+# ==========================================
+
     def options(self, request):
         def cors_headers_add(to_json=[]):
             data = JsonResponse(
@@ -80,17 +84,18 @@ class BikeCheck(View):
             # Get total quantity from stock_availables
             try:
                 del_bike = presta_get.stock_parser()
-                print("DELETE BIKE BY STOCK", del_bike)
+                # print("DELETE BIKE BY STOCK", del_bike)
 
                 if del_bike != None:
+
                     # Delete one from stocks_availables
                     apply_changes = presta_get.presta_put()
-                    
-                    print(apply_changes)
-                    if apply_changes == 'All data has been updated!':
+                    print(apply_changes.get('success'))
+
+                    if apply_changes.get('success') != None:
                         del_from_warehouse = presta_get.warehouse_quantity_mgmt(warehouse='SHOP', reference=filter_code.get('rex_code'))
 
-                        print(del_from_warehouse)
+                        # print(del_from_warehouse)
 
                         if del_from_warehouse != None:
                             put_data = presta_get.presta_put(request_url=del_from_warehouse)
@@ -106,20 +111,28 @@ class BikeCheck(View):
                             logging(kwargs=kwargs_data)
                             return cors_headers_add(to_json=['success', filter_code.get('rex_code')])
 
+                        else:
+                            pass
+
 
             except Exception as e:
                 kwargs_data = {
                     'DATE': str(datetime.datetime.now()),
                     'ERROR': str(e),
                 }
-                logging(kwargs=kwargs_data)
 
+                logging(kwargs=kwargs_data)
                 return cors_headers_add(to_json=['error', str(e)])
 
-        return cors_headers_add(to_json=['error', 'Invalid code!'])
+        return cors_headers_add(to_json=['typeError', 'Invalid code!'])
+
+# ==========================================
+# |         Works only on kross.pl         |
+# ==========================================
 
 
+# Post using for application
 
     def post(self, request):
         if request.POST:
-            return JsonResponse({'response': 'Post is not allow!'})
+            return JsonResponse({'error': 'Post is not allow!'})
