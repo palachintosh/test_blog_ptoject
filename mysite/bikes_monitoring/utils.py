@@ -3,7 +3,6 @@ import base64
 
 
 class CodeValidators:
-
     def is_code_valid(self, request):
 
         if len(request.GET) != 0:
@@ -30,3 +29,23 @@ class CodeValidators:
 
         else: 
             return "Cannot get 'bike_code', from request!"
+
+
+
+class Logging:
+    def logging(self, log_name=None, **kwargs):
+
+        if not log_name:
+            log_name = "PRLog.txt"
+
+        param_dict = kwargs.get('kwargs')
+        
+        try:
+            with open(log_name, 'a') as f:
+                for i in param_dict.items():
+                    print(i[0] + ': ' + i[1], file=f)
+        
+        except:
+            with open(log_name) as f:
+                for i in param_dict.items():
+                    print(i[0] + ': ' + i[1], file=f)

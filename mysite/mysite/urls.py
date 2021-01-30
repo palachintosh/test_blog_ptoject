@@ -30,7 +30,7 @@ urlpatterns = [
     path('blog_pl/', include('blog_pl.urls')),
     path('likes_and_statistics/', include('likes_and_statistics.urls')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('bikes_monitoring', include('bikes_monitoring.urls')),
+    path('bikes_monitoring/', include('bikes_monitoring.urls')),
     path('notes', include('notes.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
