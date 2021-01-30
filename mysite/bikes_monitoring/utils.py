@@ -28,7 +28,7 @@ class CodeValidators:
                 return data
 
         else: 
-            return "Cannot get 'bike_code', from request!"
+            return {'error': "Cannot get 'bike_code', from request!"}
 
 
 

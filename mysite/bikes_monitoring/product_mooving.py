@@ -113,6 +113,7 @@ def app_management(request):
     if filter_code.get('rex_code'):
 
         try:
+            print("FILTERED_CODE: ", filter_code.get('rex_code'))
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.product_transfer(
                 quantity_to_transfer=quantity_to_transfer,
@@ -122,14 +123,19 @@ def app_management(request):
             )
 
             if moove != None:
+                moove_data = "PASS"
                 data = {
-                    'moove': moove,
-                    'DATE': datetime.datetime.now()
+                    'success': moove_data,
+                    'DATE': str(datetime.datetime.now())
                 }
 
-                l.logging(log_name='app_log', kwargs=data)
+                if moove.get('success'):
+                    moove_data = moove.get('success')
+
+                l.logging(log_name='app_log.txt', kwargs=data)
                 
-                return moove
+                return JsonResponse({'success': moove})
+
 
         except Exception as e:
             kwargs_data = {
