@@ -101,7 +101,8 @@ def app_management(request):
     l = Logging()
 
     number_validator = CodeValidators()
-    filter_code = number_validator.is_code_valid(request)
+    code_u = request.POST.get('code')
+    filter_code = number_validator.is_code_valid(code_u)
 
     quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
     w_from = request.POST.get('w_from')

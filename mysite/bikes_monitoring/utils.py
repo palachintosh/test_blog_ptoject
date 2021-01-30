@@ -3,12 +3,13 @@ import base64
 
 
 class CodeValidators:
-    def is_code_valid(self, request):
+    def is_code_valid(self, bike_code):
+        
+        bike_code = str(bike_code)
 
-        if len(request.GET) != 0:
+        if len(bike_code) != 0:
             try:
                 data = {}
-                bike_code = str(request.GET.get('code'))
                 rex = re.search("^[a-zA-Z0-9]{7,20}", bike_code)
 
                 print("REX: ", rex)
@@ -21,7 +22,6 @@ class CodeValidators:
 
             except:
                 data = {}
-                bike_code = str(request.GET.get('code'))
                 code = base64.b64encode(bike_code.encode())
                 data.update({'encode_code': str(code)})
 
