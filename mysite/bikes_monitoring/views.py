@@ -55,7 +55,7 @@ class ProductMGMT(View):
 
     print("HERE=============")
 
-    def get(self, request):
+    def post(self, request):
         
         print(request.POST)
         for i in request:
