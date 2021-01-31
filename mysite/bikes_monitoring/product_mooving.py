@@ -1,5 +1,5 @@
 from django.http import JsonResponse
-from .utils import CodeValidators
+from .utils import DataValidators
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
 from .PrestaRequest.mainp.api_secret_key import api_secret_key
 from .utils import Logging
@@ -24,7 +24,7 @@ def product_mooving(request):
     with open('log_method.txt', 'w') as f:
         print(request.method + str(datetime.datetime.now()), file=f)
 
-    number_validator = CodeValidators()
+    number_validator = DataValidators()
     filter_code = number_validator.is_code_valid(request)
 
     if filter_code.get('rex_code') != None:
@@ -35,7 +35,7 @@ def product_mooving(request):
 
         # Get total quantity from stock_availables
         try:
-            del_bike = presta_get.stock_parser()
+            del_bike = presta_get.stock_parser(quantity_to_transfer=None)
             # print("DELETE BIKE BY STOCK", del_bike)
 
             if del_bike != None:
@@ -100,7 +100,7 @@ def cors_headers_options(to_json=[]):
 def app_management(request):
     l = Logging()
 
-    number_validator = CodeValidators()
+    number_validator = DataValidators()
     code_u = request.POST.get('code')
     filter_code = number_validator.is_code_valid(code_u)
 
@@ -111,7 +111,6 @@ def app_management(request):
     print(quantity_to_transfer, w_from, w_to)
 
     if filter_code.get('rex_code'):
-
         try:
             print("FILTERED_CODE: ", filter_code.get('rex_code'))
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
@@ -135,6 +134,63 @@ def app_management(request):
                 l.logging(log_name='app_log.txt', kwargs=data)
                 
                 return JsonResponse({'success': moove})
+
+
+        except Exception as e:
+            kwargs_data = {
+                'DATE': str(datetime.datetime.now()),
+                'ERROR': str(e),
+            }
+
+            l.logging(kwargs=kwargs_data)
+            return JsonResponse({'error', str(e)})
+
+    return JsonResponse({'typeError', 'Invalid code!'})
+
+
+def app_management_inc(request):
+    l = Logging()
+
+    validator = DataValidators()
+    code_u = request.POST.get('code')
+    filter_code = validator.is_code_valid(code_u)
+
+    quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
+    w_from = request.POST.get('w_from')
+    w_to = request.POST.get('w_to')
+
+    validate_warehouse = validator.is_w_valid(w_from, w_to)
+
+    if validate_warehouse:
+        w_from = validate_warehouse.get('w_from')
+        w_to = validate_warehouse.get('w_to')
+
+
+    print(quantity_to_transfer, w_from, w_to)
+
+    if filter_code.get('rex_code'):
+        try:
+
+            print("FILTERED_CODE: ", filter_code.get('rex_code'))
+
+            presta_get = PrestaRequest(api_secret_key=api_secret_key)
+            moove = presta_get.to_w_transfer(
+                quantity_to_transfer=quantity_to_transfer,
+                w_to=w_to,
+                code=filter_code.get('rex_code')
+            )
+
+            if moove.get('success'):
+                data = {
+                    'success': 'YES',
+                    'delivery_on_warehouse': 'YES',
+                    'DATE': str(datetime.datetime.now())
+                }
+
+
+                l.logging(log_name='app_log.txt', kwargs=data)
+                
+                return JsonResponse({'success': moove.get('success')})
 
 
         except Exception as e:

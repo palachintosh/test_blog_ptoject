@@ -2,7 +2,7 @@ import re
 import base64
 
 
-class CodeValidators:
+class DataValidators:
     def is_code_valid(self, bike_code):
         
         bike_code = str(bike_code)
@@ -29,6 +29,23 @@ class CodeValidators:
 
         else: 
             return {'error': "Cannot get 'bike_code', from request!"}
+
+
+    def is_w_valid(self, w_from, w_to):
+        if w_from != None or w_from != '':
+            if len(w_from) <= 5 and len(w_to) <= 5:
+                try:
+                    str(w_from)
+                    str(w_to)
+                    return {'w_from': w_from, 'w_to': w_to}
+        
+                except Exception as e:
+                    return {'error': str(e)}
+        else:
+            return None
+
+
+
 
 
 

@@ -3,10 +3,11 @@ from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
-from .utils import CodeValidators
+from .utils import DataValidators
 from .product_mooving import product_mooving
 from .product_mooving import cors_headers_options
 from .product_mooving import app_management
+from .product_mooving import app_management_inc
 
 
 from django.utils.decorators import method_decorator
@@ -62,6 +63,21 @@ class ProductMGMT(View):
             print(i)
 
         if request.POST:
-            return app_management(request)
+            validator = DataValidators()
+            w_from = request.POST.get('w_from')
+            w_to = request.POST.get('w_to')
+
+            validate_warehouse = validator.is_w_valid(w_from, w_to)
+
+            if validate_warehouse:
+                w_from = validate_warehouse.get('w_from')
+                w_to = validate_warehouse.get('w_to')
+            
+            
+            if w_from == '' or w_from == None:
+                return app_management_inc(request)
+
+            else:
+                return app_management(request)
         
         return JsonResponse({'error': 'Data required!'})
