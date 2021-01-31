@@ -133,7 +133,7 @@ def app_management(request):
 
                 l.logging(log_name='app_log.txt', kwargs=data)
                 
-                return JsonResponse({'success': moove})
+                return JsonResponse(moove)
 
 
         except Exception as e:
@@ -190,7 +190,7 @@ def app_management_inc(request):
 
                 l.logging(log_name='app_log.txt', kwargs=data)
                 
-                return JsonResponse({'success': moove.get('success')})
+                return JsonResponse(moove)
 
 
         except Exception as e:
