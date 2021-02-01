@@ -25,7 +25,7 @@ def product_mooving(request):
         print(request.method + str(datetime.datetime.now()), file=f)
 
     number_validator = DataValidators()
-    filter_code = number_validator.is_code_valid(request)
+    filter_code = number_validator.is_code_valid(request.GET.get('code'))
 
     if filter_code.get('rex_code') != None:
         request_url = "https://3gravity.pl/api/combinations/&filter[reference]={}".format(
@@ -149,6 +149,7 @@ def app_management(request):
 
 
 def app_management_inc(request):
+
     l = Logging()
 
     validator = DataValidators()
@@ -203,3 +204,12 @@ def app_management_inc(request):
             return JsonResponse({'error', str(e)})
 
     return JsonResponse({'typeError', 'Invalid code!'})
+
+
+
+{
+"code": "KRTRZ29X19W002529",
+"w_from": "",
+"w_to": "X",
+"quantity_to_transfer": 1,
+}

@@ -76,6 +76,9 @@ class ProductMGMT(View):
             
             if w_from == '' or w_from == None:
                 return app_management_inc(request)
+            
+            elif w_from == w_to:
+                return JsonResponse({'error': 'Cannot rm product from same warehouse!'})
 
             else:
                 return app_management(request)
