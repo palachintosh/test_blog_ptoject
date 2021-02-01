@@ -108,7 +108,7 @@ def app_management(request):
 
     validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
     if validate_quantity.get('valid_quantity'):
-        quantity_to_transfer = validate_quantity.get('validate_quantity')
+        quantity_to_transfer = validate_quantity.get('valid_quantity')
     else:
         return {'error': validate_quantity.get('error')}
 
@@ -170,8 +170,9 @@ def app_management_inc(request):
 
     validate_warehouse = validator.is_w_valid(w_from, w_to)
     validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
+
     if validate_quantity.get('valid_quantity'):
-        quantity_to_transfer = validate_quantity.get('validate_quantity')
+        quantity_to_transfer = validate_quantity.get('valid_quantity')
     else:
         return {'error': validate_quantity.get('error')}
 
