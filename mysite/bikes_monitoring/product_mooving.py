@@ -166,18 +166,16 @@ def app_management(request):
 def app_management_inc(request):
 
     l = Logging()
-
     validator = DataValidators()
+
     code_u = request.POST.get('code')
-    filter_code = validator.is_code_valid(code_u)
-
     quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
-
     w_from = request.POST.get('w_from')
     w_to = request.POST.get('w_to')
 
     validate_warehouse = validator.is_w_valid(w_from, w_to)
     validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
+
 
     if validate_quantity.get('valid_quantity'):
         quantity_to_transfer = validate_quantity.get('valid_quantity')
@@ -189,23 +187,20 @@ def app_management_inc(request):
         w_to = validate_warehouse.get('w_to')
 
     with open("POST.txt", "w") as f:
-        print(w_from, w_to, code_u, filter_code.get('rex_code'), filter_code, quantity_to_transfer, file=f)
+        print(w_from, w_to, code_u, quantity_to_transfer, file=f)
 
     print(quantity_to_transfer, w_from, w_to)
 
-    if filter_code != None:
+    if code_u != None:
         try:
-            
-            if filter_code.get('code') == None or filter_code.get('code') is None:
-                raise TypeError('Code field must be fill!')
-            
-            print("FILTERED_CODE: ", filter_code.get('rex_code'))
+            # print("FILTERED_CODE: ", filter_code.get('rex_code'))
 
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.to_w_transfer(
                 quantity_to_transfer=quantity_to_transfer,
                 w_to=w_to,
-                code=filter_code.get('rex_code')
+                # code=filter_code.get('rex_code')
+                code=code_u
             )
 
             if moove.get('success'):
@@ -214,7 +209,6 @@ def app_management_inc(request):
                     'delivery_on_warehouse': 'YES',
                     'DATE': str(datetime.datetime.now())
                 }
-
 
                 l.logging(log_name='app_log.txt', kwargs=data)
                 
