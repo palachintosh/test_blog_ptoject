@@ -180,10 +180,10 @@ def app_management_inc(request):
         w_from = validate_warehouse.get('w_from')
         w_to = validate_warehouse.get('w_to')
 
+    with open("POST.txt", "w") as f:
+        print(w_from, w_to, filter_code.get('rex_code'), quantity_to_transfer, file=f)
 
     print(quantity_to_transfer, w_from, w_to)
-
-    filter_code = {'rex_code': code_u}
 
     if filter_code.get('rex_code'):
         try:
