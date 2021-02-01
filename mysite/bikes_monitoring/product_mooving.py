@@ -115,13 +115,19 @@ def app_management(request):
     w_from = request.POST.get('w_from')
     w_to = request.POST.get('w_to')
 
+    with open("POST.txt", "w") as f:
+        print(w_from, w_to, code_u, filter_code.get('rex_code'), filter_code, quantity_to_transfer, file=f)
+
     print(quantity_to_transfer, w_from, w_to)
 
     if filter_code != None:
         try:
-            if filter_code.get('code') == None:
-                return filter_code
+
+            if filter_code.get('code') == None or filter_code.get('code') is None:
+                raise TypeError('Code field must be fill!')
+
             print("FILTERED_CODE: ", filter_code.get('rex_code'))
+
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.product_transfer(
                 quantity_to_transfer=quantity_to_transfer,
@@ -183,14 +189,15 @@ def app_management_inc(request):
         w_to = validate_warehouse.get('w_to')
 
     with open("POST.txt", "w") as f:
-        print(w_from, w_to, code_u, filter_code.get('rex_code'), quantity_to_transfer, file=f)
+        print(w_from, w_to, code_u, filter_code.get('rex_code'), filter_code, quantity_to_transfer, file=f)
 
     print(quantity_to_transfer, w_from, w_to)
 
     if filter_code != None:
         try:
-            if filter_code.get('code') == None:
-                return filter_code
+            
+            if filter_code.get('code') == None or filter_code.get('code') is None:
+                raise TypeError('Code field must be fill!')
             
             print("FILTERED_CODE: ", filter_code.get('rex_code'))
 
