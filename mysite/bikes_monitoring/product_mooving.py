@@ -183,6 +183,8 @@ def app_management_inc(request):
 
     print(quantity_to_transfer, w_from, w_to)
 
+    filter_code = {'rex_code': code_u}
+
     if filter_code.get('rex_code'):
         try:
 
@@ -216,6 +218,6 @@ def app_management_inc(request):
 
             l.logging(kwargs=kwargs_data)
             return JsonResponse({'error', str(e)})
-
-    return JsonResponse({'typeError', 'Invalid code!'})
+    else:
+        return JsonResponse({'typeError', 'Invalid code!'})
 
