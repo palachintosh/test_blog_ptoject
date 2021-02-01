@@ -200,28 +200,30 @@ def app_management_inc(request):
                 quantity_to_transfer=quantity_to_transfer,
                 w_to=w_to,
                 # code=filter_code.get('rex_code')
-                code='pofm3p4ofwodsf'
+                code=code_u
             )
 
-            if moove.get('success'):
-                data = {
-                    'success': 'YES',
-                    'delivery_on_warehouse': 'YES',
-                    'DATE': str(datetime.datetime.now())
-                }
+            return JsonResponse(moove)
 
-                l.logging(log_name='app_log.txt', kwargs=data)
+            # if moove.get('success'):
+            #     data = {
+            #         'success': 'YES',
+            #         'delivery_on_warehouse': 'YES',
+            #         'DATE': str(datetime.datetime.now())
+            #     }
+
+            #     l.logging(log_name='app_log.txt', kwargs=data)
                 
-                return JsonResponse(moove)
+            #     return JsonResponse(moove)
 
 
         except Exception as e:
-            kwargs_data = {
-                'DATE': str(datetime.datetime.now()),
-                'ERROR': str(e),
-            }
+            # kwargs_data = {
+            #     'DATE': str(datetime.datetime.now()),
+            #     'ERROR': str(e),
+            # }
 
-            l.logging(kwargs=kwargs_data)
+            # l.logging(kwargs=kwargs_data)
             return JsonResponse({'error', str(e)})
     else:
         return JsonResponse({'typeError', 'Invalid code!'})
