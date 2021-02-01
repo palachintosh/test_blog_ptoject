@@ -13,17 +13,18 @@ class DataValidators:
                 rex = re.search("^[a-zA-Z0-9]{7,20}", bike_code)
 
                 print("REX: ", rex)
-
-                if rex.group() == bike_code:
-                    data.update({'rex_code': bike_code})
-                    return data
+                
+                if rex != None:
+                    if rex.group() == bike_code:
+                        data.update({'rex_code': bike_code})
+                        return data
                 else:
                     raise Warning('The code may contains not code!')
 
-            except:
+            except Warning as w:
                 data = {}
                 code = base64.b64encode(bike_code.encode()).decode()
-                data.update({'encode_code': str(code)})
+                data.update({'encode_code': str(code), 'warning': str(w)})
 
                 return data
 
