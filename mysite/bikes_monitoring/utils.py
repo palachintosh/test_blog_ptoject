@@ -22,7 +22,7 @@ class DataValidators:
 
             except:
                 data = {}
-                code = base64.b64encode(bike_code.encode())
+                code = base64.b64encode(bike_code.encode()).decode()
                 data.update({'encode_code': str(code)})
 
                 return data
@@ -43,6 +43,13 @@ class DataValidators:
                     return {'error': str(e)}
         else:
             return None
+    
+
+    def is_quantity_valid(self, quantity_to_transfer):
+        if quantity_to_transfer >= 0:
+            return {'valid_quantity': quantity_to_transfer}
+
+        return {'error': 'Quantity must be positive!'}
 
 
 

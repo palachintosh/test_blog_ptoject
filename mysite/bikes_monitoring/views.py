@@ -54,8 +54,6 @@ class BikeCheck(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class ProductMGMT(View):
 
-    print("HERE=============")
-
     def post(self, request):
         
         print(request.POST)

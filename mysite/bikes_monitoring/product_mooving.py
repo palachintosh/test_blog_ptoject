@@ -35,7 +35,7 @@ def product_mooving(request):
 
         # Get total quantity from stock_availables
         try:
-            del_bike = presta_get.stock_parser(quantity_to_transfer=None)
+            del_bike = presta_get.stock_parser(quantity_to_transfer=0)
             # print("DELETE BIKE BY STOCK", del_bike)
 
             if del_bike != None:
@@ -105,6 +105,13 @@ def app_management(request):
     filter_code = number_validator.is_code_valid(code_u)
 
     quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
+
+    validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
+    if validate_quantity.get('valid_quantity'):
+        quantity_to_transfer = validate_quantity.get('validate_quantity')
+    else:
+        return {'error': validate_quantity.get('error')}
+
     w_from = request.POST.get('w_from')
     w_to = request.POST.get('w_to')
 
@@ -157,10 +164,16 @@ def app_management_inc(request):
     filter_code = validator.is_code_valid(code_u)
 
     quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
+
     w_from = request.POST.get('w_from')
     w_to = request.POST.get('w_to')
 
     validate_warehouse = validator.is_w_valid(w_from, w_to)
+    validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
+    if validate_quantity.get('valid_quantity'):
+        quantity_to_transfer = validate_quantity.get('validate_quantity')
+    else:
+        return {'error': validate_quantity.get('error')}
 
     if validate_warehouse:
         w_from = validate_warehouse.get('w_from')
