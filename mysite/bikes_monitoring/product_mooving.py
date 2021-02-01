@@ -263,7 +263,7 @@ def app_management_inc(request):
             'code': code_u
         })
     except Exception as e:
-        return JsonResponse('error': str(e))
+        return JsonResponse({'error': str(e)})
 
 
     return JsonResponse({'typeError', 'Invalid code!'})
