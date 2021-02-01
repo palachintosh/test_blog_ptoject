@@ -57,10 +57,10 @@ def product_mooving(request):
 
                         kwargs_data = {
                             'DATE': str(datetime.datetime.now()),
-                            'DELETE_BIKE': del_bike,
+                            'DELETE_BIKE': str(del_bike),
                             'SA_PUT_STATUS': str(apply_changes),
                             'PUT_STATUS': str(put_data),
-                            'REQUEST_WAREHOUSE_URL': del_from_warehouse,
+                            'REQUEST_WAREHOUSE_URL': str(del_from_warehouse),
                         }
 
                         l.logging(kwargs=kwargs_data)
@@ -100,9 +100,9 @@ def cors_headers_options(to_json=[]):
 def app_management(request):
     l = Logging()
 
-    number_validator = DataValidators()
+    validator = DataValidators()
     code_u = request.POST.get('code')
-    filter_code = number_validator.is_code_valid(code_u)
+    filter_code = validator.is_code_valid(code_u)
 
     quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
 
@@ -218,11 +218,3 @@ def app_management_inc(request):
 
     return JsonResponse({'typeError', 'Invalid code!'})
 
-
-
-{
-"code": "KRTRZ29X19W002529",
-"w_from": "",
-"w_to": "X",
-"quantity_to_transfer": 1,
-}

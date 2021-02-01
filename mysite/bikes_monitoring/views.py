@@ -55,11 +55,6 @@ class BikeCheck(View):
 class ProductMGMT(View):
 
     def post(self, request):
-        
-        print(request.POST)
-        for i in request:
-            print(i)
-
         if request.POST:
             validator = DataValidators()
             w_from = request.POST.get('w_from')
