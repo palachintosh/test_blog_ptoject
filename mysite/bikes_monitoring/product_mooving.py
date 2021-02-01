@@ -117,7 +117,7 @@ def app_management(request):
 
     print(quantity_to_transfer, w_from, w_to)
 
-    if filter_code.get('rex_code'):
+    if filter_code != None:
         try:
             print("FILTERED_CODE: ", filter_code.get('rex_code'))
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
