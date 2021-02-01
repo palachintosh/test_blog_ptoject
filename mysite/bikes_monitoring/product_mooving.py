@@ -119,6 +119,8 @@ def app_management(request):
 
     if filter_code != None:
         try:
+            if filter_code.get('code') == None:
+                return filter_code
             print("FILTERED_CODE: ", filter_code.get('rex_code'))
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.product_transfer(
@@ -187,6 +189,9 @@ def app_management_inc(request):
 
     if filter_code != None:
         try:
+            if filter_code.get('code') == None:
+                return filter_code
+            
             print("FILTERED_CODE: ", filter_code.get('rex_code'))
 
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
