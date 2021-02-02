@@ -97,70 +97,73 @@ def cors_headers_options(to_json=[]):
     return data
 
 
-# def app_management(request):
-#     l = Logging()
+def app_management(request):
+    l = Logging()
 
-#     validator = DataValidators()
-#     code_u = request.POST.get('code')
-#     filter_code = validator.is_code_valid(code_u)
+    validator = DataValidators()
+    code_u = request.POST.get('code')
+    valid_code = validator.is_code_valid(code_u)
 
-#     quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
+    quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
 
-#     validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
-#     if validate_quantity.get('valid_quantity'):
-#         quantity_to_transfer = validate_quantity.get('valid_quantity')
-#     else:
-#         return {'error': validate_quantity.get('error')}
+    validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
+    if validate_quantity.get('valid_quantity'):
+        quantity_to_transfer = validate_quantity.get('valid_quantity')
+    else:
+        return {'error': validate_quantity.get('error')}
 
-#     w_from = request.POST.get('w_from')
-#     w_to = request.POST.get('w_to')
+    w_from = request.POST.get('w_from')
+    w_to = request.POST.get('w_to')
 
-#     with open("POST.txt", "w") as f:
-#         print(w_from, w_to, code_u, filter_code.get('rex_code'), filter_code, quantity_to_transfer, file=f)
+    with open("POST.txt", "w") as f:
+        print(w_from, w_to, code_u, valid_code.get('rex_code'), valid_code, quantity_to_transfer, file=f)
 
-#     print(quantity_to_transfer, w_from, w_to)
+    print(quantity_to_transfer, w_from, w_to)
 
-#     if filter_code != None:
-#         try:
+    if valid_code != None:
+        try:
+            if valid_code.get('rex_code') != None:
+                code_u = valid_code.get('rex_code')
+            
+            else:
+                return JsonResponse({'error': str(valid_code)})
 
-#             if filter_code.get('code') == None or filter_code.get('code') is None:
-#                 raise TypeError('Code field must be fill!')
 
-#             print("FILTERED_CODE: ", filter_code.get('rex_code'))
 
-#             presta_get = PrestaRequest(api_secret_key=api_secret_key)
-#             moove = presta_get.product_transfer(
-#                 quantity_to_transfer=quantity_to_transfer,
-#                 w_from=w_from,
-#                 w_to=w_to,
-#                 code=filter_code.get('rex_code')
-#             )
 
-#             if moove != None:
-#                 moove_data = "PASS"
-#                 data = {
-#                     'success': moove_data,
-#                     'DATE': str(datetime.datetime.now())
-#                 }
+            presta_get = PrestaRequest(api_secret_key=api_secret_key)
+            moove = presta_get.product_transfer(
+                quantity_to_transfer=quantity_to_transfer,
+                w_from=w_from,
+                w_to=w_to,
+                code=code_u
+            )
 
-#                 if moove.get('success'):
-#                     moove_data = moove.get('success')
+            if moove != None:
+                print(moove.get('error'))
+                if moove.get('error') == None:
+                    data = {
+                        'success': 'YES',
+                        'delivery_on_warehouse': 'YES',
+                        'DATE': str(datetime.datetime.now())
+                    }
 
-#                 l.logging(log_name='app_log.txt', kwargs=data)
+                    l.logging(log_name='app_log.txt', kwargs=data)
                 
-#                 return JsonResponse(moove)
+                    return JsonResponse(moove)
+                else:
+                    return JsonResponse({'error': 'Check product code and try again!'})
 
+        except Exception as e:
+            kwargs_data = {
+                'DATE': str(datetime.datetime.now()),
+                'ERROR': str(e),
+            }
 
-#         except Exception as e:
-#             kwargs_data = {
-#                 'DATE': str(datetime.datetime.now()),
-#                 'ERROR': str(e),
-#             }
+            l.logging(kwargs=kwargs_data)
+            return JsonResponse({'error', str(e)})
 
-#             l.logging(kwargs=kwargs_data)
-#             return JsonResponse({'error', str(e)})
-
-#     return JsonResponse({'typeError', 'Invalid code!'})
+    return JsonResponse({'typeError', 'Invalid code!'})
 
 
 def app_management_inc(request):
@@ -192,10 +195,10 @@ def app_management_inc(request):
 
     if valid_code != None:
         try:
-
-            print("FILTERED_CODE: ", valid_code.get('rex_code'))
             if valid_code.get('rex_code') != None:
                 code_u = valid_code.get('rex_code')
+            else:
+                return JsonResponse({'error': str(valid_code)})
 
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.to_w_transfer(
@@ -231,44 +234,3 @@ def app_management_inc(request):
     else:
         return JsonResponse({'typeError', 'Invalid code!'})
 
-def app_management(request):
-    pass
-
-# def app_management_inc(request):
-#     l = Logging()
-#     validator = DataValidators()
-
-#     try:
-#         code_u = request.POST.get('code')
-#         quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
-#         w_from = request.POST.get('w_from')
-#         w_to = request.POST.get('w_to')
-
-#         validate_warehouse = validator.is_w_valid(w_from, w_to)
-#         validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
-
-
-#         if validate_quantity.get('valid_quantity'):
-#             quantity_to_transfer = validate_quantity.get('valid_quantity')
-#         else:
-#             return {'error': validate_quantity.get('error')}
-
-#         if validate_warehouse:
-#             w_from = validate_warehouse.get('w_from')
-#             w_to = validate_warehouse.get('w_to')
-
-#         with open("POST.txt", "w") as f:
-#             print(w_from, w_to, code_u, quantity_to_transfer, file=f)
-        
-#         print(quantity_to_transfer, w_from, code_u, w_to)
-#         return JsonResponse({
-#             'q': quantity_to_transfer,
-#             'to': w_to,
-#             'from': w_from,
-#             'code': code_u
-#         })
-#     except Exception as e:
-#         return JsonResponse({'error': str(e)})
-
-
-#     return JsonResponse({'typeError', 'Invalid code!'})
