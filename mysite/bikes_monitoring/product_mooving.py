@@ -169,6 +169,8 @@ def app_management_inc(request):
     validator = DataValidators()
 
     code_u = request.POST.get('code')
+    valid_code = validator.is_code_valid(code_u)
+
     quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
     w_from = request.POST.get('w_from')
     w_to = request.POST.get('w_to')
@@ -186,14 +188,14 @@ def app_management_inc(request):
         w_from = validate_warehouse.get('w_from')
         w_to = validate_warehouse.get('w_to')
 
-    with open("POST.txt", "w") as f:
-        print(w_from, w_to, code_u, quantity_to_transfer, file=f)
-
     print(quantity_to_transfer, w_from, code_u, w_to)
 
-    if code_u != None:
+    if valid_code != None:
         try:
-            # print("FILTERED_CODE: ", filter_code.get('rex_code'))
+
+            print("FILTERED_CODE: ", vlaid_code.get('rex_code'))
+            if valid_code.get('rex_code') != None:
+                code_u = valid_code.get('rex_code')
 
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.to_w_transfer(
@@ -204,6 +206,7 @@ def app_management_inc(request):
             )
 
             if moove != None:
+                print(moove.get('error'))
                 if moove.get('error') == None:
                     data = {
                         'success': 'YES',
