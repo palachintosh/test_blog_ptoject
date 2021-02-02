@@ -28,19 +28,6 @@ class DataValidators:
             return {'error': "Cannot get 'bike_code', from request!"}
 
 
-    # def is_w_valid(self, w_from, w_to):
-    #     if w_from != None or w_from != '':
-    #         if len(w_from) <= 5 and len(w_to) <= 5:
-    #             try:
-    #                 str(w_from)
-    #                 str(w_to)
-    #                 return {'w_from': w_from, 'w_to': w_to}
-        
-    #             except Exception as e:
-    #                 return {'error': str(e)}
-    #     else:
-    #         return None
-    
     def is_w_valid(self, w_from, w_to):
         if (w_to != None or w_to != ''):
             try:
@@ -53,7 +40,6 @@ class DataValidators:
         
         else:
             return None
-
 
 
     def is_quantity_valid(self, quantity_to_transfer):

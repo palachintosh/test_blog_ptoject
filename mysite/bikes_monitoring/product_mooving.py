@@ -100,8 +100,8 @@ def cors_headers_options(to_json=[]):
 def validate_data(request):
     validator = DataValidators()
 
-    quantity_to_transfer = request.GET.get('quantity_to_transfer')
-    code_u = validator.is_code_valid(request.GET.get('code'))
+    quantity_to_transfer = request.POST.get('quantity_to_transfer')
+    code_u = validator.is_code_valid(request.POST.get('code'))
 
 
 

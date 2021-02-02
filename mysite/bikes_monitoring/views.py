@@ -51,7 +51,7 @@ class BikeCheck(View):
 # Post using for application
 
 
-# @method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(csrf_exempt, name="dispatch")
 class ProductMGMT(View):
 
     # def post(self, request):
@@ -83,20 +83,18 @@ class ProductMGMT(View):
         
     #     return JsonResponse({'error': 'Data required!'})
 
-    def get(self, request):
-        if request.GET:
+    def post(self, request):
+        if request.POST:
             validator = DataValidators()
             try:
-                w_from = request.GET.get('w_from')
-                w_to = request.GET.get('w_to')
+                w_from = request.POST.get('w_from')
+                w_to = request.POST.get('w_to')
 
                 validate_warehouse = validator.is_w_valid(w_from, w_to)
 
                 if validate_warehouse:
                     w_from = validate_warehouse.get('w_from')
                     w_to = validate_warehouse.get('w_to')
-
-                print("RAISE EX", w_from, w_to)
 
                 if (w_from == None or w_from == '') and (w_to == None or w_to == ''):
                     raise Exception
