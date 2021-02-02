@@ -51,34 +51,66 @@ class BikeCheck(View):
 # Post using for application
 
 
-@method_decorator(csrf_exempt, name="dispatch")
+# @method_decorator(csrf_exempt, name="dispatch")
 class ProductMGMT(View):
 
-    def post(self, request):
-        if request.POST:
+    # def post(self, request):
+    #     if request.POST:
+    #         validator = DataValidators()
+    #         try:
+    #             w_from = request.POST.get('w_from')
+    #             w_to = request.POST.get('w_to')
+
+    #             validate_warehouse = validator.is_w_valid(w_from, w_to)
+
+    #             if validate_warehouse:
+    #                 w_from = validate_warehouse.get('w_from')
+    #                 w_to = validate_warehouse.get('w_to')
+
+    #             if w_to == '' or w_to == None:
+    #                 raise TypeError()
+    #         except:
+    #             return JsonResponse({'error': 'No data available'})
+            
+    #         if w_from == '' or w_from == None:
+    #             return app_management_inc(request)
+            
+    #         elif w_from == w_to:
+    #             return JsonResponse({'error': 'Cannot rm product from same warehouse!'})
+
+    #         else:
+    #             return app_management(request)
+        
+    #     return JsonResponse({'error': 'Data required!'})
+
+    def get(self, request):
+        if request.GET:
             validator = DataValidators()
             try:
-                w_from = request.POST.get('w_from')
-                w_to = request.POST.get('w_to')
+                w_from = request.GET.get('w_from')
+                w_to = request.GET.get('w_to')
 
                 validate_warehouse = validator.is_w_valid(w_from, w_to)
 
                 if validate_warehouse:
                     w_from = validate_warehouse.get('w_from')
                     w_to = validate_warehouse.get('w_to')
-                    
-                if w_to == '' or w_to == None:
-                    raise TypeError()
+
+                print("RAISE EX", w_from, w_to)
+
+                if (w_from == None or w_from == '') and (w_to == None or w_to == ''):
+                    raise Exception
+
             except:
-                return JsonResponse({'error': 'No data available'})
-            
+                return JsonResponse({'error': 'Warehouse <TO> must be filled!'})
+
             if w_from == '' or w_from == None:
-                return app_management_inc(request)
-            
+                return app_management_inc(request, w_to)
+
             elif w_from == w_to:
                 return JsonResponse({'error': 'Cannot rm product from same warehouse!'})
 
             else:
-                return app_management(request)
-        
+                return app_management(request, w_from, w_to)
+            
         return JsonResponse({'error': 'Data required!'})

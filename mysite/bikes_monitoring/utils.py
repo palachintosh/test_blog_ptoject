@@ -9,8 +9,6 @@ class DataValidators:
             try:
                 data = {}
                 rex = re.search("^[a-zA-Z0-9]{7,20}", str(bike_code))
-
-                print("REX: ", rex)
                 
                 if rex != None:
                     if rex.group() == bike_code:
@@ -30,29 +28,49 @@ class DataValidators:
             return {'error': "Cannot get 'bike_code', from request!"}
 
 
-    def is_w_valid(self, w_from, w_to):
-        if w_from != None or w_from != '':
-            if len(w_from) <= 5 and len(w_to) <= 5:
-                try:
-                    str(w_from)
-                    str(w_to)
-                    return {'w_from': w_from, 'w_to': w_to}
+    # def is_w_valid(self, w_from, w_to):
+    #     if w_from != None or w_from != '':
+    #         if len(w_from) <= 5 and len(w_to) <= 5:
+    #             try:
+    #                 str(w_from)
+    #                 str(w_to)
+    #                 return {'w_from': w_from, 'w_to': w_to}
         
-                except Exception as e:
-                    return {'error': str(e)}
+    #             except Exception as e:
+    #                 return {'error': str(e)}
+    #     else:
+    #         return None
+    
+    def is_w_valid(self, w_from, w_to):
+        if (w_to != None or w_to != ''):
+            try:
+                str(w_to)
+                if w_from != None or w_from != '':
+                    str(w_from)
+                return {'w_from': w_from, 'w_to': w_to}
+            except Exception as e:
+                return {'error': str(e)}
+        
         else:
             return None
-    
+
+
 
     def is_quantity_valid(self, quantity_to_transfer):
-        if quantity_to_transfer >= 0:
-            return {'valid_quantity': quantity_to_transfer}
 
-        return {'error': 'Quantity must be positive!'}
+        valid_data = {'valid_quantity': quantity_to_transfer}
 
+        try:
+            if int(quantity_to_transfer) >= 0:
+                valid_data.update({'valid_quantity': int(quantity_to_transfer)})
+                return valid_data 
 
-
-
+            else:
+                quantity_to_transfer = 0
+                valid_data.update({'valid_quantity': quantity_to_transfer})
+                return valid_data
+        except:
+            return {'error': 'Quantity must be positive!'}
 
 
 class Logging:
@@ -62,7 +80,7 @@ class Logging:
             log_name = "PRLog.txt"
 
         param_dict = kwargs.get('kwargs')
-        
+
         try:
             with open(log_name, 'a') as f:
                 for i in param_dict.items():

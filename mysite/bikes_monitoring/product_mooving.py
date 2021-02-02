@@ -97,62 +97,59 @@ def cors_headers_options(to_json=[]):
     return data
 
 
-def app_management(request):
-    l = Logging()
-
+def validate_data(request):
     validator = DataValidators()
-    code_u = request.POST.get('code')
-    valid_code = validator.is_code_valid(code_u)
 
-    quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
+    quantity_to_transfer = request.GET.get('quantity_to_transfer')
+    code_u = validator.is_code_valid(request.GET.get('code'))
 
-    validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
-    if validate_quantity.get('valid_quantity'):
-        quantity_to_transfer = validate_quantity.get('valid_quantity')
-    else:
-        return {'error': validate_quantity.get('error')}
 
-    w_from = request.POST.get('w_from')
-    w_to = request.POST.get('w_to')
 
-    with open("POST.txt", "w") as f:
-        print(w_from, w_to, code_u, valid_code.get('rex_code'), valid_code, quantity_to_transfer, file=f)
+    if code_u.get('rex_code') != None:
+        q_tt = validator.is_quantity_valid(quantity_to_transfer)
 
-    print(quantity_to_transfer, w_from, w_to)
+        if q_tt.get('valid_quantity') != None:
+            quantity_to_transfer = q_tt.get('valid_quantity')
+    
+        return {'code': code_u.get('rex_code'), 'quantity_to_transfer': quantity_to_transfer}
 
-    if valid_code != None:
+    return {} 
+
+#Products transferring
+def app_management(request, w_from, w_to):
+    l = Logging()
+    vd = validate_data(request)
+
+    if vd.get('code') != None:
+        print('CODE++++++++++++++', vd.get('code'))
         try:
-            if valid_code.get('rex_code') != None:
-                code_u = valid_code.get('rex_code')
-            
-            else:
-                return JsonResponse({'error': str(valid_code.get('error'))})
-
-
-
-
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.product_transfer(
-                quantity_to_transfer=quantity_to_transfer,
+                quantity_to_transfer=vd.get('quantity_to_transfer'),
                 w_from=w_from,
                 w_to=w_to,
-                code=code_u
+                code=vd.get('code')
             )
 
             if moove != None:
-                print(moove.get('error'))
-                if moove.get('error') == None:
-                    data = {
+                data = {
                         'success': 'YES',
                         'delivery_on_warehouse': 'YES',
                         'DATE': str(datetime.datetime.now())
                     }
-
-                    l.logging(log_name='app_log.txt', kwargs=data)
                 
-                    return JsonResponse(moove)
-                else:
-                    return JsonResponse({'error': 'Check product code and try again!'})
+                print(data)
+                if moove.get('error') != None:
+                    data.update({
+                            'success': 'NO',
+                            'error': moove.get('error')
+                            })
+                
+                print(data)
+
+                l.logging(log_name='prodct_m', kwargs=data)
+
+                return JsonResponse(moove)
 
         except Exception as e:
             kwargs_data = {
@@ -163,65 +160,42 @@ def app_management(request):
             l.logging(kwargs=kwargs_data)
             return JsonResponse({'error', str(e)})
 
-    return JsonResponse({'typeError', 'Invalid code!'})
+    return JsonResponse({'typeError': 'Invalid code!'})
 
 
-def app_management_inc(request):
-
+# Add products to stocks
+def app_management_inc(request, w_to):
     l = Logging()
-    validator = DataValidators()
+    vd = validate_data(request)
 
-    code_u = request.POST.get('code')
-    valid_code = validator.is_code_valid(code_u)
-
-    quantity_to_transfer = int(request.POST.get('quantity_to_transfer'))
-    w_from = request.POST.get('w_from')
-    w_to = request.POST.get('w_to')
-
-    validate_warehouse = validator.is_w_valid(w_from, w_to)
-    validate_quantity = validator.is_quantity_valid(quantity_to_transfer)
-
-
-    if validate_quantity.get('valid_quantity'):
-        quantity_to_transfer = validate_quantity.get('valid_quantity')
-    else:
-        return {'error': validate_quantity.get('error')}
-
-    if validate_warehouse:
-        w_from = validate_warehouse.get('w_from')
-        w_to = validate_warehouse.get('w_to')
-
-    print(quantity_to_transfer, w_from, code_u, w_to)
-
-    if valid_code != None:
+    if vd.get('code') != None:
+        print('CODE++++++++++++++', vd.get('code'))
         try:
-            if valid_code.get('rex_code') != None:
-                code_u = valid_code.get('rex_code')
-            else:
-                return JsonResponse({'error': str(valid_code.get('error'))})
-
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.to_w_transfer(
-                quantity_to_transfer=quantity_to_transfer,
+                quantity_to_transfer=vd.get('quantity_to_transfer'),
                 w_to=w_to,
-                # code=filter_code.get('rex_code')
-                code=code_u
+                code=vd.get('code')
             )
 
             if moove != None:
-                print(moove.get('error'))
-                if moove.get('error') == None:
-                    data = {
+                data = {
                         'success': 'YES',
                         'delivery_on_warehouse': 'YES',
                         'DATE': str(datetime.datetime.now())
                     }
-
-                    l.logging(log_name='app_log.txt', kwargs=data)
                 
-                    return JsonResponse(moove)
-                else:
-                    return JsonResponse({'error': 'Check product code and try again!'})
+                print(data)
+                if moove.get('error') != None:
+                    data.update({
+                            'success': 'NO',
+                            'error': moove.get('error')
+                            })
+                
+                print(data)
+                l.logging(log_name='prodct_m', kwargs=data)
+    
+                return JsonResponse(moove)
 
         except Exception as e:
             kwargs_data = {
@@ -232,5 +206,5 @@ def app_management_inc(request):
             l.logging(kwargs=kwargs_data)
             return JsonResponse({'error', str(e)})
     else:
-        return JsonResponse({'typeError', 'Invalid code!'})
+        return JsonResponse({'typeError': 'Invalid code!'})
 
