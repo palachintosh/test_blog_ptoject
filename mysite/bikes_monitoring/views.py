@@ -57,15 +57,17 @@ class ProductMGMT(View):
     def post(self, request):
         if request.POST:
             validator = DataValidators()
-            w_from = request.POST.get('w_from')
-            w_to = request.POST.get('w_to')
+            try:
+                w_from = request.POST.get('w_from')
+                w_to = request.POST.get('w_to')
 
-            validate_warehouse = validator.is_w_valid(w_from, w_to)
+                validate_warehouse = validator.is_w_valid(w_from, w_to)
 
-            if validate_warehouse:
-                w_from = validate_warehouse.get('w_from')
-                w_to = validate_warehouse.get('w_to')
-            
+                if validate_warehouse:
+                    w_from = validate_warehouse.get('w_from')
+                    w_to = validate_warehouse.get('w_to')
+            except:
+                return JsonResponse({'error': 'No data available'})
             
             if w_from == '' or w_from == None:
                 return app_management_inc(request)

@@ -4,13 +4,11 @@ import base64
 
 class DataValidators:
     def is_code_valid(self, bike_code):
-        
-        bike_code = str(bike_code)
 
         if len(bike_code) != 0:
             try:
                 data = {}
-                rex = re.search("^[a-zA-Z0-9]{7,20}", bike_code)
+                rex = re.search("^[a-zA-Z0-9]{7,20}", str(bike_code))
 
                 print("REX: ", rex)
                 
