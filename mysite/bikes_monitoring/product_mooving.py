@@ -126,7 +126,7 @@ def app_management(request):
                 code_u = valid_code.get('rex_code')
             
             else:
-                return JsonResponse({'error': str(valid_code)})
+                return JsonResponse({'error': str(valid_code.get('error'))})
 
 
 
@@ -198,7 +198,7 @@ def app_management_inc(request):
             if valid_code.get('rex_code') != None:
                 code_u = valid_code.get('rex_code')
             else:
-                return JsonResponse({'error': str(valid_code)})
+                return JsonResponse({'error': str(valid_code.get('error'))})
 
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.to_w_transfer(
