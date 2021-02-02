@@ -203,27 +203,27 @@ def app_management_inc(request):
                 code=code_u
             )
 
-            return JsonResponse(moove)
+            if moove != None:
+                if moove.get('error') == None:
+                    data = {
+                        'success': 'YES',
+                        'delivery_on_warehouse': 'YES',
+                        'DATE': str(datetime.datetime.now())
+                    }
 
-            # if moove.get('success'):
-            #     data = {
-            #         'success': 'YES',
-            #         'delivery_on_warehouse': 'YES',
-            #         'DATE': str(datetime.datetime.now())
-            #     }
-
-            #     l.logging(log_name='app_log.txt', kwargs=data)
+                    l.logging(log_name='app_log.txt', kwargs=data)
                 
-            #     return JsonResponse(moove)
-
+                    return JsonResponse(moove)
+                else:
+                    return JsonResponse({'error': 'Check product code and try again!'})
 
         except Exception as e:
-            # kwargs_data = {
-            #     'DATE': str(datetime.datetime.now()),
-            #     'ERROR': str(e),
-            # }
+            kwargs_data = {
+                'DATE': str(datetime.datetime.now()),
+                'ERROR': str(e),
+            }
 
-            # l.logging(kwargs=kwargs_data)
+            l.logging(kwargs=kwargs_data)
             return JsonResponse({'error', str(e)})
     else:
         return JsonResponse({'typeError', 'Invalid code!'})
