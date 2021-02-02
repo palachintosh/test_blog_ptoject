@@ -193,7 +193,7 @@ def app_management_inc(request):
     if valid_code != None:
         try:
 
-            print("FILTERED_CODE: ", vlaid_code.get('rex_code'))
+            print("FILTERED_CODE: ", valid_code.get('rex_code'))
             if valid_code.get('rex_code') != None:
                 code_u = valid_code.get('rex_code')
 
