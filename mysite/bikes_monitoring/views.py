@@ -66,6 +66,9 @@ class ProductMGMT(View):
                 if validate_warehouse:
                     w_from = validate_warehouse.get('w_from')
                     w_to = validate_warehouse.get('w_to')
+                    
+                if w_to == '' or w_to == None:
+                    raise TypeError()
             except:
                 return JsonResponse({'error': 'No data available'})
             
