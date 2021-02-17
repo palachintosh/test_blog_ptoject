@@ -21,11 +21,14 @@ def product_mooving(request):
 
     l = Logging()
 
-    with open('log_method.txt', 'w') as f:
-        print(request.method + str(datetime.datetime.now()), file=f)
+    validator = DataValidators()
+    code = request.GET.get('code')
 
-    number_validator = DataValidators()
-    filter_code = number_validator.is_code_valid(request.GET.get('code'))
+    if code != None:
+        filter_code = validator.is_code_valid(code)
+    
+    else: return JsonResponse({'error': 'Code must be fill!'})
+
 
     if filter_code.get('rex_code') != None:
         request_url = "https://3gravity.pl/api/combinations/&filter[reference]={}".format(
@@ -33,10 +36,10 @@ def product_mooving(request):
         presta_get = PrestaRequest(api_secret_key=api_secret_key,
                                    request_url=request_url)
 
+
         # Get total quantity from stock_availables
         try:
-            del_bike = presta_get.stock_parser(quantity_to_transfer=0)
-            # print("DELETE BIKE BY STOCK", del_bike)
+            del_bike = presta_get.stock_parser(quantity_to_transfer=1)
 
             if del_bike != None:
 

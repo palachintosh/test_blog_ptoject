@@ -50,40 +50,12 @@ class BikeCheck(View):
 
 # Post using for application
 
-
 @method_decorator(csrf_exempt, name="dispatch")
 class ProductMGMT(View):
-
-    # def post(self, request):
-    #     if request.POST:
-    #         validator = DataValidators()
-    #         try:
-    #             w_from = request.POST.get('w_from')
-    #             w_to = request.POST.get('w_to')
-
-    #             validate_warehouse = validator.is_w_valid(w_from, w_to)
-
-    #             if validate_warehouse:
-    #                 w_from = validate_warehouse.get('w_from')
-    #                 w_to = validate_warehouse.get('w_to')
-
-    #             if w_to == '' or w_to == None:
-    #                 raise TypeError()
-    #         except:
-    #             return JsonResponse({'error': 'No data available'})
-            
-    #         if w_from == '' or w_from == None:
-    #             return app_management_inc(request)
-            
-    #         elif w_from == w_to:
-    #             return JsonResponse({'error': 'Cannot rm product from same warehouse!'})
-
-    #         else:
-    #             return app_management(request)
-        
-    #     return JsonResponse({'error': 'Data required!'})
-
     def post(self, request):
+
+        # print(request.POST)
+
         if request.POST:
             validator = DataValidators()
             try:
