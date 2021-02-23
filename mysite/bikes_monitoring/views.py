@@ -1,6 +1,8 @@
 from django.views.generic import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login
+
 from django.http import HttpResponse
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
 from .utils import DataValidators
@@ -8,6 +10,7 @@ from .product_mooving import product_mooving
 from .product_mooving import cors_headers_options
 from .product_mooving import app_management
 from .product_mooving import app_management_inc
+from .product_mooving import get_warehouses_value
 
 
 from django.utils.decorators import method_decorator
@@ -27,19 +30,45 @@ except:
 # Create your views here.
 
 
+# class BikeCheck(LoginRequiredMixin, View):
+# # ==========================================
+# # |         Works only on kross.pl         |
+# # ==========================================
+
+#     login_url = '/accounts/login/'
+
+#     def options(self, request):
+#         return cors_headers_options(to_json=['TEST', 'TEST'])
+
+
+#     def get(self, request):
+#         if request.user.is_authenticated:
+#             if request.GET:
+#                 return product_mooving(request)
+
+#             else:
+#                 return JsonResponse({'Error': "Error. Check barcode and try again!"})
+#         else:
+#             return HttpResponse("Login required!")
 
 class BikeCheck(View):
 # ==========================================
 # |         Works only on kross.pl         |
 # ==========================================
 
+    # login_url = '/accounts/login/'
+
     def options(self, request):
-        return cors_headers_options(to_json=['TEST', 'TEST'])
+        return cors_headers_options(origin="http://24.kross.pl", to_json=['TEST', 'TEST'])
 
 
     def get(self, request):
         if request.GET:
             return product_mooving(request)
+        
+        else:
+            return JsonResponse({'Error': "Error. Check barcode and try again!"})
+
 
 
 # ==========================================
@@ -48,10 +77,29 @@ class BikeCheck(View):
 
 
 
+# Handler for prestashop
+class PrestaExt(View):
+    
+    # login_url = '/accounts/login/'
+    def options(self, request):
+        return cors_headers_options(origin="https://3gravity.pl", to_json=['TEST', 'TEST'])
+
+    def get(self, request):
+        if request.GET:
+            return get_warehouses_value(request.GET)
+        else:
+            return JsonResponse({'Error': 'Looks like quantity is undefined..'})
+
+
+
+
+
+
+
 # Post using for application
 
 @method_decorator(csrf_exempt, name="dispatch")
-class ProductMGMT(View):
+class ProductMGMT(LoginRequiredMixin, View):
     def post(self, request):
 
         # print(request.POST)

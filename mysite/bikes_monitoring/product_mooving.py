@@ -1,7 +1,9 @@
 from django.http import JsonResponse
+import requests
 from .utils import DataValidators
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
 from .PrestaRequest.mainp.api_secret_key import api_secret_key
+from .PrestaRequest.mainp.warehouse_values import GetWarehousesValues
 from .utils import Logging
 import datetime
 
@@ -86,12 +88,12 @@ def product_mooving(request):
     return cors_headers_add(to_json=['typeError', 'Invalid code!'])
 
 
-def cors_headers_options(to_json=[]):
+def cors_headers_options(origin, to_json=[]):
     data = JsonResponse(
             {to_json[0]: to_json[1]}
         )
 
-    data["Access-Control-Allow-Origin"] = "http://24.kross.pl"
+    data["Access-Control-Allow-Origin"] = origin
     data["Access-Control-Allow-Methods"] = "GET, OPTIONS"
     data["Access-Control-Allow-Credentials"] = "true"
     data["Vary"] = "Origin"
@@ -211,3 +213,39 @@ def app_management_inc(request, w_to):
     else:
         return JsonResponse({'typeError': 'Invalid code!'})
 
+
+# Get warehouses values and return a JSON with them
+# to chromExtension.
+def  get_warehouses_value(input_values_dict):
+    def cors_headers_add(to_json=[]):
+        data = JsonResponse({to_json[0]: to_json[1]})
+
+        data["Access-Control-Allow-Origin"] = "https://3gravity.pl"
+        data["Vary"] = "Origin"
+        data["Access-Control-Allow-Credentials"] = "true"
+        data[
+            "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
+
+        return data
+    
+    response_data = {}
+
+    if input_values_dict != None:
+        getp_warehouses_value = GetWarehousesValues(api_secret_key=api_secret_key)
+        
+        for value in input_values_dict:
+            if value != None:
+                request_url = "https://3gravity.pl/api/stocks/?filter[id_product_attribute]={}".format(value)
+                vget = getp_warehouses_value.get_warehouses_links(request_url)
+
+                if vget != None:
+                    print("VGET from product mooving", vget)
+                    get_vals = getp_warehouses_value.get_warehouses_values(vget)
+
+                    if get_vals != None:
+                        response_data.update({value: get_vals})
+
+        return cors_headers_add(to_json=['success', response_data])
+
+                
+                
