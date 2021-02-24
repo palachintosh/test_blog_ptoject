@@ -99,7 +99,7 @@ class PrestaExt(View):
 # Post using for application
 
 @method_decorator(csrf_exempt, name="dispatch")
-class ProductMGMT(LoginRequiredMixin, View):
+class ProductMGMT(View):
     def post(self, request):
 
         # print(request.POST)
