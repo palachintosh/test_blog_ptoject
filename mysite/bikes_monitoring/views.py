@@ -59,7 +59,7 @@ class BikeCheck(View):
     # login_url = '/accounts/login/'
 
     def options(self, request):
-        return cors_headers_options(origin="http://24.kross.pl", to_json=['TEST', 'TEST'])
+        return cors_headers_options(origin="https://24.kross.pl", to_json=['TEST', 'TEST'])
 
 
     def get(self, request):
