@@ -9,7 +9,7 @@ class DataValidators:
             try:
                 data = {}
                 rex = re.search("^[a-zA-Z0-9]{7,20}", str(bike_code))
-                
+
                 if rex != None:
                     if rex.group() == bike_code:
                         data.update({'rex_code': bike_code})
@@ -24,7 +24,7 @@ class DataValidators:
 
                 return data
 
-        else: 
+        else:
             return {'error': "Cannot get 'bike_code', from request!"}
 
 
@@ -37,7 +37,7 @@ class DataValidators:
                 return {'w_from': w_from, 'w_to': w_to}
             except Exception as e:
                 return {'error': str(e)}
-        
+
         else:
             return None
 
@@ -49,7 +49,7 @@ class DataValidators:
         try:
             if int(quantity_to_transfer) >= 0:
                 valid_data.update({'valid_quantity': int(quantity_to_transfer)})
-                return valid_data 
+                return valid_data
 
             else:
                 quantity_to_transfer = 0
@@ -58,6 +58,26 @@ class DataValidators:
         except:
             return {'error': 'Quantity must be positive!'}
 
+
+    def is_comb_value_valid(self, comb_id):
+        data = {}
+        
+        if comb_id != None:
+            if len(comb_id) >= 2 and len(comb_id) <= 5:
+                return comb_id
+            
+        else:
+            return None
+
+
+    def is_phone_number_valid(self, phone_number):
+        try:
+            phone_num = len(str(phone_number))
+            if phone_num >= 6 and phone_num <= 12:
+                return phone_number
+        
+        except:
+            return None
 
 class Logging:
     def logging(self, log_name=None, **kwargs):
@@ -71,7 +91,7 @@ class Logging:
             with open(log_name, 'a') as f:
                 for i in param_dict.items():
                     print(i[0] + ': ' + i[1], file=f)
-        
+
         except:
             with open(log_name) as f:
                 for i in param_dict.items():

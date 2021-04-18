@@ -1,9 +1,12 @@
+import re
 from django.http import JsonResponse
 import requests
+from requests import api
 from .utils import DataValidators
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
 from .PrestaRequest.mainp.api_secret_key import api_secret_key
 from .PrestaRequest.mainp.warehouse_values import GetWarehousesValues
+from .PrestaRequest.mainp.reserver import Reserve
 from .utils import Logging
 import datetime
 
@@ -88,6 +91,81 @@ def product_mooving(request):
     return cors_headers_add(to_json=['typeError', 'Invalid code!'])
 
 
+def reserve_check(phone_number, comb_url):
+    comb_url = comb_url[-4:]
+    pr = Reserve(api_secret_key=api_secret_key)
+    add_reserve = pr.reserve_check(comb_id=comb_url, phone_number=phone_number)
+
+    if add_reserve != None:
+        return comb_url
+    else:
+        return None
+
+
+
+# delete from kross.pl site
+def remove_with_reservation(request_get):
+
+    def cors_headers_add(to_json=[]):
+        data = JsonResponse({to_json[0]: to_json[1]})
+
+        data["Access-Control-Allow-Origin"] = "https://24.kross.pl"
+        data["Vary"] = "Origin"
+        data["Access-Control-Allow-Credentials"] = "true"
+        data[
+            "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
+
+        return data
+    
+    l = Logging()
+    validator = DataValidators()
+    reference = validator.is_code_valid(request_get.GET.get('code'))
+    r_check = str(request_get.GET.get('r_check'))
+    phone_number = validator.is_phone_number_valid(request_get.GET.get('phone_number'))
+    code = reference.get('rex_code')
+
+    if r_check and code:
+        request_url = "https://3gravity.pl/api/combinations/&filter[reference]={}".format(
+            code)
+        presta_get = PrestaRequest(api_secret_key=api_secret_key,
+                                   request_url=request_url)
+        
+        comb_url = presta_get.get_combination_url()
+        check = reserve_check(phone_number, comb_url)
+        
+        if check is not None:
+            del_from_warehouse = presta_get.warehouse_quantity_mgmt(
+                warehouse='SHOP',
+                reference=code)
+
+                # print(del_from_warehouse)
+
+            if del_from_warehouse != None:
+                put_data = presta_get.presta_put(
+                        request_url=del_from_warehouse)
+                
+                r = Reserve(api_secret_key=api_secret_key)
+                od = r.only_deactivate(check, phone_number)
+
+                kwargs_data = {
+                    'DATE': str(datetime.datetime.now()),
+                    'DELETE_BIKE': str(''),
+                    'SA_PUT_STATUS': str(put_data),
+                    'PUT_STATUS': str(put_data),
+                    'REQUEST_WAREHOUSE_URL': str(del_from_warehouse),
+                    }
+
+                l.logging(kwargs=kwargs_data)
+                return cors_headers_add(
+                        to_json=['success',
+                        'Reservation closed!'])
+
+            else:
+                return {'Warning': 'Rezerwacja dla klienta zamknieta albo jej nie bylo!'}
+
+
+
+
 def cors_headers_options(origin, to_json=[]):
     data = JsonResponse(
             {to_json[0]: to_json[1]}
@@ -126,7 +204,6 @@ def app_management(request, w_from, w_to):
     vd = validate_data(request)
 
     if vd.get('code') != None:
-        print('CODE++++++++++++++', vd.get('code'))
         try:
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.product_transfer(
@@ -247,5 +324,65 @@ def  get_warehouses_value(input_values_dict):
 
         return cors_headers_add(to_json=['success', response_data])
 
-                
-                
+
+# works on PS
+def reserve_product(request_get):
+    """
+    The function return JSON with next information:
+    * Product, that was deleted from the stock;
+    * Date, when product was delete;
+    * Combination.
+
+    As well as add a specific token on product in db
+
+    The other functions check this token, while mooving products
+    and, if some products has reservation token - delete them only from SHOP.
+
+    """
+
+    response_data = {}
+    
+    if request_get != None:
+        
+        validator = DataValidators()
+        reference = validator.is_comb_value_valid(comb_id=request_get.get('comb_id'))
+        phone_number = validator.is_phone_number_valid(request_get.get('phone_number'))
+
+        if phone_number == None:
+            # print("------------------------------------")
+            return JsonResponse({'Warning': 'Phone number must be fill!'})
+
+        request_url = 'https://3gravity.pl/api/combinations/{}'.format(reference)
+
+        pr = Reserve(api_secret_key=api_secret_key, request_url=request_url)
+        pr.url_to_delete = request_url
+
+        # print("ACTIVE_S", request_get.get('active_stamp'), reference)
+
+        if request_get.get('active_stamp') == '1':
+            if reference != None:
+                try:
+                    add_reserve = pr.reserve_check(comb_id=reference, phone_number=phone_number)
+
+                    if add_reserve != None:
+                        return JsonResponse({'success': add_reserve})
+
+                    raise Exception
+                except:
+                    return JsonResponse({'Warning': 'Reservation does not exist!'})
+
+        else:
+            if reference != None:
+                try:
+                    cancel_reserve = pr.deactivate(comb_id=reference, phone_number=phone_number)
+
+                    if cancel_reserve != None:
+                        return JsonResponse({'success': cancel_reserve})
+
+                    raise Exception
+                except:
+                    return JsonResponse({'Warning': 'Reservation with this phone number does not exist or not active yet!'})
+
+        return JsonResponse({'error': 'Combination url is not valid!'})
+
+

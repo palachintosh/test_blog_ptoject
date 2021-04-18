@@ -11,6 +11,8 @@ from .product_mooving import cors_headers_options
 from .product_mooving import app_management
 from .product_mooving import app_management_inc
 from .product_mooving import get_warehouses_value
+from .product_mooving import reserve_product
+from .product_mooving import remove_with_reservation
 
 
 from django.utils.decorators import method_decorator
@@ -64,10 +66,13 @@ class BikeCheck(View):
 
     def get(self, request):
         if request.GET:
-            return product_mooving(request)
+            if request.GET.get('phone_number') is not None:
+                return remove_with_reservation(request)
+            else:
+                return product_mooving(request)
         
         else:
-            return JsonResponse({'Error': "Error. Check barcode and try again!"})
+            return JsonResponse({'Error': "Error. Check code and try again!"})
 
 
 
@@ -91,7 +96,12 @@ class PrestaExt(View):
             return JsonResponse({'Error': 'Looks like quantity is undefined..'})
 
 
-
+class PrestaReserve(View):
+    def get(self, request):
+        if request.GET:
+            return reserve_product(request.GET)
+        else:
+            return JsonResponse({'error': 'Produtc undefined on the stock!'})
 
 
 

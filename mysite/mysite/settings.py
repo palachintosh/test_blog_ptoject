@@ -155,6 +155,8 @@ print(GEOIP_PATH)
 
 ### GeoIP2 ###
 
+# LOGIN_REDIRECT_URL = '/'
+
 
 try:
     from .local_settings import *
