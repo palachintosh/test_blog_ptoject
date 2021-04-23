@@ -13,6 +13,7 @@ from .product_mooving import app_management_inc
 from .product_mooving import get_warehouses_value
 from .product_mooving import reserve_product
 from .product_mooving import remove_with_reservation
+from .presta_reset import *
 
 
 from django.utils.decorators import method_decorator
@@ -142,3 +143,12 @@ class ProductMGMT(View):
                 return app_management(request, w_from, w_to)
             
         return JsonResponse({'error': 'Data required!'})
+
+
+class  PrestaReset(View):
+    def get(self, request):
+        if request.GET:
+            pr = PrestaResetHandler()
+            return pr.presta_reset(request.GET)
+        else:
+            return JsonResponse({'error': 'Reset option is unvailable now!'})

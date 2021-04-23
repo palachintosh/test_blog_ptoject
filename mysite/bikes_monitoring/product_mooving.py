@@ -165,7 +165,6 @@ def remove_with_reservation(request_get):
 
 
 
-
 def cors_headers_options(origin, to_json=[]):
     data = JsonResponse(
             {to_json[0]: to_json[1]}
@@ -197,6 +196,7 @@ def validate_data(request):
         return {'code': code_u.get('rex_code'), 'quantity_to_transfer': quantity_to_transfer}
 
     return {} 
+
 
 #Products transferring
 def app_management(request, w_from, w_to):
@@ -316,7 +316,6 @@ def  get_warehouses_value(input_values_dict):
                 vget = getp_warehouses_value.get_warehouses_links(request_url)
 
                 if vget != None:
-                    print("VGET from product mooving", vget)
                     get_vals = getp_warehouses_value.get_warehouses_values(vget)
 
                     if get_vals != None:
