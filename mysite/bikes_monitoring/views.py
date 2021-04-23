@@ -98,6 +98,9 @@ class PrestaExt(View):
 
 
 class PrestaReserve(View):
+    def options(self, request):
+        return cors_headers_options(origin="https://3gravity.pl", to_json=['TEST', 'TEST'])
+
     def get(self, request):
         if request.GET:
             return reserve_product(request.GET)
@@ -143,6 +146,9 @@ class ProductMGMT(View):
                 return app_management(request, w_from, w_to)
             
         return JsonResponse({'error': 'Data required!'})
+
+
+
 
 
 class  PrestaReset(View):
