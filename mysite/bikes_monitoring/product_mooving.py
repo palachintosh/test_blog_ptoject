@@ -338,7 +338,17 @@ def reserve_product(request_get):
     and, if some products has reservation token - delete them only from SHOP.
 
     """
+    def cors_headers_add(to_json=[]):
+        data = JsonResponse({to_json[0]: to_json[1]})
 
+        data["Access-Control-Allow-Origin"] = "https://3gravity.pl"
+        data["Vary"] = "Origin"
+        data["Access-Control-Allow-Credentials"] = "true"
+        data[
+            "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
+
+        return data
+    
     response_data = {}
     
     if request_get != None:
@@ -349,7 +359,7 @@ def reserve_product(request_get):
 
         if phone_number == None:
             # print("------------------------------------")
-            return JsonResponse({'Warning': 'Phone number must be fill!'})
+            return cors_headers_add(['Warning', 'Phone number must be fill!'])
 
         request_url = 'https://3gravity.pl/api/combinations/{}'.format(reference)
 
@@ -364,11 +374,11 @@ def reserve_product(request_get):
                     add_reserve = pr.reserve_check(comb_id=reference, phone_number=phone_number)
 
                     if add_reserve != None:
-                        return JsonResponse({'success': add_reserve})
+                        return cors_headers_add(['success', add_reserve])
 
                     raise Exception
                 except:
-                    return JsonResponse({'Warning': 'Reservation does not exist!'})
+                    return cors_headers_add(['Warning', 'Reservation does not exist!'])
 
         else:
             if reference != None:
@@ -376,12 +386,12 @@ def reserve_product(request_get):
                     cancel_reserve = pr.deactivate(comb_id=reference, phone_number=phone_number)
 
                     if cancel_reserve != None:
-                        return JsonResponse({'success': cancel_reserve})
+                        return cors_headers_add(['success', cancel_reserve])
 
                     raise Exception
                 except:
-                    return JsonResponse({'Warning': 'Reservation with this phone number does not exist or not active yet!'})
+                    return cors_headers_add(['Warning', 'Reservation with this phone number does not exist or not active yet!'])
 
-        return JsonResponse({'error': 'Combination url is not valid!'})
+        return cors_headers_add(to_json=['error', 'Combination url is not valid!'])
 
 
