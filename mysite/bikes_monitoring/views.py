@@ -30,7 +30,21 @@ except:
     ImportError("Cannot import API key!")
 
 
-# Create your views here.
+
+# import access token from file
+
+def get_token():
+    try:
+        with open(os.path.dirname(__file__) + "/token/token.txt", "r") as f:
+            token = f.readline().strip()
+        return token
+
+    except:
+        return None
+
+
+#=======================================================
+
 
 
 # class BikeCheck(LoginRequiredMixin, View):
@@ -67,13 +81,16 @@ class BikeCheck(View):
 
     def get(self, request):
         if request.GET:
-            if request.GET.get('phone_number') is not None:
-                return remove_with_reservation(request)
+            if request.GET.get('token') and request.GET.get('token') == get_token():
+                if request.GET.get('phone_number') is not None:
+                    return remove_with_reservation(request)
+                else:
+                    return product_mooving(request)
             else:
-                return product_mooving(request)
+                return JsonResponse({'Error': "Invalid token! Access deny!"})
         
         else:
-            return JsonResponse({'Error': "Error. Check code and try again!"})
+            return JsonResponse({'Error': "Invalid request data!"})
 
 
 
@@ -92,7 +109,13 @@ class PrestaExt(View):
 
     def get(self, request):
         if request.GET:
-            return get_warehouses_value(request.GET)
+            if request.GET.get('token') and request.GET.get('token') == get_token():
+                return get_warehouses_value(request.GET)
+
+            else:
+                return JsonResponse({'Error': "Invalid token! Access deny!"})
+        
+            
         else:
             return JsonResponse({'Error': 'Looks like quantity is undefined..'})
 
@@ -103,7 +126,11 @@ class PrestaReserve(View):
 
     def get(self, request):
         if request.GET:
-            return reserve_product(request.GET)
+            if request.GET.get('token') and request.GET.get('token') == get_token():
+                return reserve_product(request.GET)
+            
+            else:
+                return JsonResponse({'Error': "Invalid token! Access deny!"})
         else:
             return JsonResponse({'error': 'Produtc undefined on the stock!'})
 
