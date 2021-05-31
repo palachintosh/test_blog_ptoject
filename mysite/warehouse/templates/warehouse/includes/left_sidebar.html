@@ -1,0 +1,14 @@
+<div id="leftSidebar">
+    <div class="sidebar-header">Zarządzanie magazynem</div>
+    <div class="btn-block">
+        <a class="btn-add" href="{% url 'create_warehouse_url' %}">Nowy magazyn</a>
+        <a class="btn-add" href="{% url 'add_product_url' %}">Nowy produkt</a>
+        <div class="btn-my" href="#">Moje magazyny</div>
+    </div>
+
+    <div class="warehouse-block">
+        {% for i in warehouses %}
+            <a href="{{ i.get_absolute_url }}">{{ i.title }}</a>
+        {% endfor %}
+    </div>
+</div>

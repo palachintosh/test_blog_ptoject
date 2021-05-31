@@ -1,0 +1,42 @@
+{% extends 'warehouse/warehouse_base.html'%}
+{% load static %}
+
+{% block title %}
+    Product - {{ product.title }}
+{% endblock %}
+
+
+{% block sidebar %} 
+    {% include 'warehouse/includes/left_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="warehouse-oprions mt-4">
+        <h5>Tu mozesz zmienic parametry wybranego produktu</h5>
+    </div>
+    <hr>
+
+    <form action="{{ product.get_update_url }}" method="post">
+        {% csrf_token %}
+
+        {% for field in product_form %}
+            <div class="form-group">
+                {% if field.errors %}
+                    <div class="alert alert-danger">
+                        {{ field.errors }}
+
+                    </div>
+                {% endif %}
+
+                {{ field.label }}
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-dark float-right">Zachowaj</button>
+        <a class="btn btn-danger float-right mr-2" href="{% url 'my_warehouse_url' %}" style="color: white">Powrot</a>
+
+    </form>
+    
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'warehouse/warehouse_base.html'%}
+{% load static %}
+
+{% block title %}
+    Magazyn - Nowy product
+{% endblock %}
+
+
+{% block sidebar %} 
+    {% include 'warehouse/includes/left_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="warehouse-oprions mt-4">
+        <h5>Tu mozesz dodać nowy produkt</h5>
+    </div>
+    <hr>
+
+    <form action="{% url 'add_product_url' %}" method="post">
+        {% csrf_token %}
+
+        {% for field in object_create_form %}
+            <div class="form-group">
+                {% if field.errors %}
+                    <div class="alert alert-danger">
+                        {{ field.errors }}
+
+                    </div>
+                {% endif %}
+
+                {{ field.label }}
+                {{ field }}
+            </div>
+        {% endfor %}
+
+        <button type="submit" class="btn btn-dark float-right">Dodaj!</button>
+        <a class="btn btn-danger float-right mr-2" href="{% url 'my_warehouse_url' %}" style="color: white">Powrot</a>
+    </form>
+
+{% endblock %}

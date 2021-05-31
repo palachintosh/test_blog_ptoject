@@ -1,0 +1,40 @@
+<div class="product-container mt-2 mb-5">
+    <div class="block-filter">
+        <p>Znajdź produkt:</p>
+    </div>
+    <form name="search_filter" class="row gx-3 gy-2 align-items-center" action="{% url 'search_filter_url' %}" method="GET">
+      {% csrf_token %}
+        <div class="col-4">
+          <input type="text" name="p_keyword" class="form-control" id="specificSizeInputName" placeholder="Kod części lub słowo">
+        </div>
+        <div class="col-2">
+          <label class="visually-hidden" for="specificSizeSelect">Magazyn</label>
+          <select class="form-select" name="p_warehouse" id="specificSizeSelect">
+            {% for w in warehouses %}
+                  <option selected>{{ w.title }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-2">
+          <div class="form-check">
+            <input name="p_available" class="form-check-input" type="checkbox" id="available">
+            <label class="form-check-label" for="available">
+                Dostępny
+            </label>
+          </div>
+        </div>
+
+        <div class="col-2">
+          <div class="form-check">
+            <input name="p_olx_available" class="form-check-input" type="checkbox" id="olxAvailable">
+            <label class="form-check-label" for="olxAvailable">
+                Dostępny na OLX
+            </label>
+          </div>
+        </div>
+        <div class="col-1">
+          <button type="submit" class="btn btn-success">Szukaj</button>
+        </div>
+      </form>
+      <hr class="mt-3">
+</div>

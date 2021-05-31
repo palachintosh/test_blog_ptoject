@@ -1,0 +1,83 @@
+{% extends 'warehouse/warehouse_base.html'%}
+{% load static %}
+
+{% block title %}
+    Magazyn - Home
+{% endblock %}
+
+
+{% block sidebar %}
+    {% include 'warehouse/includes/left_sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+    
+    <div class="mt-4">
+        {% if general_warehouses %}
+            <h3>{{ general_warehouses.title }}</h3>
+            <p>{{ general_warehouses.description }}</p>
+            <a href="{{ general_warehouses.get_update_url }}" class="btn btn-primary">Zmień konfigurację</a>
+            <a href="#" class="btn btn-dark">Zobacz produkty</a>
+
+            <div class="warehouse-oprions mt-4">
+                <h5>Wszystkie produkty znajdujące się na magazynie "{{ general_warehouses.title }}" </h5>
+            </div>
+            <hr>
+            <div class="search-container">
+                {% include 'warehouse/includes/w_content.html' %}
+            </div>
+            {% if products %}
+                <table class="my_table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nagłuwek</th>
+                            <th>Kod części</th>
+                            <th>Opis</th>
+                            <th>Ilość</th>
+                            <th>Dostępny</th>
+                            <th>Jest na OLX</th>
+                            <th>Cena</th>
+                            <th>Data dodania</th>
+                        </tr>
+                        </thead>
+                    <tbody>
+                            {% for product in products %}
+                                <tr>
+                                    <td>{{ product.id }}</td>
+                                    <td>{{ product.title }}</td>
+                                    <td>{{ product.barcode }}</td>
+                                    <td>{{ product.description | truncatewords:8 }}</td>
+                                    <td>{{ product.quantity }}</td>
+                                    {% if product.active_stamp %}
+                                        <td class="active-true">Jest</td>
+                                    {% else %}
+                                        <td class="active-false">Brak</td>
+                                    {% endif %}
+
+                                    {% if product.olx_stamp %}
+                                        <td class="active-true">Jest</td>
+                                    {% else %}
+                                        <td class="active-false">Brak</td>
+                                    {% endif %}
+                                    <td>{{ product.price }} / zl</td>
+                                    <td>{{ product.date_pub | date }}</td>
+                                    <td><a href="{{ product.get_absolute_url }}" class="btn btn-dark">Edytuj</a></td>
+                                </tr>
+                            {% endfor %}
+                        
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="warehouse-oprions mt-4">
+                    <h5>Nie ma dostępnych produktów.</h5>
+                    <a href="{% url 'add_product_url' %}">Dodaj nowy produkt</a>
+                </div>
+            {% endif %}
+
+        {% else %}
+            <a href="{% url 'create_warehouse_url' %}" class="btn btn-primary">Dodaj nowy</a>
+        {% endif %}
+    </div>
+
+{% endblock %}
