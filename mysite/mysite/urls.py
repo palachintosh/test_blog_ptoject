@@ -33,6 +33,7 @@ urlpatterns = [
     path('bikes_monitoring/', include('bikes_monitoring.urls')),
     path('notes', include('notes.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('warehouse/', include('warehouse.urls'))
     
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
