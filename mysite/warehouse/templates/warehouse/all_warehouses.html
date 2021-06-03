@@ -1,0 +1,35 @@
+{% extends 'warehouse/warehouse_base.html'%}
+{% load static %}
+
+{% block title %}
+    Magazyn - Home
+{% endblock %}
+
+
+{% block sidebar %}
+    {% include 'warehouse/includes/left_sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+    
+    <div class="mt-4">
+        {% if warehouses.count > 0 %}
+            <div class="warehouse-oprions mt-4">
+                <h5>Wszystkie magazyny</h5>
+            </div>
+            <hr>
+
+            {% for all_war in warehouses %}
+            <div class="war_block">
+                <a class="war_link" href="{{ all_war.get_absolute_url }}">{{ all_war.title }}</a>
+                <p>{{ all_war.description }}</p>
+                <span>{{ all_war.date_pub | date }}</span>
+                <hr>
+            </div>
+            {% endfor %}
+
+        {% else %}
+            <a href="{% url 'create_warehouse_url' %}" class="btn btn-primary">Dodaj nowy</a>
+        {% endif %}
+
+{% endblock %}

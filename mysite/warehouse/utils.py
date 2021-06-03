@@ -5,8 +5,6 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 def gen_slug(s):
-    #new_slug = slugify(s, allow_unicode=True)
-    print(s)
     s.lower() 
     format_string = slugify(s, allow_unicode=True)
     s_translate = {
@@ -29,7 +27,6 @@ def gen_slug(s):
         except:
             raise ValidationError("Slug can't be generated!")
     new_slug = ''.join(map(str, s_encode))
-    print(s_encode, new_slug)
     return new_slug + '-' + str(int(time()))
 
 
@@ -38,14 +35,18 @@ class ObjectCreateMixin:
     model_form = None
     model = None
     template = None
+    war_model = None
 
     def get(self, request):
+        warehouses = self.war_model.objects.all()
         main_object = self.model.objects.filter(date_pub__lte=timezone.now()).order_by('-date_pub')
         form = self.model_form
+
         
         return render(request, self.template, context={
             "object_create_form": form,
-            self.model.__name__.lower(): main_object
+            self.model.__name__.lower(): main_object,
+            self.war_model.__name__.lower(): warehouses
         })
 
     def post(self, request):

@@ -9,5 +9,5 @@ urlpatterns = [
     path('update_warehouse/update/<str:slug>', UpdateWarehouse.as_view(), name="update_warehouse_url"),
     path('product/add_new/', AddProduct.as_view(), name="add_product_url"),
     path('product/<str:slug>', Products.as_view(), name="related_products_url"),
-    path('products/<str:slug>/update/', UpdateProduct.as_view(), name="update_product_url")
+    path('products/<str:slug>/update/', UpdateProduct.as_view(), name="update_product_url",)
 ]

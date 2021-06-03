@@ -14,14 +14,20 @@
     
     <div class="mt-4">
         {% if general_warehouses %}
-            <h3>{{ general_warehouses.title }}</h3>
-            <p>{{ general_warehouses.description }}</p>
-            <a href="{{ general_warehouses.get_update_url }}" class="btn btn-primary">Zmień konfigurację</a>
-            <a href="#" class="btn btn-dark">Zobacz produkty</a>
-
-            <div class="warehouse-oprions mt-4">
-                <h5>Wszystkie produkty znajdujące się na magazynie "{{ general_warehouses.title }}" </h5>
-            </div>
+            {% if general_warehouses.slug != None %}
+                <h3>{{ general_warehouses.title }}</h3>
+                <p>{{ general_warehouses.description }}</p>
+                <a href="{{ general_warehouses.get_update_url }}" class="btn btn-primary">Zmień konfigurację</a>
+                <a href="#" class="btn btn-dark">Zobacz produkty</a>
+                
+                <div class="warehouse-oprions mt-4">
+                    <h5>Wszystkie produkty znajdujące się na magazynie "{{ general_warehouses.title }}" </h5>
+                </div>
+            {% else %}
+                <div class="warehouse-oprions mt-4">
+                    <h5>Wszystkie produkty</h5>
+                </div>
+            {% endif %}
             <hr>
             <div class="search-container">
                 {% include 'warehouse/includes/w_content.html' %}
@@ -38,6 +44,7 @@
                             <th>Dostępny</th>
                             <th>Jest na OLX</th>
                             <th>Cena</th>
+                            <th>Magazyny</th>
                             <th>Data dodania</th>
                         </tr>
                         </thead>
@@ -61,6 +68,12 @@
                                         <td class="active-false">Brak</td>
                                     {% endif %}
                                     <td>{{ product.price }} / zl</td>
+                                    
+                                    <td>
+                                    {% for rw in product.get_related_warehouses %}
+                                        {{ rw.title }}
+                                    {% endfor %}
+                                    </td>
                                     <td>{{ product.date_pub | date }}</td>
                                     <td><a href="{{ product.get_absolute_url }}" class="btn btn-dark">Edytuj</a></td>
                                 </tr>

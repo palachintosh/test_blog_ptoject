@@ -4,6 +4,7 @@ from django.views.generic import View
 from django.db.models import Q
 from .models import *
 from django.utils import timezone
+from django.urls import reverse
 from .forms import ProductEditForm, WarehouseForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .utils import *
@@ -18,9 +19,19 @@ class MyWarehouse(LoginRequiredMixin, View):
 
     def get(self, request):
         warehouse = self.model.objects.filter(date_pub__lte=timezone.now()).order_by('-date_pub')
-        
-        return render(request, 'warehouse/warehouse_home.html', context={
-            self.model.__name__.lower(): warehouse
+        first_check = request.session.get('start_var')
+        start_var = False
+
+        if first_check == None:
+            request.session.update({
+                'start_var': False
+            })
+            start_var = True
+
+
+        return render(request, 'warehouse/all_warehouses.html', context={
+            self.model.__name__.lower(): warehouse,
+            'start_var': start_var
             })
 
 
@@ -45,6 +56,7 @@ class SelectWarehouse(LoginRequiredMixin, View):
 class CreateWarehouse(LoginRequiredMixin, ObjectCreateMixin, View):
     model = Warehouses
     model_form = WarehouseForm
+    war_model = Warehouses
     template = 'warehouse/create_warehouse.html'
 
 
@@ -61,21 +73,28 @@ class Products(LoginRequiredMixin, View):
     template = 'warehouse/product.html'
 
     def get(self, request, slug):
+        success_update = False
         product = get_object_or_404(self.model, slug__iexact=slug)
         bound_form = self.product_form(instance=product)
         warehouses = self.war_model.objects.filter(date_pub__lte=timezone.now()).order_by('-date_pub')
+
+        if request.session.get('success_update'):
+            success_update = True
+            request.session['success_update'] = False
 
 
         return render(request, self.template, context={
             self.model.__name__.lower(): product,
             'product_form': bound_form,
-            'warehouses': warehouses
+            'warehouses': warehouses,
+            'success_update': success_update
         })
 
 
 
 class AddProduct(LoginRequiredMixin, ObjectCreateMixin, View):
     model = Product
+    war_model = Warehouses
     model_form = ProductEditForm
     template = 'warehouse/product_create.html'
 
@@ -90,11 +109,14 @@ class UpdateProduct(LoginRequiredMixin, View):
         old_object = self.model.objects.get(slug__iexact=slug)
         bound_form = self.model_form(request.POST, instance=old_object)
 
+
         if bound_form.is_valid():
             new_object = bound_form.save()
+            request.session.update({
+                'success_update': True
+            })
 
             return redirect(new_object)
-
 
         return reverse('related_products_url', kwargs={'slug': slug, 'request': request})
 
@@ -109,12 +131,18 @@ class SearchingFilter(LoginRequiredMixin, View):
 
         if search_query:
             title = slugify(str(search_query.get('p_keyword')))
-            loc_products = None
-            get_object = self.war_model.objects.get(title=search_query.get('p_warehouse'))
+            p_warehouse =slugify(str(search_query.get('p_warehouse')))
+            loc_products = self.model.objects.all()
+            get_object = self.war_model.objects.all()
+
+
+            if p_warehouse != '':
+                get_object = self.war_model.objects.get(title=search_query.get('p_warehouse'))
+                loc_products = self.model.objects.filter(warehouse_products=get_object)
 
 
             if title != None:
-                loc_products = self.model.objects.filter(
+                loc_products = loc_products.filter(
                     Q(title__icontains=title) |
                     Q(description__icontains=title) |
                     Q(barcode__icontains=title)
@@ -131,6 +159,8 @@ class SearchingFilter(LoginRequiredMixin, View):
                 
                 if search_query.get('p_olx_available') == 'on':
                     loc_products = loc_products.filter(olx_stamp=True)
+                
+                
         
 
         warehouse = self.war_model.objects.filter(date_pub__lte=timezone.now()).order_by('-date_pub')

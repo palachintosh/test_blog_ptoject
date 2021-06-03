@@ -52,6 +52,10 @@ class Product(models.Model):
     
     def get_update_url(self):
         return reverse('update_product_url', kwargs={'slug': self.slug})
+    
+    def get_related_warehouses(self):
+        r_war = self.warehouse_products.filter()
+        return r_war
 
     def save(self, *args, **kwargs):
         if not self.id:

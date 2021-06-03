@@ -1,8 +1,5 @@
-from typing import AsyncIterable
 from django import forms
 from django import forms
-from django.forms import widgets
-from django.forms.formsets import formset_factory
 from .models import Product, Warehouses
 from django.core.exceptions import ValidationError
 from .models import gen_slug

@@ -9,9 +9,10 @@
         </div>
         <div class="col-2">
           <label class="visually-hidden" for="specificSizeSelect">Magazyn</label>
-          <select class="form-select" name="p_warehouse" id="specificSizeSelect">
+          <select class="form-select form-select-sm" name="p_warehouse">
+            <option value="" selected="selected"></option>
             {% for w in warehouses %}
-                  <option selected>{{ w.title }}</option>
+                  <option>{{ w.title }}</option>
             {% endfor %}
           </select>
         </div>

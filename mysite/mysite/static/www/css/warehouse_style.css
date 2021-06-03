@@ -7642,6 +7642,23 @@ h5 {
   border-color: #21b64b;
   color: #21b64b; }
 
+.btn-my {
+  text-align: center;
+  width: 85%;
+  margin: auto;
+  padding: 1.3rem;
+  font-size: 14pt;
+  margin-top: 1rem;
+  border-top: 1px solid #d8d8d8;
+  border-left: 1px solid #d8d8d8;
+  border-right: 1px solid #d8d8d8; }
+  .btn-my a {
+    color: #c2c2c2;
+    text-decoration: none; }
+  .btn-my a:hover {
+    color: #61d51e;
+    text-decoration: underline; }
+
 .warehouse-block > a {
   display: block;
   outline: none;
@@ -7655,6 +7672,9 @@ h5 {
   background-color: lightgrey; }
 
 /*  Tabel styles */
+.my_table {
+  min-width: 50%; }
+
 table.my_table {
   text-decoration: none;
   border-collapse: collapse;
@@ -7677,9 +7697,7 @@ table.my_table th {
   border: 1px solid white; }
 
 table.my_table td, table.my_table th {
-  white-space: pre-wrap;
-  padding: 10px 5px;
-  line-height: 13px;
+  padding: .8rem .3rem;
   vertical-align: middle; }
 
 table.my_table tr:hover {
@@ -7694,5 +7712,89 @@ table.my_table tr:hover td {
 
 .active-false {
   background-color: tomato; }
+
+#alertSuccess {
+  display: none;
+  position: fixed;
+  top: 5rem;
+  right: 2rem;
+  opacity: .9;
+  padding: 1.4rem; }
+
+#alertSuccess > .alert-close {
+  position: absolute;
+  font-weight: bold;
+  top: -15px;
+  right: -12px;
+  padding: 0 .4rem 0 .4rem;
+  border-radius: 50%;
+  text-decoration: none;
+  min-width: 25px;
+  background-color: #d8eedd; }
+
+#alertSuccess > .alert-close:hover {
+  cursor: pointer;
+  background-color: rgba(86, 183, 25, 0.3); }
+
+.war_link {
+  padding: 1rem;
+  display: block;
+  color: #303030;
+  outline: none;
+  font-size: 14pt;
+  font-weight: bold; }
+
+.war_link:hover {
+  background-color: #f5f5f5;
+  text-decoration: none; }
+
+.war_block {
+  width: 80%; }
+
+.war_block > span {
+  display: block;
+  color: #c2c2c2;
+  font-size: 9pt; }
+
+.start-var {
+  position: absolute;
+  z-index: 1000;
+  width: 100%;
+  height: 90vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: block; }
+
+.start-var-center {
+  position: absolute;
+  display: inline-block;
+  left: 50%;
+  margin-left: -8rem;
+  top: 40%;
+  cursor: pointer; }
+
+.start-var-center > span {
+  position: absolute;
+  display: inline-block;
+  width: 15em;
+  height: 6rem;
+  border-radius: 4em;
+  vertical-align: baseline;
+  background-color: #328bf9; }
+
+.start-var-a {
+  position: relative;
+  top: .7rem;
+  left: 4.1rem;
+  color: white;
+  font-size: 35pt; }
+
+.start-var-center:hover > span {
+  transform: scale(1.1, 1.1);
+  transition: cubic-bezier(0.01, 0.91, 0.99, -0.01);
+  transition-duration: 0.3s; }
+
+.start-var-center:hover > a {
+  text-decoration: none;
+  color: white; }
 
 /*# sourceMappingURL=warehouse_style.css.map */

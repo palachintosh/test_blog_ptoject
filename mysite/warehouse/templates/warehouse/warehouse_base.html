@@ -90,6 +90,15 @@
 
     </nav>
 
+    {% if start_var %}
+        <div class="start-var">
+            <div class="start-var-center">
+                <span></span>
+                <a class="start-var-a" href="{% url 'create_warehouse_url' %}">Start</a>
+            </div>
+        </div>
+    {% endif %}
+
 
     <div class="container-fluid">
         {% block handler %}{% endblock %}

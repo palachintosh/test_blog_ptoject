@@ -13,7 +13,7 @@
 
 {% block content %}
     <div class="warehouse-oprions mt-4">
-        <h5>Tu mozesz zmienic parametry wybranego produktu</h5>
+        <h5>Tu możesz zmienić parametry wybranego produktu</h5>
     </div>
     <hr>
 
@@ -34,9 +34,35 @@
             </div>
         {% endfor %}
 
-        <button type="submit" class="btn btn-dark float-right">Zachowaj</button>
+        <button type="submit" class="btn btn-dark float-right">Zapisz</button>
         <a class="btn btn-danger float-right mr-2" href="{% url 'my_warehouse_url' %}" style="color: white">Powrot</a>
 
     </form>
+
+    <div class="alert alert-success" role="alert" id="alertSuccess">
+        Dane zapisane poprawnie! <a href="{% url 'my_warehouse_url' %}" class="alert-link">Zobacz produkty</a>
+        <span onclick="display_alert_close();" class="alert-close">X</span>
+    </div>
+
+    {% if success_update %}
+        <!-- Alert activate -->
+        <script>
+            function display_alert() {
+                alert_msg = document.querySelector('#alertSuccess');
+                alert_msg.style.display = 'block';
+
+                setTimeout(function() {
+                    alert_msg.style.display = 'none';
+                }, 5000);
+            }
+
+            function display_alert_close() {
+                alert_msg = document.querySelector('#alertSuccess');
+                alert_msg.style.display = 'none';
+            }
+
+            display_alert();
+        </script>
+    {% endif %}
     
 {% endblock %}

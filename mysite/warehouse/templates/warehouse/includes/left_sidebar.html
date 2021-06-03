@@ -3,7 +3,9 @@
     <div class="btn-block">
         <a class="btn-add" href="{% url 'create_warehouse_url' %}">Nowy magazyn</a>
         <a class="btn-add" href="{% url 'add_product_url' %}">Nowy produkt</a>
-        <div class="btn-my" href="#">Moje magazyny</div>
+        <div class="btn-my">
+            <a href="{% url 'my_warehouse_url' %}">Moje magazyny: </a>
+        </div>
     </div>
 
     <div class="warehouse-block">
