@@ -7596,6 +7596,10 @@ a.text-dark:hover, a.text-dark:focus {
   .table .thead-dark th {
     color: inherit;
     border-color: #dee2e6; } }
+:root {
+  background-color: #ffffff;
+  color: #212529; }
+
 html {
   position: relative;
   min-height: 100%; }
@@ -7652,7 +7656,7 @@ h5 {
   border-bottom: 1px solid #dcdcdc; }
 
 .card-header {
-  background-color: #ffffff;
+  background-color: rgba(68, 68, 68, 0.03);
   border: none; }
 
 .card-date {
@@ -7675,6 +7679,9 @@ h5 {
 
 .card-footer-txt > small {
   float: right; }
+
+.card-footer-txt p {
+  display: inline-block; }
 
 .card-body > p {
   padding-left: 20px; }
@@ -7734,5 +7741,180 @@ h5 {
 
 .form-size {
   min-height: 5em; }
+
+.checkbox-img-pl {
+  width: 32px;
+  height: 20px;
+  float: right;
+  background-color: red;
+  background-image: url("../images/flags/pl_flag.png"); }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 22px; }
+
+.switch input {
+  display: none; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 12px; }
+
+.slider::before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 14px;
+  left: 3px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%; }
+
+input:focus + .slider {
+  box-shadow: none; }
+
+input:checked + .slider {
+  background-color: #aceeac; }
+
+input:checked + .slider::before {
+  -webkit-transform: translateX(14px);
+  -ms-transform: translateX(14px);
+  transform: translateX(14px); }
+
+.slider .round {
+  border-radius: 50%; }
+
+.slider .round::before {
+  border-radius: 50%; }
+
+.cb_alignment {
+  float: right; }
+
+.cb_alignment > ul {
+  list-style: none;
+  margin-right: .5rem; }
+
+.cb_alignment > ul > li {
+  float: left;
+  margin-left: .1rem;
+  margin-right: .1rem;
+  padding: .1rem;
+  height: 22px;
+  color: whitesmoke; }
+
+.cb_alignment > ul > li > label {
+  margin: unset; }
+
+.ru_icon {
+  background-color: #759cff;
+  border-radius: 3px;
+  padding: .2rem; }
+
+.pl_icon {
+  background-color: #2d2e31;
+  border-radius: 3px;
+  padding: .2rem; }
+
+.like-counter {
+  width: 32px;
+  height: 26px;
+  background-color: white;
+  background-image: url("../images/rating/like_heart.png");
+  float: left;
+  padding: .3rem; }
+
+.like-block {
+  cursor: pointer;
+  display: inline;
+  float: left;
+  line-height: 36px; }
+
+.like-block > p {
+  margin-left: .7rem;
+  float: left;
+  height: 32px; }
+
+.settings-menu {
+  position: relative;
+  width: 100%;
+  padding: .5rem; }
+  .settings-menu a {
+    text-decoration: none;
+    outline: none; }
+  .settings-menu a > span:hover {
+    background-color: rgba(72, 72, 72, 0.501);
+    border-radius: .2rem;
+    padding: .3rem;
+    transition: background 150ms ease-in-out 200ms, opacity 150ms ease-in-out 100ms, transform 100ms ease-in-out; }
+  .settings-menu .settings-icon {
+    width: 32px;
+    height: 32px;
+    background-image: url("../icons/settings.png");
+    background-repeat: no-repeat;
+    float: left;
+    cursor: pointer; }
+  .settings-menu .settings-block {
+    position: relative;
+    left: 1rem;
+    color: #dc4e4e;
+    padding-left: .3rem; }
+
+.container-menu {
+  display: none;
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  top: -142px;
+  left: -200px;
+  z-index: 9998; }
+
+.menu-top {
+  position: absolute;
+  width: 400px;
+  height: 200px;
+  border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  background-color: #2dceab;
+  z-index: 10000; }
+
+.inner-menu-list {
+  position: absolute;
+  top: 10px;
+  left: 250px;
+  transform: rotate(-90deg);
+  z-index: inherit; }
+  .inner-menu-list li {
+    list-style: none;
+    cursor: pointer; }
+
+.inner-menu-list > .first {
+  margin: 5px 0 0 45px;
+  width: 32px;
+  height: 32px;
+  background-image: url("../icons/close.png"); }
+  .inner-menu-list > .first::before {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: var(--background);
+    transform: translate3d(-47%, 0, 0) scale(0.1);
+    transition: background 300ms ease-in-out 200ms, opacity 350ms ease-in-out 200ms, transform 400ms ease-in-out; }
+
+.inner-menu-list > .second {
+  margin: 50px 0 0 15px; }
+
+.inner-menu-list > .third {
+  margin: 30px 0 0 -55px; }
 
 /*# sourceMappingURL=styles.css.map */
