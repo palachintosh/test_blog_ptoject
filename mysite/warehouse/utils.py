@@ -1,8 +1,11 @@
 from django.utils.text import slugify
 from django.core.exceptions import ValidationError
-from time import CLOCK_THREAD_CPUTIME_ID, time
-from django.shortcuts import render, redirect
+from time import time
+from django.shortcuts import get_object_or_404, render, redirect, render_to_response
 from django.utils import timezone
+
+from django.core.paginator import Paginator
+from django.core.paginator import PageNotAnInteger
 
 def gen_slug(s):
     s.lower() 
@@ -30,6 +33,28 @@ def gen_slug(s):
     return new_slug + '-' + str(int(time()))
 
 
+class PaginatorMixin:
+    def create_pagination(self, **kwargs):
+        kwargs = kwargs.get('kwargs')
+        
+        paginator = Paginator(kwargs.get('object'), 25)
+        pages = kwargs.get('request').GET.get('page')
+        pag_range = paginator.page_range
+
+        try:
+            count_objects = paginator.page(pages)
+
+        except PageNotAnInteger:
+            count_objects = paginator.page(1)
+
+        values = {
+            'counter': count_objects,
+            'pag_range': pag_range,
+        }
+
+        return values
+
+
 class ObjectCreateMixin:
 
     model_form = None
@@ -54,9 +79,15 @@ class ObjectCreateMixin:
 
         if bound_form.is_valid():
             new_object = bound_form.save()
+            request.session.update({
+                'success_update': True
+            })
+
+            print("SESSION ADD SUCCESS: ", request.session.get('success_update'))
 
             return redirect(new_object)
-        return render(request, self.template, context={"form": bound_form})
+
+        return render(request, self.template, context={"object_create_form": bound_form})
 
 
 class ObjectUpdateMixin:
@@ -87,3 +118,31 @@ class ObjectUpdateMixin:
 
         return render(request, self.template, context={"war_create_form": bound_form})
 
+
+class ObjectDeleteMixin:
+    template = None
+
+    def get_to_delete(self, request, slug, model):
+        get_object = get_object_or_404(model, slug__iexact=slug)
+
+        return render(request, self.template, locals())
+
+
+    def post_to_delete(self, request, slug, model):
+
+        if request.POST:
+            if request.POST.get('delete_confirm') == 'Delete':
+                get_object = get_object_or_404(model, slug__iexact=slug)
+                get_object.delete()
+
+            else:
+                model_str = model.__name__.lower()
+                # request.POST.update({'model': model_str})
+        
+                return render(request, self.template, context={
+                    'not_delete': True
+                })
+
+        # get_object.save()
+
+        return redirect('my_warehouse_url')

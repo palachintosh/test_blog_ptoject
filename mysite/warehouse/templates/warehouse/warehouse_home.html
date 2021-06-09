@@ -11,7 +11,6 @@
 {% endblock %}
 
 {% block content %}
-    
     <div class="mt-4">
         {% if general_warehouses %}
             {% if general_warehouses.slug != None %}
@@ -19,6 +18,16 @@
                 <p>{{ general_warehouses.description }}</p>
                 <a href="{{ general_warehouses.get_update_url }}" class="btn btn-primary">Zmień konfigurację</a>
                 <a href="#" class="btn btn-dark">Zobacz produkty</a>
+
+                <div class="dropdown">
+                    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    Strefa niebezpieczna
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                      <li><a href="{{ general_warehouses.get_delete_url }}?model=warehouse" style="color: red;">Usuń magazyn</a></li>
+                    </ul>
+                  </div>
                 
                 <div class="warehouse-oprions mt-4">
                     <h5>Wszystkie produkty znajdujące się na magazynie "{{ general_warehouses.title }}" </h5>
@@ -81,6 +90,35 @@
                         
                     </tbody>
                 </table>
+
+                <div class="pagination mt-5 mb-5 justify-content-center">
+                    <div class="disable-paginator"></div>
+                        <ul>
+                            <!-- Previous link -->
+                            <li>
+                              <a href="?page=1" aria-label="Previous" title="Początek">
+                                    <span aria-hidden="true">&laquo;</span>
+                              </a>
+                            </li>
+                            
+                            <!-- Range  -->
+                            {% for n_page in pag_object %}
+                                {% if n_page == current_page %}
+                                    <li class="active-page"><a href="?page={{ n_page }}">{{ n_page }}</a></li>
+                                {% else %}
+                                    <li><a href="?page={{ n_page }}">{{ n_page }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            <!-- Next link -->
+                            <li>
+                              <a href="?page={{ pag_counter.paginator.num_pages }}" aria-label="Next" title="Koniec">
+                                <span disable aria-hidden="true">&raquo;</span>
+                              </a>
+                            </li>
+                          </ul>
+                </div>
+
             {% else %}
                 <div class="warehouse-oprions mt-4">
                     <h5>Nie ma dostępnych produktów.</h5>
@@ -89,8 +127,19 @@
             {% endif %}
 
         {% else %}
-            <a href="{% url 'create_warehouse_url' %}" class="btn btn-primary">Dodaj nowy</a>
+            <a href="{% url 'create_warehouse_url' %}" class="btn btn-primary">Dodaj nowy magazyn -></a>
         {% endif %}
+
     </div>
+
+    {% if not pag_counter.has_next %}
+        <script type="text/javascript">
+            get_paginator = document.querySelector(".disable-paginator");
+            
+            if(get_paginator != null ) {
+                get_paginator.style.display = 'block';
+            }
+        </script>
+    {% endif %}
 
 {% endblock %}

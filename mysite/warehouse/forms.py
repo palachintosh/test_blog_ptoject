@@ -12,7 +12,7 @@ class WarehouseForm(forms.ModelForm):
 
         labels = {
             "title": "Nazwa",
-            "description": "Krotki opis"
+            "description": "Krótki opis"
         }
 
         widgets = {
@@ -30,7 +30,15 @@ class WarehouseForm(forms.ModelForm):
             new_slug = gen_slug(ps)
             return new_slug
         return new_slug
+    
 
+    def clean_title(self):
+        new_title = self.cleaned_data['title'].lower()
+
+        if new_title == 'Magazyn':
+            raise ValidationError('Nie możliwe jest stworzenie magazynu z nazwą "Magazyn"!')
+
+        return new_title
 
 class ProductEditForm(forms.ModelForm):
     class Meta:
@@ -48,12 +56,13 @@ class ProductEditForm(forms.ModelForm):
         
         labels = {
             "title": "Nazwa",
-            "barcode": "Kod czesci",
-            "description": "Krotki opis",
-            "quantity": "Ilosc",
-            "active_stamp": "Dostepnosc",
+            "barcode": "Kod części",
+            "description": "Krótki opis",
+            "quantity": "Ilość",
+            "active_stamp": "Dostępność",
             "olx_stamp": "Produdct wystawiony na OLX",
-            "price": "Cena"
+            "price": "Cena",
+            "warehouse_products": 'Magazyn, na którym produkt będzie przechowywany'
         }
 
         widgets = {

@@ -1,0 +1,46 @@
+{% extends 'warehouse/warehouse_base.html'%}
+{% load static %}
+
+{% block title %}
+    Magazyn - Nowy product
+{% endblock %}
+
+
+{% block sidebar %} 
+    {% include 'warehouse/includes/left_sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+    <div class="warehouse-oprions mt-4">
+        <h5>"{{ get_object.title }}" zostanie usunięty!</h5>
+    </div>
+    <hr>
+
+    <div class="alert alert-danger" role="alert">
+        <h4>Uwaga! Ta operacja jest nieodwracalna!</h4>
+    </div>
+
+    <p>Zamierzasz usunąć magazyn lub produkt.</p>
+    <ul>
+        <li>Tej operacji nie da się cofnąć;</li>
+        <li>W przypadku gdy usuniesz cały magazyn - produkty zostają w systemie, a się nie zmieniają;</li>
+        <li>Wszystkie wpisy i powiązane elementy NIE zmieniają się. </li>
+    </ul>
+    
+    <p>Ze względów bezpieczeństwa wymagany jest wpis <b>"Delete"</b> do poniższego pola: </p>
+
+    {% if not_delete %}
+        <div class="alert alert-danger" role="alert">
+            <p>Błędnie wpisane słowo albo usunięcie nie powiodło się!</p>
+        </div>
+    {% endif %}
+
+    <form class="form-group mt-4" action="{{ get_object.get_delete_url }}" method="POST">
+        {% csrf_token %}
+        <input class="form-control" type="text" name="delete_confirm" id="delConfirm">
+        <input type="hidden" name="model" value="{{ request.GET.model }}{{ request.POST.model }}">
+        <button class="btn btn-danger mt-2 float-right" type="submit">Potwierdzam</button>
+    </form>
+
+{% endblock %}

@@ -7611,10 +7611,18 @@ h5 {
   color: #4e5054;
   font-weight: bold; }
 
+select {
+  display: block;
+  width: 30%;
+  padding: .6rem; }
+
+select option {
+  padding: .8rem; }
+
 #leftSidebar {
   border-right: 2px solid grey;
-  height: 88vh;
-  margin-bottom: 0; }
+  margin-bottom: 0;
+  min-height: 88vh; }
 
 .sidebar-header {
   text-align: center;
@@ -7628,19 +7636,17 @@ h5 {
   display: block;
   margin: auto;
   padding: 1.3rem;
-  border: 3px solid #3148f5;
   border-radius: 5rem;
-  background-color: unset;
+  background-color: #2a91f0;
   margin-bottom: .5rem;
   outline: none;
   text-align: center;
   text-decoration: none;
   font-size: 16pt;
-  color: #bbbbbb; }
+  color: #ffffff; }
 
 .btn-add:hover {
-  border-color: #21b64b;
-  color: #21b64b; }
+  color: #c1fd9b; }
 
 .btn-my {
   text-align: center;
@@ -7796,5 +7802,61 @@ table.my_table tr:hover td {
 .start-var-center:hover > a {
   text-decoration: none;
   color: white; }
+
+.pagination > ul {
+  list-style: none; }
+
+.pagination > ul > li {
+  margin: 1px;
+  border-radius: 3px;
+  background-color: #eeeeee;
+  float: left; }
+
+.pagination > ul > li:first-child {
+  margin-right: 1rem; }
+
+.pagination > ul > li:last-child {
+  margin-left: 1rem; }
+
+.pagination > ul > li > a {
+  padding: .8rem;
+  outline: none;
+  line-height: 2.5; }
+
+.active-page {
+  background-color: #5265fc !important; }
+  .active-page a {
+    color: white; }
+
+.disable-paginator {
+  display: none;
+  width: 100%;
+  height: 3rem;
+  position: absolute; }
+
+.dropdown {
+  float: right; }
+  .dropdown ul > li > a {
+    padding: 0 1rem; }
+
+.dropdown > button {
+  background-color: #c22f2f;
+  color: white; }
+
+.warehouse-img {
+  position: absolute;
+  left: 2.5rem;
+  width: 32px;
+  height: 32px;
+  background-image: url("../warehouse/warehouse_img.png");
+  background-repeat: no-repeat; }
+
+.product-img {
+  position: absolute;
+  left: 2.6rem;
+  width: 32px;
+  height: 32px;
+  background-image: url("../warehouse/product_img.png");
+  background-repeat: no-repeat; }
 
 /*# sourceMappingURL=warehouse_style.css.map */

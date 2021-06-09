@@ -1,3 +1,4 @@
+from warehouse.session_worker import SessionMixin
 from django.db.models.query_utils import FilteredRelation
 from django.shortcuts import get_object_or_404, render
 from django.views.generic import View
@@ -35,7 +36,7 @@ class MyWarehouse(LoginRequiredMixin, View):
             })
 
 
-class SelectWarehouse(LoginRequiredMixin, View):
+class SelectWarehouse(LoginRequiredMixin, PaginatorMixin, View):
     model = Warehouses
     product_model = Product
     template = 'warehouse/warehouse_home.html'
@@ -45,11 +46,26 @@ class SelectWarehouse(LoginRequiredMixin, View):
         get_products = get_object.related_products.all()
 
         warehouse = self.model.objects.filter(date_pub__lte=timezone.now()).order_by('-date_pub')
+        
+        
+        p = PaginatorMixin()
+        pagination_products = p.create_pagination(kwargs={
+            'request': request,
+            'object': get_products
+        })
+
+        try:
+            page = int(request.GET.get('page'))
+        except:
+            page = 0
 
         return render(request, self.template, context={
                                 self.model.__name__.lower(): warehouse,
                                 'general_warehouses': get_object,
-                                'products': get_products,
+                                'products': pagination_products.get('counter'),
+                                'pag_counter': pagination_products.get('counter'),
+                                'pag_object': pagination_products.get('pag_range'),
+                                'current_page': page
                                 })
 
 
@@ -73,21 +89,17 @@ class Products(LoginRequiredMixin, View):
     template = 'warehouse/product.html'
 
     def get(self, request, slug):
-        success_update = False
+        s = SessionMixin(request)
         product = get_object_or_404(self.model, slug__iexact=slug)
         bound_form = self.product_form(instance=product)
         warehouses = self.war_model.objects.filter(date_pub__lte=timezone.now()).order_by('-date_pub')
-
-        if request.session.get('success_update'):
-            success_update = True
-            request.session['success_update'] = False
 
 
         return render(request, self.template, context={
             self.model.__name__.lower(): product,
             'product_form': bound_form,
             'warehouses': warehouses,
-            'success_update': success_update
+            'success_update': s.session_update_var()
         })
 
 
@@ -97,6 +109,37 @@ class AddProduct(LoginRequiredMixin, ObjectCreateMixin, View):
     war_model = Warehouses
     model_form = ProductEditForm
     template = 'warehouse/product_create.html'
+
+
+class ObjectDelete(LoginRequiredMixin, ObjectDeleteMixin, View):
+    template = 'warehouse/object_delete_confirm.html'
+    model =None
+
+    def get(self, request, slug):
+        if request.GET:
+            self.model = Warehouses if request.GET.get('model') == 'warehouse' else Product
+
+        return self.get_to_delete(
+            request=request,
+            slug=slug,
+            model=self.model
+            )
+    
+    def post(self, request, slug):
+        print(request.POST)
+        if request.POST:
+            self.model = Warehouses if request.POST.get('model') == 'warehouse' else Product
+
+            print()
+
+            return self.post_to_delete(
+            request=request,
+            slug=slug,
+            model=self.model
+            )
+        
+
+
 
 
 
@@ -121,7 +164,7 @@ class UpdateProduct(LoginRequiredMixin, View):
         return reverse('related_products_url', kwargs={'slug': slug, 'request': request})
 
 
-class SearchingFilter(LoginRequiredMixin, View):
+class SearchingFilter(LoginRequiredMixin, PaginatorMixin, View):
     model = Product
     war_model = Warehouses
     template = 'warehouse/warehouse_home.html'
@@ -148,27 +191,33 @@ class SearchingFilter(LoginRequiredMixin, View):
                     Q(barcode__icontains=title)
                     )
 
-                # loc_products = get_object.products.annotate(
-                #     r_products = FilteredRelation(
-                #         'title', condition=Q(title__icontains=title),
-                #     ),
-                # )
-
                 if search_query.get('p_available') == 'on':
                     loc_products = loc_products.filter(active_stamp=True)
                 
                 if search_query.get('p_olx_available') == 'on':
                     loc_products = loc_products.filter(olx_stamp=True)
                 
-                
-        
+                p = PaginatorMixin()
+                pagination_products = p.create_pagination(kwargs={
+                    'request': request,
+                    'object': loc_products
+                })
+
+                try:
+                    page = int(request.GET.get('page'))
+                except:
+                    page = 0
 
         warehouse = self.war_model.objects.filter(date_pub__lte=timezone.now()).order_by('-date_pub')
 
         return render(request, self.template, context={
                                 self.war_model.__name__.lower(): warehouse,
-                                'products': loc_products,
+                                # 'products': loc_products,
+                                'products': pagination_products.get('counter'),
                                 'general_warehouses': get_object,
-                                'filter': True
+                                'filter': True,
+                                'pag_counter': pagination_products.get('counter'),
+                                'pag_object': pagination_products.get('pag_range'),
+                                'current_page': page
                                 })
 

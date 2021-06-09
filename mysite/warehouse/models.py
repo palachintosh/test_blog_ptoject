@@ -21,7 +21,7 @@ class Warehouses(models.Model):
         return reverse('update_warehouse_url', kwargs={'slug': self.slug})
 
     def get_delete_url(self):
-        return reverse('delete_warehouse_url', kwargs={'slug': self.slug})
+        return reverse('delete_object_url', kwargs={'slug': self.slug})
 
 
     def save(self, *args, **kwargs):
@@ -53,6 +53,10 @@ class Product(models.Model):
     def get_update_url(self):
         return reverse('update_product_url', kwargs={'slug': self.slug})
     
+    def get_delete_url(self):
+        return reverse('delete_object_url', kwargs={'slug': self.slug})
+
+
     def get_related_warehouses(self):
         r_war = self.warehouse_products.filter()
         return r_war
