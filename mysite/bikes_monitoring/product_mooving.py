@@ -1,10 +1,11 @@
 import re
+from django.contrib.auth import login
 from django.http import JsonResponse
-import requests
-from requests import api
 from .utils import DataValidators
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
+from .PrestaRequest.AP.AP_main import *
 from .PrestaRequest.mainp.api_secret_key import api_secret_key
+from .PrestaRequest.AP.auth_data import AUTH_DATA
 from .PrestaRequest.mainp.warehouse_values import GetWarehousesValues
 from .PrestaRequest.mainp.reserver import Reserve
 from .utils import Logging
@@ -36,7 +37,7 @@ def product_mooving(request):
 
 
     if filter_code.get('rex_code') != None:
-        request_url = "https://3gravity.pl/api/combinations/&filter[reference]={}".format(
+        request_url = "https://3gravity.pl/api/combinations/?filter[reference]={}".format(
             filter_code.get('rex_code'))
         presta_get = PrestaRequest(api_secret_key=api_secret_key,
                                    request_url=request_url)
@@ -203,7 +204,7 @@ def app_management(request, w_from, w_to):
     l = Logging()
     vd = validate_data(request)
 
-    if vd.get('code') != None:
+    if vd.get('code') is not None:
         try:
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.product_transfer(
@@ -213,21 +214,23 @@ def app_management(request, w_from, w_to):
                 code=vd.get('code')
             )
 
-            if moove != None:
+            if moove is not None:
                 data = {
                         'success': 'YES',
-                        'delivery_on_warehouse': 'YES',
-                        'DATE': str(datetime.datetime.now())
+                        'delivery_on_warehous': 'TAK',
+                        'DATE': str(datetime.datetime.now()),
+                        'name': moove.get("name"),
+                        'quantity': moove.get("quantity"),
+                        'restore_token': presta_get.restore_id
                     }
                 
                 print(data)
-                if moove.get('error') != None:
+                if moove.get('error') is not None:
                     data.update({
                             'success': 'NO',
-                            'error': moove.get('error')
+                            'error': moove.get('error'),
+                            "name": moove.get("error")
                             })
-                
-                print(data)
 
                 l.logging(log_name='prodct_m', kwargs=data)
 
@@ -237,6 +240,7 @@ def app_management(request, w_from, w_to):
             kwargs_data = {
                 'DATE': str(datetime.datetime.now()),
                 'ERROR': str(e),
+                'NAME': vd.get('code')
             }
 
             l.logging(kwargs=kwargs_data)
@@ -245,36 +249,37 @@ def app_management(request, w_from, w_to):
     return JsonResponse({'typeError': 'Invalid code!'})
 
 
-# Add products to stocks
+# Add products on stocks
 def app_management_inc(request, w_to):
     l = Logging()
     vd = validate_data(request)
 
-    if vd.get('code') != None:
-        print('CODE++++++++++++++', vd.get('code'))
+    if vd.get('code') is not None:
         try:
             presta_get = PrestaRequest(api_secret_key=api_secret_key)
             moove = presta_get.to_w_transfer(
                 quantity_to_transfer=vd.get('quantity_to_transfer'),
                 w_to=w_to,
-                code=vd.get('code')
+                code=vd.get('code'),
             )
 
-            if moove != None:
+            if moove is not None:
                 data = {
                         'success': 'YES',
-                        'delivery_on_warehouse': 'YES',
-                        'DATE': str(datetime.datetime.now())
+                        'delivery_on_warehous': 'TAK',
+                        'DATE': str(datetime.datetime.now()),
+                        'name': moove.get("name"),
+                        'quantity': moove.get("quantity"),
+                        'restore_token': presta_get.restore_id
                     }
                 
-                print(data)
                 if moove.get('error') != None:
                     data.update({
                             'success': 'NO',
-                            'error': moove.get('error')
+                            'error': moove.get('error'),
+                            "name": moove.get("error")
                             })
                 
-                print(data)
                 l.logging(log_name='prodct_m', kwargs=data)
     
                 return JsonResponse(moove)
@@ -394,4 +399,49 @@ def reserve_product(request_get):
 
         return cors_headers_add(to_json=['error', 'Combination url is not valid!'])
 
+
+def init_product(product_id, comb_list):
+    ap = APStockWorker(login=AUTH_DATA[0], password=AUTH_DATA[1])
+    ap.product_id = product_id
+    init_all = ap.sw_main_cycle(product_id=product_id, comb_list=comb_list)
+  
+    return init_all
+
+
+
+def init_stocks_with_code(code):
+    pr = PrestaRequest(api_secret_key=api_secret_key)
+    ap = APStockWorker(login=AUTH_DATA[0], password=AUTH_DATA[1])
+    
+    product_dict = pr.get_init_data(code)
+
+
+    if product_dict:
+        product_id = list(product_dict.keys())[0]
+        comb_list = product_dict.get(product_id)
+
+        if product_id is None or comb_list is None:
+            return {"error": "Unable to detect product and/or combinations!"}
+
+        print(product_id, comb_list)
+
+        init_all = ap.sw_main_cycle(
+            product_id=product_id,
+            comb_list=comb_list,
+        )
+
+        return init_all
+
+
+    return {"error": "Invalid code!"}
+
+    # 1. Combination for code -> comb_list["comb_id"]
+    # 2. Product id
+
+
+def cancel_action(restore_token):
+    pr = PrestaRequest(api_secret_key=api_secret_key)
+    restore_action = pr.restore_last_action(restore_id=restore_token)
+
+    return restore_action
 

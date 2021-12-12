@@ -60,12 +60,9 @@ class DataValidators:
 
 
     def is_comb_value_valid(self, comb_id):
-        data = {}
-        
-        if comb_id != None:
+        if comb_id is not None:
             if len(comb_id) >= 2 and len(comb_id) <= 5:
                 return comb_id
-            
         else:
             return None
 

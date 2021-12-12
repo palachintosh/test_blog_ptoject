@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'blog_pl',
     'notes',
     'bikes_monitoring',
+    'likes_and_statistics',
+    'warehouse',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -151,7 +153,6 @@ CKEDITOR_CONFIGS = {
 ### GeoIP2 ###
 
 GEOIP_PATH = os.path.join(BASE_DIR + '/mysite/GEOIP_COUNTRY_DB', 'GeoLite2-Country.mmdb')
-print(GEOIP_PATH)
 
 ### GeoIP2 ###
 
