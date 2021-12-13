@@ -87,9 +87,9 @@ class Logging:
         try:
             with open(log_name, 'a') as f:
                 for i in param_dict.items():
-                    print(i[0] + ': ' + i[1], file=f)
+                    print(str(i[0]) + ': ' + str(i[1]), file=f)
 
         except:
             with open(log_name) as f:
                 for i in param_dict.items():
-                    print(i[0] + ': ' + i[1], file=f)
+                    print(str(i[0]) + ': ' + str(i[1]), file=f)
