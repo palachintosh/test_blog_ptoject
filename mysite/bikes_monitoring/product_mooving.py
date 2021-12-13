@@ -126,7 +126,7 @@ def remove_with_reservation(request_get):
     code = reference.get('rex_code')
 
     if r_check and code:
-        request_url = f"https://3gravity.pl/api/combinations/&filter[reference]=%[{code}]%"
+        request_url = "https://3gravity.pl/api/combinations/&filter[reference]=%[]%".format(code)
         presta_get = PrestaRequest(api_secret_key=api_secret_key,
                                    request_url=request_url)
         
