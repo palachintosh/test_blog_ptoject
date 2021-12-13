@@ -37,7 +37,7 @@ def product_mooving(request):
 
 
     if filter_code.get('rex_code') != None:
-        request_url = "https://3gravity.pl/api/combinations/?filter[reference]={}".format(
+        request_url = "https://3gravity.pl/api/combinations/?filter[reference]=%[{}]%".format(
             filter_code.get('rex_code'))
         presta_get = PrestaRequest(api_secret_key=api_secret_key,
                                    request_url=request_url)
@@ -126,8 +126,7 @@ def remove_with_reservation(request_get):
     code = reference.get('rex_code')
 
     if r_check and code:
-        request_url = "https://3gravity.pl/api/combinations/&filter[reference]={}".format(
-            code)
+        request_url = f"https://3gravity.pl/api/combinations/&filter[reference]=%[{code}]%"
         presta_get = PrestaRequest(api_secret_key=api_secret_key,
                                    request_url=request_url)
         
