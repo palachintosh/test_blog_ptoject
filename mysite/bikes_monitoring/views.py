@@ -199,7 +199,7 @@ class PrestaInit(View):
 
 @method_decorator(csrf_exempt, name="dispatch")
 class AppPrestaRestore(View):
-    def get(self, request):
+    def post(self, request):
         # Change to POST after commit
         if request.POST:
             restore_token = request.POST.get("restore_token")
