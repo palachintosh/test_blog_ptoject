@@ -197,14 +197,14 @@ class PrestaInit(View):
 
 
 
-# @method_decorator(csrf_exempt, name="dispatch")
+@method_decorator(csrf_exempt, name="dispatch")
 class AppPrestaRestore(View):
     def get(self, request):
         # Change to POST after commit
         if request.POST:
             restore_token = request.POST.get("restore_token")
             restore_action = cancel_action(restore_token)
-            
+
             if restore_action.get('success'):
                 return JsonResponse({"success": "OK"})
 
