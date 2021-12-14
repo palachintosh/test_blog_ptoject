@@ -10,10 +10,11 @@ from .PrestaRequest.mainp.warehouse_values import GetWarehousesValues
 from .PrestaRequest.mainp.reserver import Reserve
 from .utils import Logging
 import datetime
+import logging
 
 
+# Main transactions handler
 def product_mooving(request):
-
     def cors_headers_add(to_json=[]):
         data = JsonResponse({to_json[0]: to_json[1]})
 
@@ -103,7 +104,6 @@ def reserve_check(phone_number, comb_url):
         return None
 
 
-
 # delete from kross.pl site
 def remove_with_reservation(request_get):
 
@@ -162,7 +162,6 @@ def remove_with_reservation(request_get):
 
             else:
                 return {'Warning': 'Rezerwacja dla klienta zamknieta albo jej nie bylo!'}
-
 
 
 def cors_headers_options(origin, to_json=[]):
@@ -406,7 +405,6 @@ def init_product(product_id, comb_list):
     return init_all
 
 
-
 def init_stocks_with_code(code):
     pr = PrestaRequest(api_secret_key=api_secret_key)
     ap = APStockWorker(login=AUTH_DATA[0], password=AUTH_DATA[1])
@@ -420,9 +418,6 @@ def init_stocks_with_code(code):
 
         if product_id is None or comb_list is None:
             return {"error": "Unable to detect product and/or combinations!"}
-
-        print("==========================================")
-        print(product_id, comb_list)
 
         init_all = ap.sw_main_cycle(
             product_id=product_id,

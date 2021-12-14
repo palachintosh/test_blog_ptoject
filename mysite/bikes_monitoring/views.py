@@ -1,3 +1,4 @@
+from json.decoder import JSONDecoder
 from django.views.generic import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -25,7 +26,13 @@ try:
 except:
     ImportError("Cannot import API key!")
 
-
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(message)s")
+views_base_dir = os.path.dirname(os.path.abspath(__file__))
+file_handler = logging.FileHandler(views_base_dir + "/log/views.log")
+views_logger = logging.getLogger('views_logger')
+views_logger.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+views_logger.addHandler(file_handler)
 
 # import access token from file
 
@@ -55,7 +62,9 @@ class BikeCheck(View):
             if request.GET.get('token') and request.GET.get('token') == get_token():
                 if request.GET.get('phone_number') is not None:
                     return remove_with_reservation(request)
+
                 else:
+                    views_logger.info("TRANSACTION: KROSS, " + str(request.GET.get('code')))
                     return product_mooving(request)
             else:
                 return JsonResponse({'Error': "Invalid token! Access deny!"})
@@ -130,13 +139,32 @@ class ProductMGMT(View):
                 return JsonResponse({'error': 'Warehouse <TO> must be fill!'})
 
             if w_from == '' or w_from is None:
-                return app_management_inc(request, w_to)
-            
+                app_mgmt_inc = app_management_inc(request, w_to)
+
+                # Log
+                views_logger.info(
+                    "TRANSACTION: APP, " +
+                    str(request.POST.get('code')) +
+                    " : " +
+                    str(app_mgmt_inc))
+
+                return app_mgmt_inc
+
+
             elif w_from == w_to:
                 return JsonResponse({'error': 'Cannot transfer product between same warehouses!'})
 
             else:
-                return app_management(request, w_from, w_to)
+                app_mgmt = app_management(request, w_from, w_to)
+
+                # Log
+                views_logger.info(
+                    "TRANSACTION: APP, " + 
+                    str(request.POST.get('code')) +
+                    " : " + 
+                    str(app_mgmt))
+
+                return app_mgmt
             
         return JsonResponse({'error': 'Data required!'})
 
@@ -157,6 +185,13 @@ class AppInitProduct(View):
 
             if code:
                 init_with_code = init_stocks_with_code(code.get("rex_code"))
+
+                views_logger.info(
+                    "TRANSACTION: APP_INIT, " + 
+                    str(request.POST.get('code')) + 
+                    " : " + 
+                    str(init_with_code.get("success")))
+
 
             return JsonResponse(init_with_code)
         
@@ -206,9 +241,13 @@ class AppPrestaRestore(View):
         if request.POST:
             restore_token = request.POST.get("restore_token")
 
-            print(restore_token)
             restore_action = cancel_action(restore_token)
-            print(restore_action)
+
+            views_logger.info(
+                    "TRANSACTION: APP_RESTORE, " + 
+                    str(request.POST.get('restore_token')) + 
+                    " : " + 
+                    str(restore_action))
 
             if restore_action.get('success'):
                 return JsonResponse({"success": "OK"})
