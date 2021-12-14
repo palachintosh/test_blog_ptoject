@@ -223,7 +223,6 @@ def app_management(request, w_from, w_to):
                         'restore_token': presta_get.restore_id
                     }
                 
-                print(data)
                 if moove.get('error') is not None:
                     data.update({
                             'success': 'NO',
@@ -233,7 +232,7 @@ def app_management(request, w_from, w_to):
 
                 l.logging(log_name='prodct_m', kwargs=data)
 
-                return JsonResponse(moove)
+                return JsonResponse(data)
 
         except Exception as e:
             kwargs_data = {
@@ -269,7 +268,7 @@ def app_management_inc(request, w_to):
                         'DATE': str(datetime.datetime.now()),
                         'name': moove.get("name"),
                         'quantity': moove.get("quantity"),
-                        'restore_token': presta_get.restore_id
+                        'restore_token': presta_get.restore_id,
                     }
                 
                 if moove.get('error') != None:
@@ -281,7 +280,7 @@ def app_management_inc(request, w_to):
                 
                 l.logging(log_name='prodct_m', kwargs=data)
     
-                return JsonResponse(moove)
+                return JsonResponse(data)
 
         except Exception as e:
             kwargs_data = {
@@ -422,6 +421,7 @@ def init_stocks_with_code(code):
         if product_id is None or comb_list is None:
             return {"error": "Unable to detect product and/or combinations!"}
 
+        print("==========================================")
         print(product_id, comb_list)
 
         init_all = ap.sw_main_cycle(

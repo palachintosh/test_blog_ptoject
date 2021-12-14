@@ -111,15 +111,11 @@ class PrestaReserve(View):
 @method_decorator(csrf_exempt, name="dispatch")
 class ProductMGMT(View):
     def post(self, request):
-        print(request.POST)
-
         if request.POST:
             validator = DataValidators()
             try:
                 w_from = request.POST.get('w_from')
                 w_to = request.POST.get('w_to')
-
-                print(w_to)
 
                 validate_warehouse = validator.is_w_valid(w_from, w_to)
 
@@ -151,7 +147,13 @@ class AppInitProduct(View):
     def post(self, request):
         if request.POST:
             vd = DataValidators()
-            code = vd.is_code_valid(str(request.POST.get("code")))
+            
+            bike_code = str(request.POST.get("code"))
+
+            if bike_code is None:
+                return JsonResponse({'error': 'Invalid data!'})
+
+            code = vd.is_code_valid(bike_code)
 
             if code:
                 init_with_code = init_stocks_with_code(code.get("rex_code"))
@@ -196,14 +198,17 @@ class PrestaInit(View):
             return JsonResponse({"error": "Data required!"})
 
 
-
+#Restore button in the app
 @method_decorator(csrf_exempt, name="dispatch")
 class AppPrestaRestore(View):
     def post(self, request):
         # Change to POST after commit
         if request.POST:
             restore_token = request.POST.get("restore_token")
+
+            print(restore_token)
             restore_action = cancel_action(restore_token)
+            print(restore_action)
 
             if restore_action.get('success'):
                 return JsonResponse({"success": "OK"})
