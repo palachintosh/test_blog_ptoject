@@ -223,11 +223,11 @@ def app_management(request, w_from, w_to):
                     }
                 
                 if moove.get('error') is not None:
-                    data.update({
-                            'success': 'NO',
-                            'error': moove.get('error'),
-                            "name": moove.get("error")
-                            })
+                    data = {
+                            # 'success': 'NO',
+                            'error': moove.get("error"),
+                            }
+
 
                 l.logging(log_name='prodct_m', kwargs=data)
 
@@ -271,11 +271,11 @@ def app_management_inc(request, w_to):
                     }
                 
                 if moove.get('error') != None:
-                    data.update({
-                            'success': 'NO',
+                    data = {
+                            # 'success': 'NO',
                             'error': moove.get('error'),
-                            "name": moove.get("error")
-                            })
+                            }
+                    
                 
                 l.logging(log_name='prodct_m', kwargs=data)
     
@@ -412,7 +412,7 @@ def init_stocks_with_code(code):
     product_dict = pr.get_init_data(code)
 
 
-    if product_dict:
+    if isinstance(product_dict, dict):
         product_id = list(product_dict.keys())[0]
         comb_list = product_dict.get(product_id)
 
@@ -422,12 +422,16 @@ def init_stocks_with_code(code):
         init_all = ap.sw_main_cycle(
             product_id=product_id,
             comb_list=comb_list,
+            force=True
         )
+
+        if init_all is None:
+            return {"error": "Unexpected error while init stocks!"}
 
         return init_all
 
 
-    return {"error": "Invalid code!"}
+    return {"error": 'Code \'{}\' is not associate with no one product!'.format(code)}
 
     # 1. Combination for code -> comb_list["comb_id"]
     # 2. Product id

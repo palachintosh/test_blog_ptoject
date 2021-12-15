@@ -10,6 +10,7 @@ from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
 from .utils import DataValidators
 from .product_mooving import *
 from .presta_reset import *
+from .statuses import *
 
 
 from django.utils.decorators import method_decorator
@@ -176,21 +177,22 @@ class AppInitProduct(View):
         if request.POST:
             vd = DataValidators()
             
-            bike_code = str(request.POST.get("code"))
+            bike_code = request.POST.get("code")
 
-            if bike_code is None:
+            # if bike_code is None or bike_code == "":
+            if not (len(bike_code) > 8 and len(bike_code) < 20):
                 return JsonResponse({'error': 'Invalid data!'})
+            
 
-            code = vd.is_code_valid(bike_code)
+            if bike_code:
+                init_with_code = init_stocks_with_code(bike_code)
 
-            if code:
-                init_with_code = init_stocks_with_code(code.get("rex_code"))
-
-                views_logger.info(
-                    "TRANSACTION: APP_INIT, " + 
-                    str(request.POST.get('code')) + 
-                    " : " + 
-                    str(init_with_code.get("success")))
+                if init_with_code is not None:
+                    views_logger.info(
+                        "TRANSACTION: APP_INIT, " + 
+                        str(request.POST.get('code')) + 
+                        " : " + 
+                        str(init_with_code.get("success")))
 
 
             return JsonResponse(init_with_code)
