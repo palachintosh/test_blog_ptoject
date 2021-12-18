@@ -32,7 +32,7 @@ class PrivacyPolicyForm(forms.ModelForm):
 
     class Meta:
         model = PrivacyPolicy
-        fields = ("privacy",)
+        fields = "__all__"
 
 @admin.register(PrivacyPolicy)
 class PrivacyPolicyAdmin(admin.ModelAdmin):
