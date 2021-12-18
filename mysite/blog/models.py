@@ -78,8 +78,6 @@ class Post(models.Model):
         return self.title
 
 
-
-
 class Comment(models.Model):
 
     name = models.CharField(max_length=20)
@@ -93,9 +91,6 @@ class Comment(models.Model):
     
     def __str__(self):
         return self.name
-
-
-
 
 
 class Tag(models.Model):
@@ -115,3 +110,8 @@ class Tag(models.Model):
 
 def get_filter_url():
     return reverse('filter_form_url')
+
+
+class PrivacyPolicy(models.Model):
+    name = models.CharField(max_length=200)
+    privacy = models.TextField()

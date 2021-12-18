@@ -1,7 +1,10 @@
+from django.http.request import HttpRequest
+from django.http.response import Http404, HttpResponse
 from django.shortcuts import render
 from django.shortcuts import render_to_response
 from django.shortcuts import redirect
 from django.utils import timezone
+from requests.models import get_auth_from_url
 from .models import Post
 from .models import Tag
 from .forms import TagForm
@@ -231,15 +234,19 @@ class ChangeLG(View):
         else:
             redirect_url = redirect('home_blog_page')
 
-        # if checkbox_status == 'on':
-        #     redirect_url = redirect('pl_home_blog_page')
-
-        # else:
-        #     redirect_url = redirect('home_blog_page')
-
         data = {
             'redirect': redirect_url.url,
             'check_change': check_change,
         }
 
         return JsonResponse(data)
+
+
+class PrivacyPolicy(View):
+    model = PrivacyPolicy
+    template = "blog/privacy_policy.html"
+
+    def get(self, request):
+        get_privacy = self.model.objects.get(name="Bike Control Privacy Policy")
+        
+        return render(request, self.template, context={"privacy": get_privacy})

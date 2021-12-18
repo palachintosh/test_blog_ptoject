@@ -1,0 +1,12 @@
+{% extends 'blog/base_blog.html' %}
+{% load static %}
+
+{% block title %}
+    Privacy Policy
+{% endblock %}
+
+{% block content %}
+    <h2>Privacy Policy</h2>
+
+    <p class="mb-5">{{ privacy.privacy|safe }} </p>
+{% endblock%}
