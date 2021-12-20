@@ -14,7 +14,7 @@ from .statuses import *
 
 
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 
 
 
@@ -201,13 +201,26 @@ class AppInitProduct(View):
 
 
 # Init button in the extension
+@method_decorator(csrf_exempt, name="dispatch")
 class PrestaInit(View):
     def options(self, request):
         return cors_headers_options(origin="https://3gravity.pl", to_json=['TEST', 'TEST'], post=True)
 
 
     # In post params: product_id, comb_dict
+    # @method_decorator(ensure_csrf_cookie, name="dispatch")
     def post(self, request):
+        def cors_headers_add(to_json=[]):
+            data = JsonResponse({to_json[0]: to_json[1]})
+
+            data["Access-Control-Allow-Origin"] = "https://3gravity.pl"
+            data["Vary"] = "Origin"
+            data["Access-Control-Allow-Credentials"] = "true"
+            data[
+                "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
+
+            return data
+
         if request.POST:
             
             if request.POST.get('token') and request.POST.get('token') == get_token():
@@ -216,23 +229,27 @@ class PrestaInit(View):
                     comb_list = json.loads(request.POST.get("comb_list"))
 
                     if not isinstance(comb_list, list) or len(product_id) > 5:
-                        return JsonResponse({
-                            "error": "Invalid params was given!"
-                        })
+                        # return JsonResponse({
+                        #     "error": "Invalid params was given!"
+                        # })
+                        return cors_headers_add(['erorr', 'Invalid params were given!']) 
                 
                 except Exception as e:
-                    return JsonResponse({"error": "Combinations invalid!"})
+                    # return JsonResponse({"error": "Combinations invalid!"})
+                    return cors_headers_add(['error', 'Combinations invalid!'])
 
                 else:
                     # Calling the init main thread
                     init_all = init_product(product_id, comb_list)
-                    return JsonResponse(init_all)
+                    return init_all
 
             else:
-                return JsonResponse({"error": "Invalid token! Access deny!"})
+                # return JsonResponse({"error": "Invalid token! Access deny!"})
+                return cors_headers_add(['error', 'Invalid token! Access deny!'])
         
         else:
-            return JsonResponse({"error": "Data required!"})
+            # return JsonResponse({"error": "Data required!"})
+            return cors_headers_add(['error', 'Data required!'])
 
 
 #Restore button in the app
