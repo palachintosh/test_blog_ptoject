@@ -164,13 +164,17 @@ def remove_with_reservation(request_get):
                 return {'Warning': 'Rezerwacja dla klienta zamknieta albo jej nie bylo!'}
 
 
-def cors_headers_options(origin, to_json=[]):
+def cors_headers_options(origin, to_json=[], post=False):
     data = JsonResponse(
             {to_json[0]: to_json[1]}
         )
+    
+    if post:
+        data["Access-Control-Allow-Methods"] = "POST, GET, OPTIONS"
+    else:
+        data["Access-Control-Allow-Methods"] = "GET, OPTIONS"
 
     data["Access-Control-Allow-Origin"] = origin
-    data["Access-Control-Allow-Methods"] = "GET, OPTIONS"
     data["Access-Control-Allow-Credentials"] = "true"
     data["Vary"] = "Origin"
     data["Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"

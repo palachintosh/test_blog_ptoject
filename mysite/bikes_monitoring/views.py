@@ -203,7 +203,7 @@ class AppInitProduct(View):
 # Init button in the extension
 class PrestaInit(View):
     def options(self, request):
-        return cors_headers_options(origin="https://3gravity.pl", to_json=['TEST', 'TEST'])
+        return cors_headers_options(origin="https://3gravity.pl", to_json=['TEST', 'TEST'], post=True)
 
 
     # In post params: product_id, comb_dict
