@@ -398,11 +398,22 @@ def reserve_product(request_get):
 
 
 def init_product(product_id, comb_list):
+    def cors_headers_add(to_json=[]):
+        data = JsonResponse({to_json[0]: to_json[1]})
+
+        data["Access-Control-Allow-Origin"] = "https://3gravity.pl"
+        data["Vary"] = "Origin"
+        data["Access-Control-Allow-Credentials"] = "true"
+        data[
+            "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
+
+        return data
+
     ap = APStockWorker(login=AUTH_DATA[0], password=AUTH_DATA[1])
     ap.product_id = product_id
     init_all = ap.sw_main_cycle(product_id=product_id, comb_list=comb_list)
   
-    return init_all
+    return cors_headers_add(['success', init_all])
 
 
 def init_stocks_with_code(code):
