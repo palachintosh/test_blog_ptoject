@@ -31,13 +31,13 @@ def product_mooving(request):
     validator = DataValidators()
     code = request.GET.get('code')
 
-    if code != None:
+    if code is not None:
         filter_code = validator.is_code_valid(code)
     
     else: return JsonResponse({'error': 'Code must be fill!'})
 
 
-    if filter_code.get('rex_code') != None:
+    if filter_code.get('rex_code') is not None:
         request_url = "https://3gravity.pl/api/combinations/?filter[reference]=%[{}]%".format(
             filter_code.get('rex_code'))
         presta_get = PrestaRequest(api_secret_key=api_secret_key,
@@ -48,20 +48,23 @@ def product_mooving(request):
         try:
             del_bike = presta_get.stock_parser(quantity_to_transfer=1)
 
+            if isinstance(del_bike, dict):
+                return cors_headers_add(to_json=['error', del_bike.get('error')])
+
             if del_bike != None:
 
                 # Delete one from stocks_availables
                 apply_changes = presta_get.presta_put()
-                print(apply_changes.get('success'))
 
-                if apply_changes.get('success') != None:
+                if apply_changes.get('success') is not None:
                     del_from_warehouse = presta_get.warehouse_quantity_mgmt(
                         warehouse='SHOP',
                         reference=filter_code.get('rex_code'))
 
-                    # print(del_from_warehouse)
+                    if isinstance(del_from_warehouse, dict):
+                        return cors_headers_add(to_json=['error', del_from_warehouse.get('error')])
 
-                    if del_from_warehouse != None:
+                    if del_from_warehouse is not None:
                         put_data = presta_get.presta_put(
                             request_url=del_from_warehouse)
 
@@ -77,9 +80,6 @@ def product_mooving(request):
                         return cors_headers_add(
                             to_json=['success',
                                      filter_code.get('rex_code')])
-
-                    else:
-                        pass
 
         except Exception as e:
             kwargs_data = {
