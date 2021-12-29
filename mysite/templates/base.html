@@ -48,15 +48,34 @@
         {% endblock %}
     </title>
 
+    <style>
+        .ch_cap {
+            width: 32px;
+            height: 32px;
+            position: absolute;
+            background-image: url("{% static 'icons/ch_cap.png'%}");
+            z-index: 90000;
+            top: 8px;
+            left: 1px;
+        }
+    </style>
+
     {% block head %}{% endblock %}
 
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark" style="z-index: 9999;">
         {% if language_var %}
-            <a class="navbar-brand" href="{% url 'pl_home_blog_page' %}">Palachinto<span style="color: #1e82df">sh</span></a>
+            <a class="navbar-brand" href="{% url 'pl_home_blog_page' %}">
+                <span class="ch_cap"></span>
+                Palachinto<span style="color: #1e82df">sh</span>
+            </a>
+        
         {% else %}
-            <a class="navbar-brand" href="{% url 'home_blog_page' %}">Palachinto<span style="color: #1e82df">sh</span></a>
+            <a class="navbar-brand" href="{% url 'home_blog_page' %}">
+                <span class="ch_cap"></span>
+                Palachinto<span style="color: #1e82df">sh</span>
+            </a>
         {% endif %}
 
         <script type="text/javascript">
