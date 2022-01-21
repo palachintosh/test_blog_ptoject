@@ -1,6 +1,8 @@
 import re
 from django.contrib.auth import login
 from django.http import JsonResponse
+
+from bikes_monitoring.PrestaRequest.mainp.db.db_writer import ReserveBikes
 from .utils import DataValidators
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
 from .PrestaRequest.AP.AP_main import *
@@ -11,6 +13,8 @@ from .PrestaRequest.mainp.reserver import Reserve
 from .utils import Logging
 import datetime
 import logging
+from mysite.celery import app
+from .tasks import auto_delete_reserve
 
 
 # Main transactions handler
@@ -51,7 +55,7 @@ def product_mooving(request):
             if isinstance(del_bike, dict):
                 return cors_headers_add(to_json=['error', del_bike.get('error')])
 
-            if del_bike != None:
+            if del_bike is not None:
 
                 # Delete one from stocks_availables
                 apply_changes = presta_get.presta_put()
@@ -96,17 +100,31 @@ def product_mooving(request):
 def reserve_check(phone_number, comb_url):
     comb_url = comb_url[-4:]
     pr = Reserve(api_secret_key=api_secret_key)
-    add_reserve = pr.reserve_check(comb_id=comb_url, phone_number=phone_number)
+    check_data = {}
+    check_data["comb_id"] = comb_url
+    check_data["phone_number"] = phone_number
+    pr.db_data = check_data
 
-    if add_reserve != None:
+    add_reserve = pr.reserve_check()
+
+    if add_reserve is not None:
+        if add_reserve.get('Warning'):
+            return add_reserve
+
         return comb_url
     else:
         return None
 
+def cancel_reserve_task(task_id):
+    # This construction discarding task in the worker
+    app.control.revoke(task_id, terminate=True)
+
+
+
+
 
 # delete from kross.pl site
 def remove_with_reservation(request_get):
-
     def cors_headers_add(to_json=[]):
         data = JsonResponse({to_json[0]: to_json[1]})
 
@@ -126,26 +144,33 @@ def remove_with_reservation(request_get):
     code = reference.get('rex_code')
 
     if r_check and code:
-        request_url = "https://3gravity.pl/api/combinations/&filter[reference]=%[]%".format(code)
+        request_url = "https://3gravity.pl/api/combinations/&filter[reference]=%[{}]%".format(code)
         presta_get = PrestaRequest(api_secret_key=api_secret_key,
                                    request_url=request_url)
         
         comb_url = presta_get.get_combination_url()
         check = reserve_check(phone_number, comb_url)
         
-        if check is not None:
+        if check is not None and not isinstance(check, dict):
             del_from_warehouse = presta_get.warehouse_quantity_mgmt(
                 warehouse='SHOP',
                 reference=code)
 
-                # print(del_from_warehouse)
 
-            if del_from_warehouse != None:
+            if del_from_warehouse is not None and not isinstance(del_from_warehouse, dict):
                 put_data = presta_get.presta_put(
                         request_url=del_from_warehouse)
                 
                 r = Reserve(api_secret_key=api_secret_key)
-                od = r.only_deactivate(check, phone_number)
+                r.db_data = {
+                    'comb_id': comb_url[-4:],
+                    'phone_number': phone_number
+                }
+
+                od = r.only_deactivate()
+
+                if od is not None:
+                    cancel_reserve_task(r.r_check[3])
 
                 kwargs_data = {
                     'DATE': str(datetime.datetime.now()),
@@ -158,10 +183,14 @@ def remove_with_reservation(request_get):
                 l.logging(kwargs=kwargs_data)
                 return cors_headers_add(
                         to_json=['success',
-                        'Reservation closed!'])
+                        'Rezerwacja zamknieta!'])
 
             else:
-                return {'Warning': 'Rezerwacja dla klienta zamknieta albo jej nie bylo!'}
+                return cors_headers_add([
+                    'Error', 'Rezerwacja zamknieta ale wybranego produktu nie ma na stanach!'])
+        else:
+            return cors_headers_add([
+                'Warning', 'Rezerwacja dla klienta zamknieta albo jej nie bylo!'])
 
 
 def cors_headers_options(origin, to_json=[], post=False):
@@ -330,7 +359,29 @@ def  get_warehouses_value(input_values_dict):
         return cors_headers_add(to_json=['success', response_data])
 
 
-# works on PS
+def reserve_task_create(data):
+    off_time = datetime.datetime.now() + datetime.timedelta(
+        hours=data.get('off_hours'))
+    # off_time = datetime.datetime.now() + datetime.timedelta(
+    #     minutes=data['off_hours'])
+
+    task = auto_delete_reserve.apply_async((
+        data["comb_id"],
+        data["phone_number"],
+        data["request_url"],
+        api_secret_key,),
+        eta=off_time)
+
+    print("+----------------------------------+")
+    print(task)
+    print(task.state)
+    print(task.status)
+    print("+--------------------------------- +")
+
+    return task.id
+
+
+# works with PS extension
 def reserve_product(request_get):
     """
     The function return JSON with next information:
@@ -354,51 +405,110 @@ def reserve_product(request_get):
             "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
 
         return data
+
     
-    response_data = {}
-    
-    if request_get != None:
-        
+    if request_get:
         validator = DataValidators()
-        reference = validator.is_comb_value_valid(comb_id=request_get.get('comb_id'))
+        comb_id = validator.is_comb_value_valid(comb_id=request_get.get('comb_id'))
         phone_number = validator.is_phone_number_valid(request_get.get('phone_number'))
+        username = validator.is_name_valid(username=request_get.get('reference'))
 
-        if phone_number == None:
-            # print("------------------------------------")
-            return cors_headers_add(['Warning', 'Phone number must be fill!'])
+        if phone_number is None:
+            return cors_headers_add(['Warning', 'Niezbedny jest numer telefonu klienta!'])
+        
+        db_data = dict()
+        db_data["comb_id"] = str(comb_id)
+        db_data["phone_number"] = str(phone_number)
+        db_data["reference"] = username
+        db_data["active_stamp"] = request_get.get('active_stamp')
 
-        request_url = 'https://3gravity.pl/api/combinations/{}'.format(reference)
-
-        pr = Reserve(api_secret_key=api_secret_key, request_url=request_url)
-        pr.url_to_delete = request_url
-
-        # print("ACTIVE_S", request_get.get('active_stamp'), reference)
-
-        if request_get.get('active_stamp') == '1':
-            if reference != None:
-                try:
-                    add_reserve = pr.reserve_check(comb_id=reference, phone_number=phone_number)
-
-                    if add_reserve != None:
-                        return cors_headers_add(['success', add_reserve])
-
-                    raise Exception
-                except:
-                    return cors_headers_add(['Warning', 'Reservation does not exist!'])
+        if request_get.get('off_time'):
+            db_data["off_hours"] = int(request_get.get('off_time'))
+            db_data['permanent'] = 0
 
         else:
-            if reference != None:
-                try:
-                    cancel_reserve = pr.deactivate(comb_id=reference, phone_number=phone_number)
+            db_data['off_hours'] = 0
+            db_data['permanent'] = 1
 
-                    if cancel_reserve != None:
+
+        request_url = 'https://3gravity.pl/api/combinations/{}'.format(comb_id)
+
+        pr = Reserve(api_secret_key=api_secret_key, request_url=request_url)
+        pr.db_data = db_data
+        pr.url_to_delete = request_url
+
+        if db_data["active_stamp"] == '1':
+            if comb_id is not None:
+                add_reserve = pr.reserve_check()
+
+                if add_reserve is None:
+                    # Make reservation
+                    add_new = pr.add_new()
+
+                    if add_new is None:
+                        return cors_headers_add(['error', 'Rezerwacja nie powiodla sie!'])
+
+                    if isinstance(add_new, dict):
+                        if add_new.get('succeess') is not None:
+                            add_reserve =  add_new
+
+                        else:
+                            return cors_headers_add([
+                                list(add_new.keys())[0], add_new.get(list(add_new.keys())[0])])
+
+
+                if add_reserve is not None:
+                    if add_reserve.get('success'):
+                        if db_data["permanent"] == 0:
+                            db_data["request_url"] = request_url
+                            task_id = reserve_task_create(db_data)
+
+                            if task_id:
+                                pr.add_task_id(
+                                    task_id=task_id,
+                                    phone_number=phone_number,
+                                    comb_id=comb_id)
+
+
+                            return cors_headers_add(['success', add_reserve])
+
+                    if add_reserve.get('Warning'):
+                        return cors_headers_add(['warning', add_reserve.get('Warning')])
+                    
+                    if add_reserve.get('error'):
+                        return cors_headers_add(['error', add_reserve.get('error')])
+            else:
+                return cors_headers_add(['error', 'Rezerwacja nie powiodla sie!'])
+
+        else:
+            if comb_id is not None:
+                try:
+                    cancel_reserve = pr.deactivate()
+
+                    if cancel_reserve is not None:
                         return cors_headers_add(['success', cancel_reserve])
 
                     raise Exception
                 except:
-                    return cors_headers_add(['Warning', 'Reservation with this phone number does not exist or not active yet!'])
+                    return cors_headers_add(['Warning', 'Rezerwacji z tym numerem nie istnieje albo jest juz nie aktywna!'])
 
-        return cors_headers_add(to_json=['error', 'Combination url is not valid!'])
+        return cors_headers_add(to_json=['error', 'Nieprawidlowe dane!'])
+
+
+# Get reservation for bike ordered by phone number
+def get_all_reserves(comb_list):
+    res_dict = {}
+    rc = Reserve(api_secret_key=api_secret_key, request_url=None)
+
+    if comb_list:
+        for comb_id in comb_list:
+            get_res = rc.get_active_reservation(comb_id)
+
+            if get_res is not None:
+                res_dict[str(comb_id)] = get_res
+
+    print(res_dict)
+    return res_dict
 
 
 def init_product(product_id, comb_list):

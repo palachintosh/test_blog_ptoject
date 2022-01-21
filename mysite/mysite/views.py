@@ -14,6 +14,9 @@ def based_blog(request):
 
     country = request.session.get('geoip2')
 
+    if country is None:
+        return redirect('home_blog_page', permanent=True)
+
     if country.get('country_code') == 'XX':
         r = RedirectToPage(user_ip=get_user_ip)
         user_region = r.return_user_zone()

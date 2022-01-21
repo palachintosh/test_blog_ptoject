@@ -1,11 +1,9 @@
-from json.decoder import JSONDecoder
 from django.views.generic import View
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login
 
 from django.http import HttpResponse
-from requests.api import delete
 from .PrestaRequest.mainp.PrestaRequest import PrestaRequest
 from .utils import DataValidators
 from .product_mooving import *
@@ -47,6 +45,19 @@ def get_token():
         return None
 
 
+# Cors politics
+def cors_headers_add(to_json=[]):
+    data = JsonResponse({to_json[0]: to_json[1]})
+
+    data["Access-Control-Allow-Origin"] = "https://3gravity.pl"
+    data["Vary"] = "Origin"
+    data["Access-Control-Allow-Credentials"] = "true"
+    data[
+        "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
+
+    return data
+
+
 class BikeCheck(View):
 # ==========================================
 # |         Works only on kross.pl         |
@@ -60,11 +71,16 @@ class BikeCheck(View):
 
     def get(self, request):
         if request.GET:
-            # if request.GET.get('token') and request.GET.get('token') == get_token():
-            if True:
+            if request.GET.get('token') and request.GET.get('token') == get_token():
+            # if True:
                 if request.GET.get('phone_number') is not None:
-                    return remove_with_reservation(request)
+                    # return remove_with_reservation(request)
+                    rwr = remove_with_reservation(request)
+                    if rwr is not None:
+                        return rwr
 
+                    else:
+                        return JsonResponse({'error': 'Nispodziewany blad!'})
                 else:
                     views_logger.info("TRANSACTION: KROSS, " + str(request.GET.get('code')))
                     return product_mooving(request)
@@ -101,21 +117,50 @@ class PrestaExt(View):
         else:
             return JsonResponse({'Error': 'Looks like quantity is undefined..'})
 
-
+@method_decorator(csrf_exempt, name="dispatch")
 class PrestaReserve(View):
+    def options(self, request):
+        return cors_headers_options(origin="https://3gravity.pl", to_json=['TEST', 'TEST'])
+
+    # must be changed to POST and set token before commit!!
+    def post(self, request):
+        if request.POST:
+            if request.POST.get('token') and request.POST.get('token') == get_token():
+            # if True:
+                return reserve_product(request.POST)
+            
+            else:
+                return cors_headers_add(['error', "Invalid token! Access deny!"])
+        else:
+            return cors_headers_add(['error', 'Invalid request!'])
+
+
+class PrestaGetReserve(View):
     def options(self, request):
         return cors_headers_options(origin="https://3gravity.pl", to_json=['TEST', 'TEST'])
 
     def get(self, request):
         if request.GET:
             if request.GET.get('token') and request.GET.get('token') == get_token():
-                return reserve_product(request.GET)
-            
-            else:
-                return JsonResponse({'Error': "Invalid token! Access deny!"})
-        else:
-            return JsonResponse({'error': 'Produtc undefined on the stock!'})
+            # if True:
+                try:
+                    comb_list = json.loads(request.GET.get('comb_list'))
+                except:
+                    comb_list = None
 
+                if comb_list is not None and isinstance(comb_list, list):
+                    get_reserves = get_all_reserves(comb_list=comb_list)
+
+                    if get_reserves:
+                        return cors_headers_add(['actives', get_reserves])
+
+                    else:
+                        return cors_headers_add(['actives', 'null'])
+
+            else:
+                return cors_headers_add(['error', "Invalid token! Access deny!"])
+        
+        return cors_headers_add(['error', 'Request is incorrect!'])
 
 # Post using for application
 

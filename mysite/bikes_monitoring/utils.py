@@ -76,6 +76,19 @@ class DataValidators:
         except:
             return None
 
+    
+    def is_name_valid(self, username='') -> str:
+        if username and not username.isalnum():
+            new_username = ''.join(i for i in username if i.isalnum() or i == ' ')
+            return new_username
+        
+        elif len(username) > 50:
+            return ''
+
+        else:
+            return username
+
+
 class Logging:
     def logging(self, log_name=None, **kwargs):
 
