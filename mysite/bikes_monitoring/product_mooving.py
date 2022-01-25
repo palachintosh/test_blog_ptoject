@@ -17,6 +17,15 @@ from mysite.celery import app
 from .tasks import auto_delete_reserve
 
 
+formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(message)s")
+tasks_base_dir = os.path.dirname(os.path.abspath(__file__))
+file_handler = logging.FileHandler(tasks_base_dir + "/log/celery_tasks.log")
+celery_logger = logging.getLogger('celery_tasks')
+celery_logger.setLevel(logging.DEBUG)
+file_handler.setFormatter(formatter)
+celery_logger.addHandler(file_handler)
+
+
 # Main transactions handler
 def product_mooving(request):
     def cors_headers_add(to_json=[]):
@@ -114,6 +123,7 @@ def reserve_check(phone_number, comb_url):
         return comb_url
     else:
         return None
+
 
 def cancel_reserve_task(task_id):
     # This construction discarding task in the worker
@@ -371,6 +381,9 @@ def reserve_task_create(data):
         data["request_url"],
         api_secret_key,),
         eta=off_time)
+    
+    celery_logger.info("TRANSACTION: KROSS, " + str(task.id) + str(task.status))
+    celery_logger.info(data["comb_id"] + data["phone_number"] + data["request_url"] + data.get('permanent'))
 
     print("+----------------------------------+")
     print(task)
@@ -449,7 +462,7 @@ def reserve_product(request_get):
                         return cors_headers_add(['error', 'Rezerwacja nie powiodla sie!'])
 
                     if isinstance(add_new, dict):
-                        if add_new.get('succeess') is not None:
+                        if add_new.get('succees') is not None:
                             add_reserve =  add_new
 
                         else:
@@ -458,16 +471,20 @@ def reserve_product(request_get):
 
 
                 if add_reserve is not None:
+                    celery_logger.info("IN SUCCESS " + db_data["comb_id"] + " " + db_data["phone_number"])
                     if add_reserve.get('success'):
                         if db_data["permanent"] == 0:
                             db_data["request_url"] = request_url
                             task_id = reserve_task_create(db_data)
+                            celery_logger.info("IN SUCCESS " + db_data["comb_id"] + str(task_id))
 
                             if task_id:
-                                pr.add_task_id(
+                                a = pr.add_task_id(
                                     task_id=task_id,
                                     phone_number=phone_number,
                                     comb_id=comb_id)
+
+                                celery_logger.info("IN TASK " + db_data["comb_id"] + str(a))
 
 
                             return cors_headers_add(['success', add_reserve])
@@ -486,6 +503,9 @@ def reserve_product(request_get):
                     cancel_reserve = pr.deactivate()
 
                     if cancel_reserve is not None:
+                        if cancel_reserve.get('Success'):
+                            cancel_reserve_task(pr.r_check[3])
+
                         return cors_headers_add(['success', cancel_reserve])
 
                     raise Exception
