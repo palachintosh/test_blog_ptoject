@@ -469,7 +469,7 @@ def reserve_product(request_get):
                             return cors_headers_add([
                                 list(add_new.keys())[0], add_new.get(list(add_new.keys())[0])])
 
-
+                celery_logger.info("AFTER SUCCESS " + db_data["comb_id"] + " " + db_data["phone_number"])
                 if add_reserve is not None:
                     celery_logger.info("IN SUCCESS " + db_data["comb_id"] + " " + db_data["phone_number"])
                     if add_reserve.get('success'):
