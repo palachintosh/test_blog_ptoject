@@ -383,7 +383,7 @@ def reserve_task_create(data):
         eta=off_time)
     
     celery_logger.info("TRANSACTION: KROSS, " + str(task.id) + str(task.status))
-    celery_logger.info(data["comb_id"] + data["phone_number"] + data["request_url"] + data.get('permanent'))
+    celery_logger.info(str(data["comb_id"]) + str(data["phone_number"]) + data["request_url"] + str(data.get('permanent')))
 
     print("+----------------------------------+")
     print(task)
@@ -462,21 +462,21 @@ def reserve_product(request_get):
                         return cors_headers_add(['error', 'Rezerwacja nie powiodla sie!'])
 
                     if isinstance(add_new, dict):
-                        if add_new.get('succees') is not None:
+                        if add_new.get('success') is not None:
                             add_reserve =  add_new
 
                         else:
                             return cors_headers_add([
                                 list(add_new.keys())[0], add_new.get(list(add_new.keys())[0])])
 
-                celery_logger.info("AFTER SUCCESS " + db_data["comb_id"] + " " + db_data["phone_number"])
+                celery_logger.info("AFTER SUCCESS " + str(db_data["comb_id"]) + " " + str(db_data["phone_number"]))
                 if add_reserve is not None:
-                    celery_logger.info("IN SUCCESS " + db_data["comb_id"] + " " + db_data["phone_number"])
+                    celery_logger.info("IN SUCCESS " + str(db_data["comb_id"]) + " " + str(db_data["phone_number"]))
                     if add_reserve.get('success'):
                         if db_data["permanent"] == 0:
                             db_data["request_url"] = request_url
                             task_id = reserve_task_create(db_data)
-                            celery_logger.info("IN SUCCESS " + db_data["comb_id"] + str(task_id))
+                            celery_logger.info("IN SUCCESS " + str(db_data["comb_id"]) + str(task_id))
 
                             if task_id:
                                 a = pr.add_task_id(
@@ -484,7 +484,7 @@ def reserve_product(request_get):
                                     phone_number=phone_number,
                                     comb_id=comb_id)
 
-                                celery_logger.info("IN TASK " + db_data["comb_id"] + str(a))
+                                celery_logger.info("IN TASK " + str(db_data["comb_id"]) + str(a))
 
 
                             return cors_headers_add(['success', add_reserve])
