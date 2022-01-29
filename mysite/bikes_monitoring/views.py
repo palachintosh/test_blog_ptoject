@@ -46,10 +46,14 @@ def get_token():
 
 
 # Cors politics
-def cors_headers_add(to_json=[]):
+def cors_headers_add(to_json=[], origin=None):
     data = JsonResponse({to_json[0]: to_json[1]})
 
-    data["Access-Control-Allow-Origin"] = "https://3gravity.pl"
+    if origin is None: 
+        data["Access-Control-Allow-Origin"] = "https://3gravity.pl" 
+    else:
+        data["Access-Control-Allow-Origin"] = origin
+
     data["Vary"] = "Origin"
     data["Access-Control-Allow-Credentials"] = "true"
     data[
@@ -80,15 +84,18 @@ class BikeCheck(View):
                         return rwr
 
                     else:
-                        return JsonResponse({'error': 'Nispodziewany blad!'})
+                        return cors_headers_add(['error', 'Nispodziewany blad!'])
                 else:
                     views_logger.info("TRANSACTION: KROSS, " + str(request.GET.get('code')))
                     return product_mooving(request)
             else:
-                return JsonResponse({'Error': "Invalid token! Access deny!"})
+                return cors_headers_add(
+                    ['error', "Invalid token! Access deny!"],
+                    "https://24.kross.pl")
         
         else:
-            return JsonResponse({'Error': "Invalid request data!"})
+            return cors_headers_add(['error', "Invalid request data!"],
+            "https://24.kross.pl")
 
 
 
@@ -125,8 +132,8 @@ class PrestaReserve(View):
     # must be changed to POST and set token before commit!!
     def post(self, request):
         if request.POST:
-            if request.POST.get('token') and request.POST.get('token') == get_token():
-            # if True:
+            # if request.POST.get('token') and request.POST.get('token') == get_token():
+            if True:
                 return reserve_product(request.POST)
             
             else:
