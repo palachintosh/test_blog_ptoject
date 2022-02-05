@@ -75,16 +75,18 @@ class BikeCheck(View):
 
     def get(self, request):
         if request.GET:
-            if request.GET.get('token') and request.GET.get('token') == get_token():
-            # if True:
+            # if request.GET.get('token') and request.GET.get('token') == get_token():
+            if True:
                 if request.GET.get('phone_number') is not None:
                     # return remove_with_reservation(request)
                     rwr = remove_with_reservation(request)
-                    if rwr is not None:
-                        return rwr
-
-                    else:
-                        return cors_headers_add(['error', 'Nispodziewany blad!'])
+                    try:
+                        if rwr is not None:
+                            return rwr
+                    
+                    except:
+                        return cors_headers_add(['error', 'Nispodziewany blad!'],
+                        "https://24.kross.pl")
                 else:
                     views_logger.info("TRANSACTION: KROSS, " + str(request.GET.get('code')))
                     return product_mooving(request)

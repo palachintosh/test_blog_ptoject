@@ -127,8 +127,9 @@ def reserve_check(phone_number, comb_url):
 
 def cancel_reserve_task(task_id):
     # This construction discarding task in the worker
-    app.control.revoke(task_id, terminate=True)
+    revoke_task = app.control.revoke(task_id, terminate=True)
 
+    return revoke_task
 
 
 
@@ -161,7 +162,7 @@ def remove_with_reservation(request_get):
         comb_url = presta_get.get_combination_url()
         check = reserve_check(phone_number, comb_url)
         
-        if check is not None and not isinstance(check, dict):
+        if isinstance(check, dict):
             del_from_warehouse = presta_get.warehouse_quantity_mgmt(
                 warehouse='SHOP',
                 reference=code)
@@ -179,8 +180,14 @@ def remove_with_reservation(request_get):
 
                 od = r.only_deactivate()
 
-                if od is not None:
-                    cancel_reserve_task(r.r_check[3])
+                if isinstance(od, dict):
+                    if od.get('Success'):
+                       cancel_reserve_task(r.r_check[3])
+                    
+                    if od.get('Warning'):
+                        return cors_headers_add([
+                'Warning', 'Rezerwacja dla klienta zamknieta albo jej nie bylo!'])
+
 
                 kwargs_data = {
                     'DATE': str(datetime.datetime.now()),
@@ -492,8 +499,8 @@ def reserve_product(request_get):
                     if add_reserve.get('Warning'):
                         return cors_headers_add(['warning', add_reserve.get('Warning')])
                     
-                    if add_reserve.get('error'):
-                        return cors_headers_add(['error', add_reserve.get('error')])
+                    if add_reserve.get('Error'):
+                        return cors_headers_add(['error', add_reserve.get('Error')])
             else:
                 return cors_headers_add(['error', 'Rezerwacja nie powiodla sie!'])
 
