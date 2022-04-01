@@ -36,6 +36,8 @@ def product_mooving(request):
         data["Access-Control-Allow-Credentials"] = "true"
         data[
             "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
+        data["pragma"] = "no-cache"
+        data["Cache-Control"] = "no-cache, no-store"
 
         return data
 
@@ -144,7 +146,8 @@ def remove_with_reservation(request_get):
         data["Access-Control-Allow-Credentials"] = "true"
         data[
             "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
-
+        data["pragma"] = "no-cache"
+        data["Cache-Control"] = "no-cache, no-store"
         return data
     
     l = Logging()
