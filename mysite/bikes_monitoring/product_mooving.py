@@ -163,6 +163,12 @@ def remove_with_reservation(request_get):
                                    request_url=request_url)
         
         comb_url = presta_get.get_combination_url()
+
+        if comb_url is None:
+            return cors_headers_add([
+                'Warning', 'UWAGA: Błędny kod produktu!'])
+
+
         check = reserve_check(phone_number, comb_url)
         
         if isinstance(check, dict):
