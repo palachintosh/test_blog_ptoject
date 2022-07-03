@@ -1,6 +1,5 @@
-import re
 from django.contrib.auth import login
-from django.http import JsonResponse
+from django.http import FileResponse, JsonResponse
 
 from bikes_monitoring.PrestaRequest.mainp.db.db_writer import ReserveBikes
 from .utils import DataValidators
@@ -13,8 +12,11 @@ from .PrestaRequest.mainp.reserver import Reserve
 from .utils import Logging
 import datetime
 import logging
+import os
 from mysite.celery import app
 from .tasks import auto_delete_reserve
+from .PrestaRequest.OrdersPrint.orders_print import OrdersPrint
+
 
 
 formatter = logging.Formatter("%(levelname)s: %(asctime)s - %(message)s")
@@ -603,4 +605,57 @@ def cancel_action(restore_token):
     restore_action = pr.restore_last_action(restore_id=restore_token)
 
     return restore_action
+
+
+
+# Make the pdf file with orders
+def orders_print(request):
+    ord = OrdersPrint(api_secret_key=api_secret_key)
+
+    if request.GET.get('download_file') is not None:
+        file_response = FileResponse(
+            open(os.path.join(ord.base_dir, 'print/' + request.GET.get('download_file')), 'rb')
+        )
+
+        return file_response
+
+
+    if request.GET.get('days_ago') is not None:
+        int_days = 0
+        try:
+            int_days = int(request.GET.get('days_ago'))
+        except:
+            return {'error': 'Days range is incorrect!'}
+        
+        pdf_dict = ord.collect_orders_by_date(days_ago=int_days)
+      
+    
+    elif request.GET.get('days_date') is not None:
+        date_range = request.GET.get('days_date')
+
+        try:
+            # to_date = datetime.datetime().strptime(date_range, '%Y-%m-%d')
+            to_date = datetime.datetime.strptime(date_range, '%Y-%m-%d').date()
+
+            days_delta = datetime.datetime.today().date() - to_date
+            int_days = days_delta.days
+
+        except:
+            return {'error': 'Date has an incorrect format!'}
+        
+        pdf_dict = ord.collect_orders_by_date(days_ago=int_days)
+      
+    
+    elif request.GET.get('orders_range') is not None:
+        orders_range = request.GET.get('orders_range').split(',')
+        
+        pdf_dict = ord.collect_by_limit_url(
+            limit_id_start=orders_range[0],
+            limit_id_end=orders_range[1])
+
+  
+    if pdf_dict:
+        create_pdf = ord.to_pdf(pdf_dict, ord.total_bikes_to_pickup)
+    
+    return create_pdf
 

@@ -10,10 +10,8 @@ from .product_mooving import *
 from .presta_reset import *
 from .statuses import *
 
-
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
-
 
 
 import os.path
@@ -58,7 +56,8 @@ def cors_headers_add(to_json=[], origin=None):
     data["Access-Control-Allow-Credentials"] = "true"
     data[
         "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
-
+    data["pragma"] = "no-cache"
+    data["Cache-Control"] = "no-cache, no-store"
     return data
 
 
@@ -75,8 +74,8 @@ class BikeCheck(View):
 
     def get(self, request):
         if request.GET:
-            # if request.GET.get('token') and request.GET.get('token') == get_token():
-            if True:
+            if request.GET.get('token') and request.GET.get('token') == get_token():
+            # if True:
                 if request.GET.get('phone_number') is not None:
                     # return remove_with_reservation(request)
                     rwr = remove_with_reservation(request)
@@ -134,8 +133,8 @@ class PrestaReserve(View):
     # must be changed to POST and set token before commit!!
     def post(self, request):
         if request.POST:
-            # if request.POST.get('token') and request.POST.get('token') == get_token():
-            if True:
+            if request.POST.get('token') and request.POST.get('token') == get_token():
+            # if True:
                 return reserve_product(request.POST)
             
             else:
@@ -330,10 +329,29 @@ class AppPrestaRestore(View):
 
 
 
-class  PrestaReset(View):
+class PrestaReset(View):
     def get(self, request):
         if request.GET:
             pr = PrestaResetHandler()
             return pr.presta_reset(request.GET)
         else:
             return JsonResponse({'error': 'Reset option is unvailable now!'})
+
+
+
+class PrestaPrint(View):
+    def get(self, request):
+        if request.GET:
+            if request.GET.get('token') and request.GET.get('token') == get_token():
+                temp_url = orders_print(request)
+                if temp_url is not None:
+                    if request.GET.get('download_file') is None:
+                        return cors_headers_add(['Success', temp_url])
+                    else:
+                        return temp_url            
+                else:
+                    return cors_headers_add(['error', 'Pobieranie danych nie powiodło się!'])
+
+        else:
+            return cors_headers_add(['error', 'Invalid request!'])
+
