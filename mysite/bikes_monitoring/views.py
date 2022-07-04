@@ -340,6 +340,9 @@ class PrestaReset(View):
 
 
 class PrestaPrint(View):
+    def options(self, request):
+        return cors_headers_options(origin="https://3gravity.pl", to_json=['pass', 'pass'])
+
     def get(self, request):
         if request.GET:
             if request.GET.get('token') and request.GET.get('token') == get_token():
@@ -348,7 +351,7 @@ class PrestaPrint(View):
                     if request.GET.get('download_file') is None:
                         return cors_headers_add(['Success', temp_url])
                     else:
-                        return temp_url            
+                        return temp_url
                 else:
                     return cors_headers_add(['error', 'Pobieranie danych nie powiodło się!'])
 
