@@ -655,7 +655,10 @@ def orders_print(request):
 
   
     if pdf_dict:
-        create_pdf = ord.to_pdf(pdf_dict, ord.total_bikes_to_pickup)
-    
+        try:
+            create_pdf = ord.to_pdf(pdf_dict, ord.total_bikes_to_pickup)
+        except Exception as e:
+            return str(e)
+        
     return create_pdf
 
