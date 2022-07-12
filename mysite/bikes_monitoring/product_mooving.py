@@ -653,10 +653,12 @@ def orders_print(request):
             limit_id_start=orders_range[0],
             limit_id_end=orders_range[1])
 
-    
-    if pdf_dict:
-        create_pdf = ord.to_pdf(pdf_dict, ord.total_bikes_to_pickup)
-        return create_pdf
+    try:
+        if pdf_dict:
+            create_pdf = ord.to_pdf(pdf_dict, ord.total_bikes_to_pickup)
+            return create_pdf
 
-    else:
-        return {'error': 'Kartka nie została wygenerowana!'}
+        else:
+            return {'error': 'Kartka nie została wygenerowana!'}
+    except Exception as e:
+        return str(e)
