@@ -346,7 +346,11 @@ class PrestaPrint(View):
     def get(self, request):
         if request.GET:
             if request.GET.get('token') and request.GET.get('token') == get_token():
-                temp_url = orders_print(request)
+                try:
+                    temp_url = orders_print(request)
+                except Exception as e:
+                    return cors_headers_add(['Success', str(e)])
+                    
                 if temp_url is not None:
                     if request.GET.get('download_file') is None:
                         return cors_headers_add(['Success', temp_url])
