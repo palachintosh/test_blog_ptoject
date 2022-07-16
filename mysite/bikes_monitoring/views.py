@@ -349,8 +349,8 @@ class PrestaPrint(View):
                 try:
                     temp_url = orders_print(request)
                 except Exception as e:
-                    return cors_headers_add(['Success', str(e)])
-                    
+                    return cors_headers_add(['error', 'Pobieranie danych nie powiodło się!'])
+
                 if temp_url is not None:
                     if request.GET.get('download_file') is None:
                         return cors_headers_add(['Success', temp_url])

@@ -611,6 +611,7 @@ def cancel_action(restore_token):
 # Make the pdf file with orders
 def orders_print(request):
     ord = OrdersPrint(api_secret_key=api_secret_key)
+    pdf_dict = []
 
     if request.GET.get('download_file') is not None:
         file_response = FileResponse(
@@ -634,7 +635,6 @@ def orders_print(request):
         date_range = request.GET.get('days_date')
 
         try:
-            # to_date = datetime.datetime().strptime(date_range, '%Y-%m-%d')
             to_date = datetime.datetime.strptime(date_range, '%Y-%m-%d').date()
 
             days_delta = datetime.datetime.today().date() - to_date
@@ -653,12 +653,10 @@ def orders_print(request):
             limit_id_start=orders_range[0],
             limit_id_end=orders_range[1])
 
-    try:
-        if pdf_dict:
-            create_pdf = ord.to_pdf(pdf_dict, ord.total_bikes_to_pickup)
-            return create_pdf
 
-        else:
-            return {'error': 'Kartka nie została wygenerowana!'}
-    except Exception as e:
-        return str(e)
+    if pdf_dict:
+        create_pdf = ord.to_pdf(pdf_dict, ord.total_bikes_to_pickup)
+        return create_pdf
+
+    else:
+        return {'error': 'Kartka nie została wygenerowana!'}
