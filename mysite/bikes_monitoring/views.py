@@ -384,25 +384,28 @@ class ProductCreate(View):
 
             return data
 
-        if request.method == 'POST':
-            # Serialize body
-            body_to_json = json.loads(request.body)
+        try:
+            if request.method == 'POST':
+                # Serialize body
+                if request.body:
+                    body_to_json = json.loads(request.body)
 
-            if body_to_json.get('token') == get_token():
-                try:
-                    product_data_json = body_to_json.get('product_data_json')
-                    create_prod = create_product_laucher(product_data_json)
+                    if body_to_json.get('token') == get_token():
+                        try:
+                            product_data_json = body_to_json.get('product_data_json')
+                            create_prod = create_product_laucher(product_data_json)
 
-                    if create_prod.get('success') is not None:
-                        return cors_headers_add(['success', create_prod])
+                            if create_prod.get('success') is not None:
+                                return cors_headers_add(['success', create_prod])
 
-                    else:
-                        return cors_headers_add(['error', create_prod])
+                            else:
+                                return cors_headers_add(['error', create_prod])
 
-                except Exception as e:
-                    # return JsonResponse({"error": "Combinations invalid!"})
-                    return cors_headers_add(['error', str(e)])
-            return cors_headers_add(['error', 'Invalid token!'])
-        return cors_headers_add(['error', 'Post data was not given!'])
+                        except Exception as e:
+                            # return JsonResponse({"error": "Combinations invalid!"})
+                            return cors_headers_add(['error', str(e)])
+                    return cors_headers_add(['error', 'Invalid token!'])
+        except Exception as e:
+            return cors_headers_add(['error', str(e)])
                     
   
