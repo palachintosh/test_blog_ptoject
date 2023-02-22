@@ -362,3 +362,47 @@ class PrestaPrint(View):
         else:
             return cors_headers_add(['error', 'Invalid request!'])
 
+
+@method_decorator(csrf_exempt, name="dispatch")
+class ProductCreate(View):
+    def options(self, request):
+        return cors_headers_options(
+            origin="https://kross.eu",
+            to_json=['TEST', 'TEST'],
+            post=True)
+
+
+    def post(self, request):
+        def cors_headers_add(to_json=[]):
+            data = JsonResponse({to_json[0]: to_json[1]})
+
+            data["Access-Control-Allow-Origin"] = "https://kross.eu"
+            data["Vary"] = "Origin"
+            data["Access-Control-Allow-Credentials"] = "true"
+            data[
+                "Access-Control-Allow-Headers"] = "Origin, Access-Control-Allow-Origin, Accept, X-Requested-With, Content-Type"
+
+            return data
+
+        if request.method == 'POST':
+            # Serialize body
+            body_to_json = json.loads(request.body)
+
+            if body_to_json.get('token') == get_token():
+                try:
+                    product_data_json = body_to_json.get('product_data_json')
+                    create_prod = create_product_laucher(product_data_json)
+
+                    if create_prod.get('success') is not None:
+                        return cors_headers_add(['success', create_prod])
+
+                    else:
+                        return cors_headers_add(['error', create_prod])
+
+                except Exception as e:
+                    # return JsonResponse({"error": "Combinations invalid!"})
+                    return cors_headers_add(['error', str(e)])
+            return cors_headers_add(['error', 'Invalid token!'])
+        return cors_headers_add(['error', 'Post data was not given!'])
+                    
+  

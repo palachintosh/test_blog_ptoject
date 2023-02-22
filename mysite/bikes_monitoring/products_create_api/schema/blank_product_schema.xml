@@ -1,0 +1,154 @@
+<prestashop xmlns:xlink="http://www.w3.org/1999/xlink">
+<product>
+<id/>
+<id_manufacturer>90</id_manufacturer>
+<id_supplier/>
+<id_category_default>33</id_category_default>
+<new/>
+<cache_default_attribute/>
+<id_default_image/>
+<id_default_combination/>
+<id_tax_rules_group>1</id_tax_rules_group>
+<position_in_category/>
+<type/>
+<id_shop_default>1</id_shop_default>
+<reference/>
+<supplier_reference/>
+<location/>
+<width/>
+<height/>
+<depth/>
+<weight/>
+<quantity_discount/>
+<ean13/>
+<upc/>
+<cache_is_pack/>
+<cache_has_attachments/>
+<is_virtual/>
+<on_sale/>
+<online_only/>
+<ecotax/>
+<minimal_quantity/>
+<price/>
+<wholesale_price/>
+<unity/>
+<unit_price_ratio/>
+<additional_shipping_cost/>
+<customizable/>
+<text_fields/>
+<uploadable_files/>
+<active>1</active>
+<redirect_type>404</redirect_type>
+<id_product_redirected/>
+<available_for_order/>
+<available_date/>
+<condition>new</condition>
+<show_price>1</show_price>
+<indexed>1</indexed>
+<visibility>both</visibility>
+<advanced_stock_management>1</advanced_stock_management>
+<date_add/>
+<date_upd/>
+<pack_stock_type>3</pack_stock_type>
+<meta_description>
+<language id="1" xlink:href="https://3gravity.pl/api/languages/1">
+</language>
+<language id="2" xlink:href="https://3gravity.pl/api/languages/2">
+</language>
+</meta_description>
+<meta_keywords>
+<language id="1" xlink:href="https://3gravity.pl/api/languages/1">
+rowery warszawa,rowery warszawa centrum,sklep rowerowy,sklep rowerowy warszawa,sklep rowerowy warszawa centrum,ostre koło,rower miejski,rowery na zamówienie,damski rower miejski,modne rowery,rowery na zamówienie warszawa
+</language>
+<language id="2" xlink:href="https://3gravity.pl/api/languages/2">
+</language>
+</meta_keywords>
+<meta_title>
+<language id="1" xlink:href="https://3gravity.pl/api/languages/1">
+</language>
+<language id="2" xlink:href="https://3gravity.pl/api/languages/2">
+</language>
+</meta_title>
+<link_rewrite>
+<language id="1" xlink:href="https://3gravity.pl/api/languages/1"></language>
+<language id="2" xlink:href="https://3gravity.pl/api/languages/2"></language>
+</link_rewrite>
+<name>
+<language id="1" xlink:href="https://3gravity.pl/api/languages/1"></language>
+<language id="2" xlink:href="https://3gravity.pl/api/languages/2"></language>
+</name>
+<description>
+<language id="1" xlink:href="https://3gravity.pl/api/languages/1"></language>
+<language id="2" xlink:href="https://3gravity.pl/api/languages/2"></language>
+</description>
+<description_short>
+<language id="1" xlink:href="https://3gravity.pl/api/languages/1"></language>
+<language id="2" xlink:href="https://3gravity.pl/api/languages/2"></language>
+</description_short>
+<available_now>
+<language id="1"/>
+<language id="2"/>
+</available_now>
+<available_later>
+<language id="1"/>
+<language id="2"/>
+</available_later>
+<isbn/>
+<bloz_7/>
+<bloz_12/>
+<bdk/>
+<osdw/>
+<promo_text_product/>
+<extra_text_product/>
+<in_price_compare/>
+<warranty/>
+<product_name_ceneo/>
+<product_name_skapiec/>
+<platform_gryonline/>
+<typ_towaru_gryonline/>
+<associations>
+<categories nodeType="category" api="categories">
+</categories>
+<images nodeType="image" api="images">
+</images>
+<combinations nodeType="combination" api="combinations">
+<combination>
+<id/>
+</combination>
+</combinations>
+<product_option_values nodeType="product_option_value" api="product_option_values">
+<product_option_value>
+<id/>
+</product_option_value>
+</product_option_values>
+<product_features>
+<product_feature>
+<id/>
+<id_feature_value/>
+</product_feature>
+</product_features>
+<tags>
+<tag>
+<id/>
+</tag>
+</tags>
+<stock_availables>
+<stock_available>
+<id/>
+<id_product_attribute/>
+</stock_available>
+</stock_availables>
+<accessories>
+<product>
+<id/>
+</product>
+</accessories>
+<product_bundle>
+<product>
+<id/>
+<quantity/>
+</product>
+</product_bundle>
+</associations>
+</product>
+</prestashop>

@@ -16,6 +16,7 @@ import os
 from mysite.celery import app
 from .tasks import auto_delete_reserve
 from .PrestaRequest.OrdersPrint.orders_print import OrdersPrint
+from bikes_monitoring.products_create_api.create_products_api import ProductCreate
 
 
 
@@ -660,3 +661,10 @@ def orders_print(request):
 
     else:
         return {'error': 'Kartka nie została wygenerowana!'}
+
+
+def create_product_laucher(future_product_data):
+    init_create = ProductCreate(api_secret_key=api_secret_key)
+    create_prod = init_create.edit_blank_xml(future_product_data)
+
+    return create_prod
