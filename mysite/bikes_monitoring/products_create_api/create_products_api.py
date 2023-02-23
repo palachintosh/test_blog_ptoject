@@ -342,10 +342,10 @@ class ProductCreate(PrestaRequest):
 
 
             if products_list is not None:
-                if len(list(products_list)) > 1:
-                    get_first_product_id = list(products_list)[1].attrib['id']
-                else:
+                if len(list(products_list)) > 0:
                     get_first_product_id = list(products_list)[0].attrib['id']
+                elif len(list(products_list)) > 1:
+                    get_first_product_id = list(products_list)[1].attrib['id']
 
                 with open(self.base_schema_path + '/error_log.txt', 'a') as f:
                     print("GET FIRST PRODUCT: " + str(get_first_product_id), file=f)
