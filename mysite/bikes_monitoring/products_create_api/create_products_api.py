@@ -192,7 +192,10 @@ class ProductCreate(PrestaRequest):
                     self.errors_dict['img_add_error'] = 'Nie udało się dodać niektórych zdjęć: {}'.format(unable_imgs)
 
                 if self.errors_dict:
-                    return self.errors_dict
+                    add_product['new_product_id'] = self.current_product_id
+                    add_product['warnings'] = self.errors_dict
+
+                    return add_product
                     
                 else:
                     add_product['new_product_id'] = self.current_product_id
