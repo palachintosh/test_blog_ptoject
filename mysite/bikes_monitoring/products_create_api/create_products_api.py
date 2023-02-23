@@ -152,7 +152,7 @@ class ProductCreate(PrestaRequest):
                 # And add tags to list with tags or just their
             
         with_tags_data = self.set_tags(xml_content, client_tags=new_tags_array)
-        
+
         if with_tags_data is not None:
             xml_data = with_tags_data
 
@@ -402,6 +402,9 @@ class ProductCreate(PrestaRequest):
 
     def set_tags(self, xml_content, client_tags=[]):
         new_tags = self.get_same_tags()
+
+        if new_tags is None:
+            return None
 
         if isinstance(client_tags, list):
             new_tags = new_tags + client_tags
