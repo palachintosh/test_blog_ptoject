@@ -35,7 +35,6 @@ class ProductCreate(PrestaRequest):
 
     def _return_tag_value(self, xml_content, tag):
         tag_value = ET.fromstring(xml_content)[0].find('id').text
-
         return tag_value
 
 
@@ -45,7 +44,7 @@ class ProductCreate(PrestaRequest):
                 data = f.read()
 
         if not data or data is None:
-            self.errors_dict['data_error'] = 'Nie udało się sformować kartkę produktu.'
+            self.errors_dict['data_error'] = 'Nie udało się sformować kartki produktu.'
             return self.errors_dict
         
         send_create = requests.post(self.create_product_url, auth=(self.api_secret_key, ''), data=data.encode('utf-8'))
@@ -164,12 +163,18 @@ class ProductCreate(PrestaRequest):
         write_xml = ElementTree(main_tag)
         write_xml.write(self.base_schema_path +'/new_xml_schema.xml')
         
-        
+
         xml_data = ET.tostring(main_tag, encoding='unicode') # Send this data to prestashop
         add_product = self.send_new_product_data(data=xml_data) # create product
 
         if isinstance(add_product, dict):
+            with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+                print("ADD PRODUCT VALUE: " + str(add_product), file=f)
+
             if add_product.get('success') is not None:
+                with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+                    print("ADD PRODUCT SUCCESS VALUE: " + str(add_product.get('success')), file=f)
+
                 ############### After creating product ###############
                 # Add combinations to existing product
                 cr_combs = self.create_combs(json_data['product_combinations'])
