@@ -296,7 +296,7 @@ class ProductCreate(PrestaRequest):
             print("IN GET SAME PRODUCT", file=f)
 
         patt = re.compile('([A-Za-z ]+\d)')
-        prod_model = patt.search(self.dict_product_data['product_name']).groups()
+        prod_model = patt.search(self.dict_product_data['product_name'])
 
         with open(self.base_schema_path + '/error_log.txt', 'a') as f:
             print("PRODUCT_MODEL: " + str(prod_model), file=f)
@@ -310,7 +310,7 @@ class ProductCreate(PrestaRequest):
                 prod_model = self.dict_product_data['product_name']
         
         else:
-            prod_model = prod_model[0]
+            prod_model = prod_model.groups()[0]
         
 
         with open(self.base_schema_path + '/error_log.txt', 'a') as f:
