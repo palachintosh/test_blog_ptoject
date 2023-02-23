@@ -128,7 +128,15 @@ class ProductCreate(PrestaRequest):
                     
         # xml_data = self.set_categories(xml_content)
 
+        with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+            print("AFTER MAIN DATA ADDED", file=f)
+
         with_categories_data = self.set_categories(xml_content)
+
+
+        with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+            print("AFTER CATEGORIES", file=f)
+
 
         if with_categories_data is not None:
             xml_data = with_categories_data
@@ -284,8 +292,14 @@ class ProductCreate(PrestaRequest):
     
 
     def get_same_product(self):
+        with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+            print("IN GET SAME PRODUCT", file=f)
+
         patt = re.compile('([A-Za-z ]+\d)')
         prod_model = patt.search(self.dict_product_data['product_name']).groups()
+
+        with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+            print("PRODUCT_MODEL: " + str(prod_model), file=f)
 
         if prod_model is None:
             prod_model = self.dict_product_data['product_name'].split(' ')
@@ -297,6 +311,10 @@ class ProductCreate(PrestaRequest):
         
         else:
             prod_model = prod_model[0]
+        
+
+        with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+            print("PRODUCT_MODEL AFTER: " + str(prod_model), file=f)
 
 
         if prod_model is None:
@@ -307,7 +325,11 @@ class ProductCreate(PrestaRequest):
 
         if same_product.status_code >= 200 and same_product.status_code < 300:
             xml_content = ET.fromstring(same_product.content) # [0]
-            
+
+
+            with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+                print("IN SAME PRODUCT CONTENT: " + str(xml_content), file=f)
+
             if xml_content is not None:
                 xml_content = xml_content.find('products')
                 if xml_content is None:
@@ -315,23 +337,36 @@ class ProductCreate(PrestaRequest):
 
             products_list = xml_content.findall('product')
 
+            with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+                print("IN PRODUCTS LIST: " + str(len(products_list)), file=f)
+
+
             if products_list is not None:
                 if len(list(products_list)) > 1:
                     get_first_product_id = list(products_list)[1].attrib['id']
                 else:
                     get_first_product_id = list(products_list)[0].attrib['id']
 
+                with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+                    print("GET FIRST PRODUCT: " + str(get_first_product_id), file=f)
+
                 # Save to class vars
                 prod_info = requests.get(self.create_product_url + '/' + get_first_product_id, auth=(self.api_secret_key, ''))
 
                 if prod_info.status_code >= 200 and prod_info.status_code < 300:
                     self.same_product_information = prod_info.content
+                    with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+                        print("IN SAME PRODCUT INFO: " + str(prod_info.content), file=f)
+
                     return self.same_product_information
             
         return None
 
 
     def get_same_categories(self):
+        with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+            print("IN GET SAME CATEGORIES", file=f)
+
         self.get_same_product()
 
         if self.same_product_information is not None:
@@ -444,6 +479,9 @@ class ProductCreate(PrestaRequest):
 
 
     def set_categories(self, xml_content):
+        with open(self.base_schema_path + '/error_log.txt', 'a') as f:
+            print("IN SET CATEGORIES", file=f)
+
         new_categories = self.get_same_categories()
         np = xml_content.find('associations').find('categories')
         
