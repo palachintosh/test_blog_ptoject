@@ -104,9 +104,6 @@ class ProductCreate(PrestaRequest):
         main_tag = ET.fromstring(xml_blank_data)
         xml_content = main_tag[0]
 
-        write_xml = ElementTree(main_tag)
-        write_xml.write(self.base_schema_path +'/new_xml_schema.xml')
-        
 
         # Find and all fields defines in the association dict (key) with data from data.json
         # Find data be (value)
@@ -129,15 +126,16 @@ class ProductCreate(PrestaRequest):
                 if get_first_language is not None:
                     get_first_language.text = json_data[value]
                     
-        write_xml = ElementTree(main_tag)
-        write_xml.write(self.base_schema_path +'/new_xml_schema.xml')
-        
         # xml_data = self.set_categories(xml_content)
 
         with_categories_data = self.set_categories(xml_content)
 
         if with_categories_data is not None:
             xml_data = with_categories_data
+
+        write_xml = ElementTree(main_tag)
+        write_xml.write(self.base_schema_path +'/new_xml_schema.xml')
+        
 
         new_tags_array = [] # ElementTree objects
 
@@ -308,7 +306,13 @@ class ProductCreate(PrestaRequest):
         same_product = requests.get(same_product_url, auth=(self.api_secret_key, ''))
 
         if same_product.status_code >= 200 and same_product.status_code < 300:
-            xml_content = ET.fromstring(same_product.content)[0]
+            xml_content = ET.fromstring(same_product.content) # [0]
+            
+            if xml_content is not None:
+                xml_content = xml_content.find('products')
+                if xml_content is None:
+                    return None
+
             products_list = xml_content.findall('product')
 
             if products_list is not None:
