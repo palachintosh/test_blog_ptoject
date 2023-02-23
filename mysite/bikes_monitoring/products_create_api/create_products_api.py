@@ -9,7 +9,7 @@ import os.path
 
 
 class ProductCreate(PrestaRequest):
-    base_schema_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)) + '/schema')
+    base_schema_path = os.path.dirname(os.path.abspath(__file__)) + '/schema'
     create_product_url = 'https://3gravity.pl/api/products/'
     create_combinations_url = 'https://3gravity.pl/api/combinations/'
     send_imgs_url = 'https://3gravity.pl/api/images/products/'
