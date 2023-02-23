@@ -141,10 +141,6 @@ class ProductCreate(PrestaRequest):
         if with_categories_data is not None:
             xml_data = with_categories_data
 
-        write_xml = ElementTree(main_tag)
-        write_xml.write(self.base_schema_path +'/new_xml_schema.xml')
-        
-
         new_tags_array = [] # ElementTree objects
 
         if self.dict_product_data['product_meta_tags']:
@@ -168,11 +164,9 @@ class ProductCreate(PrestaRequest):
         write_xml = ElementTree(main_tag)
         write_xml.write(self.base_schema_path +'/new_xml_schema.xml')
         
-        # Send this data to prestashop
-        xml_data = ET.tostring(main_tag, encoding='unicode')
         
-        # create product
-        add_product = self.send_new_product_data(data=xml_data)
+        xml_data = ET.tostring(main_tag, encoding='unicode') # Send this data to prestashop
+        add_product = self.send_new_product_data(data=xml_data) # create product
 
         if isinstance(add_product, dict):
             if add_product.get('success') is not None:
@@ -450,7 +444,7 @@ class ProductCreate(PrestaRequest):
             xml_content = ET.fromstring(self.same_product_information).find('product')
             if xml_content is None:
                 self.errors_dict['same_product_no_tags_warning'] = 'Nie udało się pobrać tagów produktu.'
-                return None
+                return []
 
             tags = xml_content.find('associations').find('tags').findall('tag')
 
@@ -458,17 +452,17 @@ class ProductCreate(PrestaRequest):
                 return tags
         
         self.errors_dict['same_product_no_tags_warning'] = 'Nie udało się pobrać tagów produktu.'
-        return None
+        return []
 
 
     def set_tags(self, xml_content, client_tags=[]):
         new_tags = self.get_same_tags()
 
-        if new_tags is None:
-            return None
-
         if isinstance(client_tags, list):
             new_tags = new_tags + client_tags
+        
+        if not new_tags:
+            return None
 
         np = xml_content.find('associations').find('tags')
         
@@ -479,9 +473,6 @@ class ProductCreate(PrestaRequest):
 
 
     def set_categories(self, xml_content):
-        with open(self.base_schema_path + '/error_log.txt', 'a') as f:
-            print("IN SET CATEGORIES", file=f)
-
         new_categories = self.get_same_categories()
         np = xml_content.find('associations').find('categories')
         
