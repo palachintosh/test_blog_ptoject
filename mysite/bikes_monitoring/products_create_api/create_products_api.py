@@ -78,7 +78,6 @@ class ProductCreate(PrestaRequest):
 
     def edit_blank_xml(self, json_data):
         if not json_data:
-            print()
             return {'error': 'Blank product data!'}
 
         self.dict_product_data = json_data
@@ -123,12 +122,9 @@ class ProductCreate(PrestaRequest):
             else:
                 get_first_language = parent_xml_tag.find('language')
 
-                if get_first_language is None:
-                    continue
-                
-                else:
+                if get_first_language is not None:
                     get_first_language.text = json_data[value]
-        
+                    
 
         # xml_data = self.set_categories(xml_content)
 
@@ -285,13 +281,25 @@ class ProductCreate(PrestaRequest):
 
     def get_same_product(self):
         patt = re.compile('([A-Za-z ]+\d)')
-        prod_model = patt.search(self.dict_product_data['product_name']).groups()[0]
+        prod_model = patt.search(self.dict_product_data['product_name']).groups()
+
+        if prod_model is None:
+            prod_model = self.dict_product_data['product_name'].split(' ')
+            if len(prod_model) > 3:
+                prod_model = ' '.join(prod_model[:3])
+            
+            else:
+                prod_model = self.dict_product_data['product_name']
+        
+        else:
+            prod_model = prod_model[0]
+
 
         if prod_model is None:
             prod_model = self.dict_product_data['product_name']
 
-        same_prodcut_url = "https://3gravity.pl/api/products?filter[name]=%[{}]%".format(prod_model)
-        same_product = requests.get(same_prodcut_url, auth=(self.api_secret_key, ''))
+        same_product_url = "https://3gravity.pl/api/products?filter[name]=%[{}]%".format(prod_model)
+        same_product = requests.get(same_product_url, auth=(self.api_secret_key, ''))
 
         if same_product.status_code >= 200 and same_product.status_code < 300:
             xml_content = ET.fromstring(same_product.content)[0]
@@ -317,7 +325,11 @@ class ProductCreate(PrestaRequest):
         self.get_same_product()
 
         if self.same_product_information is not None:
-            xml_content = ET.fromstring(self.same_product_information)[0]
+            xml_content = ET.fromstring(self.same_product_information).find('product')
+            if xml_content is None:
+                self.errors_dict['same_product_not_found_warning'] = 'Nie udało się pobrać kategorii produktu.'
+                return None
+
             cats = xml_content.find('associations').find('categories').findall('category')
 
             if cats:
@@ -390,7 +402,11 @@ class ProductCreate(PrestaRequest):
 
     def get_same_tags(self):
         if self.same_product_information is not None:
-            xml_content = ET.fromstring(self.same_product_information)[0]
+            xml_content = ET.fromstring(self.same_product_information).find('product')
+            if xml_content is None:
+                self.errors_dict['same_product_no_tags_warning'] = 'Nie udało się pobrać tagów produktu.'
+                return None
+
             tags = xml_content.find('associations').find('tags').findall('tag')
 
             if tags:
