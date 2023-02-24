@@ -200,7 +200,7 @@ class ProductCreate(PrestaRequest):
 
                 if self.errors_dict:
                     add_product['new_product_id'] = self.current_product_id
-                    add_product['warnings'] = self.errors_dict
+                    add_product['warning'] = self.errors_dict
 
                     return add_product
                     
@@ -236,6 +236,10 @@ class ProductCreate(PrestaRequest):
 
 
     def create_combs(self, comb_dict):
+        if not comb_dict:
+            self.errors_dict['undefined_combinations_error'] = 'Uwaga, produkt bez kombinacji! Nie podano żadnej kombinacji produktu.'
+            return None
+
         # Opening blank scema
         combs_errors = []
         with open(self.base_schema_path +'/combinations.xml') as f:
@@ -448,21 +452,21 @@ class ProductCreate(PrestaRequest):
         if self.same_product_information is not None:
             xml_content = ET.fromstring(self.same_product_information).find('product')
             if xml_content is None:
-                self.errors_dict['same_product_no_tags_warning'] = 'Nie udało się pobrać tagów produktu.'
                 return []
 
             tags = xml_content.find('associations').find('tags').findall('tag')
 
             if tags:
                 return tags
-        
-        self.errors_dict['same_product_no_tags_warning'] = 'Nie udało się pobrać tagów produktu.'
         return []
 
 
     def set_tags(self, xml_content, client_tags=[]):
         new_tags = self.get_same_tags()
 
+        if not new_tags:
+            self.errors_dict['same_product_no_tags_warning'] = 'Nie udało się automatycznie pobrać tagów produktu.'
+        
         if isinstance(client_tags, list):
             new_tags = new_tags + client_tags
         
