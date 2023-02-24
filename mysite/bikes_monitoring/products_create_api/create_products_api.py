@@ -238,7 +238,7 @@ class ProductCreate(PrestaRequest):
     def create_combs(self, comb_dict):
         if not comb_dict:
             self.errors_dict['undefined_combinations_error'] = 'Uwaga, produkt bez kombinacji! Nie podano żadnej kombinacji produktu.'
-            return None
+            return {}
 
         # Opening blank scema
         combs_errors = []
@@ -267,6 +267,7 @@ class ProductCreate(PrestaRequest):
                 combs_errors.append('Nie udało się dodać kimbinacji: {}'.format(comb_name))
         
         return combs_errors
+
 
     def get_imgs(self):
         img_errors = []
