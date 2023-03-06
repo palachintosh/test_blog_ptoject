@@ -40,7 +40,7 @@
 <active>1</active>
 <redirect_type>404</redirect_type>
 <id_product_redirected/>
-<available_for_order/>
+<available_for_order>1</available_for_order>
 <available_date/>
 <condition>new</condition>
 <show_price>1</show_price>

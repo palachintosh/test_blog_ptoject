@@ -376,16 +376,13 @@ class ProductCreate(PrestaRequest):
         if self.same_product_information is not None:
             xml_content = ET.fromstring(self.same_product_information).find('product')
             if xml_content is None:
-                self.errors_dict['same_product_not_found_warning'] = 'Nie udało się pobrać kategorii produktu.'
-                return None
+                return []
 
             cats = xml_content.find('associations').find('categories').findall('category')
 
             if cats:
                 return cats
-        
-        self.errors_dict['same_product_not_found_warning'] = 'Nie udało się pobrać kategorii produktu.'
-        return None
+        return []
 
 
     def add_new_tags(self, tag_name):
@@ -484,10 +481,11 @@ class ProductCreate(PrestaRequest):
 
     def set_categories(self, xml_content):
         new_categories = self.get_same_categories()
-        np = xml_content.find('associations').find('categories')
-        
-        if new_categories is None:
+        if not new_categories:
+            self.errors_dict['same_product_not_found_warning'] = 'Nie udało się pobrać kategorii produktu.'
             return None
+
+        np = xml_content.find('associations').find('categories')
 
         for cat in new_categories:
             np.insert(0, cat)
