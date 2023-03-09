@@ -564,7 +564,7 @@ def init_product(product_id, comb_list):
 
     ap = APStockWorker(login=AUTH_DATA[0], password=AUTH_DATA[1])
     ap.product_id = product_id
-    init_all = ap.sw_main_cycle(product_id=product_id, comb_list=comb_list)
+    init_all = ap.sw_main_cycle(product_id=product_id, comb_list=comb_list, force=True)
   
     return cors_headers_add(['success', init_all])
 
